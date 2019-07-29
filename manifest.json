@@ -1,0 +1,35 @@
+{
+  "name": "store-ressources",
+  "vendor": "vtex",
+  "version": "0.1.0",
+  "title": "Store Ressources",
+  "description": "Provides types and methods shared by store, store-graphql and store-indexer",
+  "mustUpdateAt": "2020-07-29",
+  "categories": [],
+  "dependencies": {},
+  "builders": {
+    "node": "4.x"
+  },
+  "scripts": {
+    "prereleasy": "bash lint.sh"
+  },
+  "credentialType": "absolute",
+  "policies": [
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "httpstat.us",
+        "path": "*"
+      }
+    },
+    {
+      "name": "colossus-fire-event"
+    },
+    {
+      "name": "colossus-write-logs"
+    }
+  ],
+  "registries": [
+    "smartcheckout"
+  ]
+}
