@@ -1,9 +1,11 @@
 import { ClientsConfig, LRUCache, Service, ServiceContext } from '@vtex/api'
 
 import { Clients } from './clients'
+import { myEventHandlerBrand, myEventHandlerCategory, myEventHandlerProduct, myEventHandlerSKU } from './events'
 import { method } from './middlewares/method'
 import { status } from './middlewares/status'
 import { validate } from './middlewares/validate'
+import { unwrapSKU } from './events/unwrap';
 
 const TIMEOUT_MS = 800
 
@@ -39,6 +41,9 @@ declare global {
   }
 }
 
+
+
+
 // Export a service that defines route handlers and client options.
 export default new Service<Clients, State>({
   clients,
@@ -49,5 +54,11 @@ export default new Service<Clients, State>({
       validate,
       status,
     ],
+  },
+  events: {
+    broadcasterBrand: unwrapSKU,
+    broadcasterCategory: unwrapSKU,
+    broadcasterProduct: unwrapSKU,
+    broadcasterSku: unwrapSKU,
   },
 })

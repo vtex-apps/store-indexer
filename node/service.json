@@ -9,5 +9,23 @@
       "path": "/_v/status/:code",
       "public": true
     }
+  },
+  "events": {
+    "broadcasterSku": {
+      "sender": "vtex.broadcaster",
+      "keys": ["broadcaster.sku"]
+    },
+    "broadcasterProduct": {
+      "sender": "vtex.broadcaster",
+      "keys": ["broadcaster.product"]
+    },
+    "broadcasterBrand": {
+      "sender": "vtex.broadcaster",
+      "keys": ["broadcaster.brand"]
+    },
+    "broadcasterCategory": {
+      "sender": "vtex.broadcaster",
+      "keys": ["broadcaster.category"]
+    }
   }
 }

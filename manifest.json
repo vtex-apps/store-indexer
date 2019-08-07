@@ -1,12 +1,14 @@
 {
-  "name": "store-ressources",
+  "name": "store-indexer",
   "vendor": "vtex",
   "version": "0.1.0",
-  "title": "Store Ressources",
-  "description": "Provides types and methods shared by store, store-graphql and store-indexer",
+  "title": "Store Indexer",
+  "description": "Listens to  IO-broadcaster for catalog itens changes.",
   "mustUpdateAt": "2020-07-29",
   "categories": [],
-  "dependencies": {},
+  "dependencies": {
+    "vtex.broadcaster": "0.x"
+  },
   "builders": {
     "node": "4.x"
   },
@@ -27,9 +29,13 @@
     },
     {
       "name": "colossus-write-logs"
+    },
+    {
+      "name": "vbase-read-write"
     }
   ],
   "registries": [
     "smartcheckout"
-  ]
+  ],
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
