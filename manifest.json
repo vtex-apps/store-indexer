@@ -7,7 +7,8 @@
   "mustUpdateAt": "2020-07-29",
   "categories": [],
   "dependencies": {
-    "vtex.broadcaster": "0.x"
+    "vtex.broadcaster": "0.x",
+    "vtex.messages":"1.x"
   },
   "builders": {
     "node": "4.x"
@@ -32,6 +33,16 @@
     },
     {
       "name": "vbase-read-write"
+    },
+    {
+      "name": "graphql-query"
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/api/checkout/pub/*"
+      }
     }
   ],
   "registries": [

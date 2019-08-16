@@ -22,7 +22,7 @@ export interface Product {
   metaTagDescription: string
   description: string
   descriptionShort: string
-  keywords: string
+  keywords: [string]
 }
 
 export interface SpecificationGroup {

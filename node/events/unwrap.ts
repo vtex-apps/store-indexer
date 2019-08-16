@@ -1,36 +1,20 @@
-import { ColossusContext } from '../typings/Colossus'
+import { ColossusEventContext } from '../typings/Colossus'
 import { Specification } from './../typings/Catalog'
-import { toSkuProvider } from '../utils/IOMessage';
 
+export async function doNothing(ctx: ColossusEventContext, next: () => Promise<any>){
+  await next ()
+}
 
-export const unwrapSKU = async (ctx: ColossusContext, next:() => Promise<any>) => {
-  console.log('unwrapSKU!!!!')
-  console.log('ctx',ctx)
-  // const bla = {
-  //     id: 'ajshdbajs',
-  //     name: 'ajshdbajs',
-  //     nameComplete: 'ajshdbajs',
-  //     productSpecifications: [{fieldName: 'ajshbajs', fieldValues:['jshdaj']}],
-  //     skuSpecifications: [{fieldName: 'ajshbajs', fieldValues:['jshdaj']}],
-
-  // }
-  // const bla = {
-  //     id: ctx.body.Id,
-  //     name: ctx.body.SkuName,
-  //     nameComplete: ctx.body.NameComplete,
-  //     productSpecifications: unwrapSpecifications(ctx.body.ProductSpecifications),
-  //     skuSpecifications: unwrapSpecifications(ctx.body.SkuSpecifications),
-
-  // }
-  // ctx.state = {
-  //   SKU:bla,
-  // }
-  // console.log('ctx.state', ctx.state)
-  // console.log('ctx.body', ctx.body)
-  // console.log('ctx.clients', ctx.clients)
-  // const existsSkuProvider = await ctx.clients.vbase.getJSON('translations',`${toSkuProvider(ctx.state.SKU.id)}.json`)
-  // console.log({existsSkuProvider})
-next()
+export async function unwrapSKU(ctx: ColossusEventContext, next:() => Promise<any>){
+  ctx.state = {
+    SKU: {
+      id: ctx.body.Id,
+      name: ctx.body.SkuName,
+      nameComplete: ctx.body.NameComplete,
+      productSpecifications: unwrapSpecifications(ctx.body.ProductSpecifications),
+      skuSpecifications: unwrapSpecifications(ctx.body.SkuSpecifications),},
+  }
+  await next()
 }
 
 const unwrapSpecifications =   (specifications: any) => {
@@ -47,7 +31,7 @@ const unwrapSpecifications =   (specifications: any) => {
   return specificationsEntity
 }
 
-export const unwrapProduct = async (ctx: ColossusContext): Promise<any> => {
+export async function unwrapProduct(ctx: ColossusEventContext, next:() => Promise<any>){
   console.log('unwrapProduct!!!!')
   ctx.state = {
     Product:{description: ctx.body.Description,
@@ -58,19 +42,22 @@ export const unwrapProduct = async (ctx: ColossusContext): Promise<any> => {
       productName: ctx.body.Name,
       titleTag: ctx.body.Title,},
   }
+  await next()
 }
 
-export const unwrapCategory = async (ctx: ColossusContext): Promise<any> => {
+export async function unwrapCategory(ctx: ColossusEventContext, next:() => Promise<any>){
   console.log('unwrapCategory!!!!')
   ctx.state = {
     Category:{id: ctx.body.id,
       metaTagDescription: ctx.body.MetaTagDescription,
       name: ctx.body.name,
-      titleTag: ctx.body.Title,},
+      titleTag: ctx.body.Title,
+    },
   }
+  await next()
 }
 
-export const unwrapBrand = async (ctx: ColossusContext): Promise<any> => {
+export async function unwrapBrand(ctx: ColossusEventContext, next:() => Promise<any>){
   console.log('unwrapBrand!!!!!')
   ctx.state = {
     Brand:{
@@ -80,11 +67,5 @@ export const unwrapBrand = async (ctx: ColossusContext): Promise<any> => {
       title: ctx.body.title,
     },
   }
+  await next()
 }
-
-// id: number
-//   name: string
-//   titleTag: string
-//   metaTagDescription: string
-
-

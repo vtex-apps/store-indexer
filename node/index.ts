@@ -1,64 +1,47 @@
-import { ClientsConfig, LRUCache, Service, ServiceContext } from '@vtex/api'
-
+import { ClientsConfig, LRUCache, Service } from '@vtex/api'
 import { Clients } from './clients'
-import { myEventHandlerBrand, myEventHandlerCategory, myEventHandlerProduct, myEventHandlerSKU } from './events'
-import { method } from './middlewares/method'
-import { status } from './middlewares/status'
-import { validate } from './middlewares/validate'
-import { unwrapSKU } from './events/unwrap';
+import { brandIOMessageSave, categoryIOMessageSave, productIOMessageSave, skuIOMessageSave } from './events/generateIOMessage'
+import { unwrapBrand, unwrapCategory, unwrapProduct, unwrapSKU } from './events/unwrap'
 
-const TIMEOUT_MS = 800
+const TIMEOUT_MS = 3000
+const TRANSLATION_CONCURRENCY = 5
+const TRANSLATION_RETRIES = 3
 
-// Create a LRU memory cache for the Status client.
-// The @vtex/api HttpClient respects Cache-Control headers and uses the provided cache.
 const memoryCache = new LRUCache<string, any>({max: 5000})
 metrics.trackCache('status', memoryCache)
 
-// This is the configuration for clients available in `ctx.clients`.
 const clients: ClientsConfig<Clients> = {
-  // We pass our custom implementation of the clients bag, containing the Status client.
   implementation: Clients,
   options: {
-    // All IO Clients will be initialized with these options, unless otherwise specified.
     default: {
       retries: 2,
       timeout: TIMEOUT_MS,
     },
-    // This key will be merged with the default options and add this cache to our Status client.
+    messagesGraphQL: {
+      concurrency: TRANSLATION_CONCURRENCY,
+      retries: TRANSLATION_RETRIES,
+      timeout: TIMEOUT_MS,
+    },
     status: {
       memoryCache,
     },
   },
 }
 
-declare global {
-  // We declare a global Context type just to avoid re-writing ServiceContext<Clients, State> in every handler and resolver
-  type Context = ServiceContext<Clients, State>
 
-  // The shape of our State object found in `ctx.state`. This is used as state bag to communicate between middlewares.
-  interface State {
-    code: number
-  }
+interface State {
+  code: number
 }
 
-
-
-
-// Export a service that defines route handlers and client options.
 export default new Service<Clients, State>({
   clients,
-  routes: {
-    // `status` is the route ID from service.json. It maps to an array of middlewares (or a single handler).
-    status: [
-      method,
-      validate,
-      status,
-    ],
-  },
   events: {
-    broadcasterBrand: unwrapSKU,
-    broadcasterCategory: unwrapSKU,
-    broadcasterProduct: unwrapSKU,
-    broadcasterSku: unwrapSKU,
+    broadcasterBrand: [unwrapBrand, brandIOMessageSave],
+    broadcasterCategory: [unwrapCategory, categoryIOMessageSave],
+    broadcasterProduct: [unwrapProduct, productIOMessageSave],
+    // broadcasterBrand: doNothing,
+    // broadcasterCategory: doNothing,
+    // broadcasterProduct: doNothing,
+    broadcasterSku: [unwrapSKU,skuIOMessageSave],
   },
 })

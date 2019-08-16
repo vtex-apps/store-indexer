@@ -1,6 +1,4 @@
-import { Clients } from './../clients/index';
 import crypto from 'crypto'
-import { Product } from '../typings/Catalog'
 import { ColossusEvent, ColossusEventContext } from '../typings/Colossus'
 
 
