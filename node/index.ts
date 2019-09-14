@@ -1,5 +1,4 @@
-import { ClientsConfig, LRUCache, Service } from '@vtex/api'
-import { Clients } from './clients'
+import { ClientsConfig, IOClients, LRUCache, Service } from '@vtex/api'
 import { saveIOMessage } from './events/saveIOMessage'
 import { doNothing, unwrapBrandTranslatables, unwrapCategoryTranslatables, unwrapProductTranslatables, unwrapSkuTranslatables } from './events/unwrap'
 import { State } from './typings/Colossus'
@@ -11,8 +10,8 @@ const TRANSLATION_RETRIES = 3
 const memoryCache = new LRUCache<string, any>({max: 5000})
 metrics.trackCache('status', memoryCache)
 
-const clients: ClientsConfig<Clients> = {
-  implementation: Clients,
+const clients: ClientsConfig<IOClients> = {
+  implementation: IOClients,
   options: {
     default: {
       retries: 2,
@@ -30,7 +29,7 @@ const clients: ClientsConfig<Clients> = {
 }
 
 
-export default new Service<Clients, State>({
+export default new Service<IOClients, State>({
   clients,
   events: {
     broadcasterBrand: [unwrapBrandTranslatables, saveIOMessage],
