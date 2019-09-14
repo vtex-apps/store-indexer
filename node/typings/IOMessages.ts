@@ -1,15 +1,17 @@
 export interface SaveArgs {
   to: string
-  messagesByProvider: MessageSaveByProviderInput[]
-}
-
-export interface MessageSaveByProviderInput {
-  provider: string
   messages: MessageSaveInput[]
+  from?: string
 }
 
 export interface MessageSaveInput {
-  id: string
-  content: string
-  description?: string
+  srcMessage: string
+  context?: string
+  targetMessage: string
+  groupContext?: string
 }
+
+export type GroupContext = 'Product' | 'Sku' | 'Brand' | 'Category' | 'Specifications-names' | 'Specifications-values'
+
+export type TstringsByGroupContext = Array<[GroupContext,string[]]>
+

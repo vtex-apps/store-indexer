@@ -225,10 +225,10 @@
   dependencies:
     "@types/node" "*"
 
-"@vtex/api@^3.48.0":
-  version "3.48.0"
-  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-3.48.0.tgz#c7f8a5e5a6fc1bfc718c48e12599b10849b9000f"
-  integrity sha512-yXag3YOzD+CK62UVRc6cIN8feLH6ku7dykxVTItf152RsE9cfDSSEpTLrUzmxk/QclOjBH7vWonYKP2qfFz45g==
+"@vtex/api@^3.48.2":
+  version "3.48.2"
+  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-3.48.2.tgz#d61af504f7afc64cadd9756052b5677488f85492"
+  integrity sha512-h14zSyhZ6xO8mwtJ3mcJD1S1quIS7ahcnJL6U/pRRBRDtNFBAn9rm297pFxhzypgqFgVcuB5ZN4eiK/b7vUcfQ==
   dependencies:
     "@types/koa" "^2.0.48"
     "@types/koa-compose" "^3.2.3"
@@ -1367,7 +1367,7 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
 
-stats-lite@vtex/node-stats-lite#dist:
+"stats-lite@github:vtex/node-stats-lite#dist":
   version "2.2.0"
   resolved "https://codeload.github.com/vtex/node-stats-lite/tar.gz/1b0d39cc41ef7aaecfd541191f877887a2044797"
   dependencies:

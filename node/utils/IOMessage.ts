@@ -1,8 +1,21 @@
 
 
-export const toSkuProvider = (id: string) => `SKU-id.${id}`
-export const toProductProvider = (id: string) => `Product-id.${id}`
-export const toBrandProvider = (id: string) => `Brand-id.${id}`
-export const toCategoryProvider = (id: number) => `Category-id.${id}`
-export const providerToVbaseFilename = (provider: string) => `${provider}.json`
-export const toSkuSpecificationID = (id: string, property: string) => `id-${id}.${property}`
+const CONTEXT_LEFT_DELIMITER = '((('
+const CONTEXT_RIGHT_DELIMITER = ')))'
+
+export const contextFromString = (tString: string) => {
+  const splitted = tString.split(CONTEXT_LEFT_DELIMITER)
+  if (splitted.length !== 2){
+    return undefined
+  }
+  const remaining = splitted[1].split(CONTEXT_RIGHT_DELIMITER)
+  if (remaining.length !== 2){
+    return undefined
+  }
+  return remaining[0]
+}
+
+export const contentFromString = (tString: string) => {
+  const splitted = tString.split(CONTEXT_LEFT_DELIMITER)
+  return splitted[0]
+}

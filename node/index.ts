@@ -1,7 +1,8 @@
 import { ClientsConfig, LRUCache, Service } from '@vtex/api'
 import { Clients } from './clients'
-import { brandIOMessageSave, categoryIOMessageSave, productIOMessageSave, skuIOMessageSave } from './events/generateIOMessage'
-import { unwrapBrand, unwrapCategory, unwrapProduct, unwrapSKU } from './events/unwrap'
+import { saveIOMessage } from './events/saveIOMessage'
+import { doNothing, unwrapBrandTranslatables, unwrapCategoryTranslatables, unwrapProductTranslatables, unwrapSkuTranslatables } from './events/unwrap'
+import { State } from './typings/Colossus'
 
 const TIMEOUT_MS = 3000
 const TRANSLATION_CONCURRENCY = 5
@@ -29,19 +30,12 @@ const clients: ClientsConfig<Clients> = {
 }
 
 
-interface State {
-  code: number
-}
-
 export default new Service<Clients, State>({
   clients,
   events: {
-    broadcasterBrand: [unwrapBrand, brandIOMessageSave],
-    broadcasterCategory: [unwrapCategory, categoryIOMessageSave],
-    broadcasterProduct: [unwrapProduct, productIOMessageSave],
-    // broadcasterBrand: doNothing,
-    // broadcasterCategory: doNothing,
-    // broadcasterProduct: doNothing,
-    broadcasterSku: [unwrapSKU,skuIOMessageSave],
+    broadcasterBrand: [unwrapBrandTranslatables, saveIOMessage],
+    broadcasterCategory: [unwrapCategoryTranslatables, saveIOMessage],
+    broadcasterProduct: [unwrapProductTranslatables, saveIOMessage],
+    broadcasterSku: [unwrapSkuTranslatables, saveIOMessage],
   },
 })

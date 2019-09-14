@@ -1,71 +1,64 @@
+import { pick, pluck } from 'ramda'
 import { ColossusEventContext } from '../typings/Colossus'
-import { Specification } from './../typings/Catalog'
 
 export async function doNothing(ctx: ColossusEventContext, next: () => Promise<any>){
   await next ()
 }
 
-export async function unwrapSKU(ctx: ColossusEventContext, next:() => Promise<any>){
-  ctx.state = {
-    SKU: {
-      id: ctx.body.Id,
-      name: ctx.body.SkuName,
-      nameComplete: ctx.body.NameComplete,
-      productSpecifications: unwrapSpecifications(ctx.body.ProductSpecifications),
-      skuSpecifications: unwrapSpecifications(ctx.body.SkuSpecifications),},
+export async function unwrapSkuTranslatables(ctx: ColossusEventContext, next:() => Promise<any>){
+  console.log('---unwrapSkuMessages!!!!','---body',ctx.body)
+
+  const tStringsSku = Object.values(pick(['SkuName','NameComplete',],ctx.body)) as string[]
+  const tStringsSpecificationsNames = pluck('FieldName',ctx.body.ProductSpecifications.concat(ctx.body.SkuSpecifications)) as string[]
+  const tStringsSpecificationsValues = (pluck('FieldValues',ctx.body.ProductSpecifications.concat(ctx.body.SkuSpecifications)) as string[]).
+    reduce(
+      (acc, values)=>{
+        console.log('---values',values)
+        return acc.concat(values)},
+      [] as string[]
+    )
+
+  ctx.state.tStringsByGroupContext = []
+  if (tStringsSku){
+    ctx.state.tStringsByGroupContext.push(['Sku',tStringsSku])
   }
+  if (tStringsSpecificationsNames){
+    ctx.state.tStringsByGroupContext.push(['Specifications-names',tStringsSpecificationsNames])
+  }
+  if (tStringsSpecificationsValues){
+    ctx.state.tStringsByGroupContext.push(['Specifications-values',tStringsSpecificationsValues])
+  }
+
   await next()
 }
 
-const unwrapSpecifications =   (specifications: any) => {
-  const specificationsEntity = new Array() as [Specification]
-  (specifications || []).forEach(
-    (specification: any) =>{
-      const specificationFormated: Specification = {
-        fieldName: specification.FieldName,
-        fieldValues: specification.FieldValues,
-      }
-      specificationsEntity.push(specificationFormated)
-    }
-  )
-  return specificationsEntity
-}
-
-export async function unwrapProduct(ctx: ColossusEventContext, next:() => Promise<any>){
-  console.log('unwrapProduct!!!!')
-  ctx.state = {
-    Product:{description: ctx.body.Description,
-      descriptionShort: ctx.body.DescriptionShort,
-      keywords: ctx.body.Keywords,
-      metaTagDescription: ctx.body.MetaTagDescription,
-      productId: ctx.body.Id,
-      productName: ctx.body.Name,
-      titleTag: ctx.body.Title,},
+export async function unwrapProductTranslatables(ctx: ColossusEventContext, next:() => Promise<any>){
+  console.log('---unwrapProductMessages!!!!','---body',ctx.body)
+  const tStringsProduct = Object.values(pick(['Name','Description','DescriptionShort','Title','MetaTagDescription'],ctx.body)) as string[]
+  if (tStringsProduct){
+    ctx.state.tStringsByGroupContext = [['Product', tStringsProduct]]
   }
+
   await next()
 }
 
-export async function unwrapCategory(ctx: ColossusEventContext, next:() => Promise<any>){
-  console.log('unwrapCategory!!!!')
-  ctx.state = {
-    Category:{id: ctx.body.id,
-      metaTagDescription: ctx.body.MetaTagDescription,
-      name: ctx.body.name,
-      titleTag: ctx.body.Title,
-    },
+export async function unwrapBrandTranslatables(ctx: ColossusEventContext, next:() => Promise<any>){
+  console.log('---unwrapBrandMessages!!!!','---body',ctx.body)
+  const tStringsBrand = Object.values(pick(['name','Title','MetaTagDescription'],ctx.body)) as string[]
+  if (tStringsBrand){
+    ctx.state.tStringsByGroupContext = [['Brand', tStringsBrand]]
   }
+
   await next()
 }
 
-export async function unwrapBrand(ctx: ColossusEventContext, next:() => Promise<any>){
-  console.log('unwrapBrand!!!!!')
-  ctx.state = {
-    Brand:{
-      id: ctx.body.id,
-      metaTagDescription: ctx.body.metaTagDescription,
-      name: ctx.body.name,
-      title: ctx.body.title,
-    },
+export async function unwrapCategoryTranslatables(ctx: ColossusEventContext, next:() => Promise<any>){
+  console.log('---unwrapCategoryMessages!!!!','---body',ctx.body)
+  const tStringsCategory = Object.values(pick(['GlobalCategoryName','name','Title','MetaTagDescription'],ctx.body)) as string[]
+  if (tStringsCategory){
+    ctx.state.tStringsByGroupContext = [['Category', tStringsCategory]]
   }
+
   await next()
 }
+

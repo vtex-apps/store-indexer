@@ -1,6 +1,6 @@
 import { EventContext, IOClients } from '@vtex/api'
 import { Clients } from '../clients'
-import { Brand, Category, Product, SKU } from './Catalog'
+import { TstringsByGroupContext } from './IOMessages'
 
 
 
@@ -12,15 +12,12 @@ export interface ColossusEventContext extends EventContext<IOClients,State> {
   state: State
 }
 
+
 export interface State {
-  SKU?: SKU
-  Product?: Product
-  Category?: Category
-  Brand?: Brand
+  tStringsByGroupContext: TstringsByGroupContext
 }
 
 
-//////////////////////////////////////
 export interface ColossusEvent {
   appId: string
   key: string
