@@ -10,10 +10,12 @@ export async function saveIOMessage(ctx: ColossusEventContext, next:() => Promis
     state: {tStringsByGroupContext},
   } = ctx
 
+  console.log('---tStringsByGroupContext:',tStringsByGroupContext)
   const messages = tStringsByGroupContext.reduce(
     (acc,[groupContext, tStrings])=>{
       tStrings.forEach(
         (tString)=>{
+          console.log('---tString',tString)
           const content = contentFromString(tString)
           const context = contextFromString(tString)
           acc.push({

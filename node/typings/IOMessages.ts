@@ -11,7 +11,5 @@ export interface MessageSaveInput {
   groupContext?: string
 }
 
-export type GroupContext = 'Product' | 'Sku' | 'Brand' | 'Category' | 'Specifications-names' | 'Specifications-values'
-
-export type TstringsByGroupContext = Array<[GroupContext,string[]]>
+export type TstringsByGroupContext = Array<[string,string[]]>
 
