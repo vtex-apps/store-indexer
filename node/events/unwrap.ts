@@ -38,7 +38,7 @@ export async function unwrapSkuTranslatables(ctx: ColossusEventContext, next:() 
 export async function unwrapProductTranslatables(ctx: ColossusEventContext, next:() => Promise<any>){
   console.log('---body',ctx.body)
   const tStringsProduct = Object.values(pick(['Name','Description','DescriptionShort','Title','MetaTagDescription'],ctx.body)) as string[]
-  const id = ctx.body.Id
+  const id = ctx.body.id
   if (tStringsProduct){
     ctx.state.tStringsByGroupContext = [[`Product-Id.${id}`, tStringsProduct]]
   }
