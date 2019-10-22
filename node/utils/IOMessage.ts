@@ -1,5 +1,3 @@
-
-
 const CONTEXT_LEFT_DELIMITER = '((('
 const CONTEXT_RIGHT_DELIMITER = ')))'
 
