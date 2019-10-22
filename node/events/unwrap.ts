@@ -1,10 +1,10 @@
-import { pick } from 'ramda'
+import { filter, pick } from 'ramda'
 import { ColossusEventContext } from '../typings/Colossus'
 
 const skuTranslatableFields = ['name']
-const productTranslatableFields = ['Name', 'Description', 'DescriptionShort', 'Title', 'MetaTagDescription']
-const categoryTranslatableFields = ['GlobalCategoryName', 'name', 'Title', 'MetaTagDescription']
-const brandTranslatableFields = ['name', 'Title', 'MetaTagDescription']
+const productTranslatableFields = ['name', 'description', 'shortDescription', 'title', 'metaTagDescription']
+const categoryTranslatableFields = ['name', 'title', 'description']
+const brandTranslatableFields = ['name', 'text', 'siteTitle']
 
 export async function unwrapSkuTranslatables(ctx: ColossusEventContext, next: () => Promise<any>){
   unwrapTranslatables(ctx, next, skuTranslatableFields, 'Sku-Id')
@@ -24,7 +24,7 @@ export async function unwrapBrandTranslatables(ctx: ColossusEventContext, next: 
 
 export async function unwrapTranslatables(ctx: ColossusEventContext, next:() => Promise<any>, translatableFields: string[], groupCtxPrefix: string){
   console.log('---body', ctx.body)
-  const tStrings = Object.values(pick(translatableFields, ctx.body)) as string[]
+  const tStrings = filter((field: string) => field !== null, Object.values(pick(translatableFields, ctx.body))) as string[]
   const id = ctx.body.id
   if (tStrings.length){
     ctx.state.tStringsByGroupContext = [[`${groupCtxPrefix}.${id}`, tStrings]]
