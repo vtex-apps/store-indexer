@@ -4,12 +4,6 @@
   "timeout": 2,
   "minReplicas": 2,
   "maxReplicas": 4,
-  "routes": {
-    "status": {
-      "path": "/_v/status/:code",
-      "public": true
-    }
-  },
   "events": {
     "broadcasterSku": {
       "sender": "vtex.broadcaster",

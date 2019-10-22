@@ -1,7 +1,4 @@
 import { EventContext, IOClients } from '@vtex/api'
-import { TstringsByGroupContext } from './IOMessages'
-
-
 
 export interface ColossusEventContext extends EventContext<IOClients,State> {
   key: string
@@ -11,11 +8,9 @@ export interface ColossusEventContext extends EventContext<IOClients,State> {
   state: State
 }
 
-
 export interface State {
-  tStringsByGroupContext: TstringsByGroupContext
+  tStringsByGroupContext: Array<[string, string[]]>
 }
-
 
 export interface ColossusEvent {
   appId: string

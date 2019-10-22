@@ -1,26 +1,28 @@
+import { MessageSaveInputV2 } from '@vtex/api'
+
 import { ColossusEventContext } from '../typings/Colossus'
-import { MessageSaveInput } from '../typings/IOMessages'
 import { contentFromString, contextFromString } from '../utils/IOMessage'
-
-
 
 export async function saveIOMessage(ctx: ColossusEventContext, next:() => Promise<any>){
   const {
     clients: {segment, messagesGraphQL},
     state: {tStringsByGroupContext},
   } = ctx
+  const channel = await segment.getSegment()
 
-  console.log('---tStringsByGroupContext:',tStringsByGroupContext)
+  console.log('---tStringsByGroupContext:', tStringsByGroupContext)
+
   const messages = tStringsByGroupContext.reduce(
-    (acc,[groupContext, tStrings])=>{
+    (acc, [groupContext, tStrings]) => {
       tStrings.forEach(
-        (tString)=>{
-          console.log('---tString',tString)
+        (tString) => {
+          console.log('---tString', tString)
           const content = contentFromString(tString)
           const context = contextFromString(tString)
           acc.push({
             context,
             groupContext,
+            srcLang: channel.cultureInfo,
             srcMessage: content,
             targetMessage: content,
           })
@@ -28,19 +30,15 @@ export async function saveIOMessage(ctx: ColossusEventContext, next:() => Promis
       )
       return acc
     },
-    [] as MessageSaveInput[]
+    [] as MessageSaveInputV2[]
   )
 
-  const channel = await segment.getSegment()
-
   await messagesGraphQL.saveV2({
-    from: channel.cultureInfo,
     messages,
     to: channel.cultureInfo,
   })
 
   await next()
-
 }
 
 
