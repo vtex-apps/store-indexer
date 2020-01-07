@@ -1,15 +1,17 @@
-import { EventContext, IOClients } from '@vtex/api'
+import { EventContext } from '@vtex/api'
+import { Clients } from '../clients'
 
-export interface ColossusEventContext extends EventContext<IOClients,State> {
+export interface ColossusEventContext extends EventContext<Clients, State> {
   key: string
   sender: string
   body: any
-  clients: IOClients
+  clients: Clients
   state: State
 }
 
 export interface State {
   tStringsByGroupContext: Array<[string, string[]]>
+  searchURLs: Array<{path: string, canonicalPath?: string}>
 }
 
 export interface ColossusEvent {

@@ -7,7 +7,10 @@
   "mustUpdateAt": "2020-07-29",
   "categories": [],
   "dependencies": {
-    "vtex.messages": "1.x"
+    "vtex.messages": "1.x",
+    "vtex.catalog-api-proxy": "0.x",
+    "vtex.search-graphql": "0.x",
+    "vtex.rewriter": "1.x"
   },
   "builders": {
     "node": "4.x",
@@ -46,6 +49,15 @@
         "host": "portal.vtexcommercestable.com.br",
         "path": "/api/checkout/pub/*"
       }
+    },
+    {
+      "name": "vtex.search-graphql:resolve-graphql"
+    },
+    {
+      "name": "vtex.catalog-api-proxy:catalog-proxy"
+    },
+    {
+      "name": "vtex.rewriter:resolve-graphql"
     }
   ],
   "registries": [
