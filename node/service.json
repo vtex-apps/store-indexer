@@ -20,6 +20,10 @@
     "broadcasterCategory": {
       "sender": "vtex.broadcaster",
       "keys": ["broadcaster.category"]
+    },
+    "searchUrlsCountIndex": {
+      "sender": "vtex.search-graphql",
+      "keys": ["searchUrlsCountIndex"]
     }
   }
 }
