@@ -8,4 +8,5 @@ export interface InternalRoute{
   endDate?: string
   imagePath?: string
   imageTitle?: string
+  resolveAs?: string
 }

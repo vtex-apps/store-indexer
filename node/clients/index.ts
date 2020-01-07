@@ -8,7 +8,7 @@ export class Clients extends IOClients {
     return this.getOrSet('searchGraphql', SearchGraphql)
   }
 
-  get catalogGraphql() {
+  get catalog() {
     return this.getOrSet('catalog', Catalog)
   }
 

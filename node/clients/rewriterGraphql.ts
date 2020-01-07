@@ -14,7 +14,6 @@ export class RewriterGraphql extends AppGraphQLClient {
   }
 
   public async saveManyInternals(internals: InternalRoute[]){
-    console.log('internals', JSON.stringify(internals, null, 2))
     const { tenant, locale } = this.context
     this.graphql.mutate<boolean, { routes: InternalRoute[] }>({
       mutate: rewiterSaveInternalMutation,
@@ -28,8 +27,6 @@ export class RewriterGraphql extends AppGraphQLClient {
         'x-vtex-tenant': tenant,
       },
       metric: 'rewriter-save-internal-searches',
-    }).catch((error)=>{
-      console.log('error.response.data', {error})
     })
   }
 }

@@ -38,6 +38,12 @@ export class Catalog extends AppClient {
   public pageType = (path: string, query?: Record<string, string>) => this.get<CatalogPageTypeResponse>(
     `/pub/portal/pagetype${path}`,
     {
+      headers: {
+        ...(this.options && this.options.headers),
+        'Proxy-Authorization': this.context.authToken,
+        'x-vtex-locale': this.context.locale,
+        'x-vtex-tenant': this.context.tenant,
+      },
       metric: 'catalog-pagetype',
       params: query,
     }
@@ -49,6 +55,7 @@ export class Catalog extends AppClient {
       {
         headers: {
           ...(this.options && this.options.headers),
+          'Proxy-Authorization': this.context.authToken,
           'x-vtex-locale': this.context.locale,
           'x-vtex-tenant': this.context.tenant,
         },

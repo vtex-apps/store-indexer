@@ -3,7 +3,7 @@ import { Catalog } from '../../clients/catalog'
 import { ColossusEventContext } from '../../typings/Colossus'
 
 export async function createCanonicals(ctx: ColossusEventContext, next: () => Promise<any>){
-  const { clients: { catalogGraphql }, state: { searchURLs } } = ctx
+  const { clients: { catalog: catalog }, state: { searchURLs } } = ctx
   
   for(const searchURL of searchURLs) {
     const { path } = searchURL
@@ -14,11 +14,10 @@ export async function createCanonicals(ctx: ColossusEventContext, next: () => Pr
     const enrichedPathSegments: string[] = []
 
     for (const [segment, mapValue] of zippedSegments) {
-       enrichedPathSegments.push(await enrichSegmentName(catalogGraphql, segment, mapValue))
+       enrichedPathSegments.push(await enrichSegmentName(catalog, segment, mapValue))
     }
 
     searchURL.canonicalPath = `/${enrichedPathSegments.join('/')}`.toLowerCase().replace(/\s/g, '-')
-    console.log('searchURL', JSON.stringify(searchURL, null, 2))
   }
 
   await next()
