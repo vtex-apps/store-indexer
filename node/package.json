@@ -2,16 +2,16 @@
   "dependencies": {
     "crypto": "^1.0.1",
     "koa-compose": "^4.0.0",
-    "ramda": "^0.25.0"
+    "ramda": "^0.26.1"
   },
   "devDependencies": {
     "@types/koa-compose": "^3.2.0",
-    "@types/node": "8.x",
-    "@types/ramda": "types/npm-ramda#dist",
-    "@vtex/api": "^3.53.0",
+    "@types/node": "^12.12.17",
+    "@types/ramda": "^0.26.38",
+    "@vtex/api": "^3.66.0",
     "tslint": "^5.14.0",
     "tslint-config-vtex": "^2.1.0",
-    "typescript": "3.5.2"
+    "typescript": "3.7.3"
   },
   "scripts": {
     "lint": "tsc --noEmit --pretty && tslint -c tslint.json --fix './**/*.ts'"

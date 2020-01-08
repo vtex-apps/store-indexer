@@ -1,15 +1,19 @@
-import { ClientsConfig, IOClients, Service } from '@vtex/api'
-
+import { ClientsConfig, Service } from '@vtex/api'
+import { Clients } from './clients'
 import { saveIOMessage } from './events/saveIOMessage'
 import { unwrapBrandTranslatables, unwrapCategoryTranslatables, unwrapProductTranslatables, unwrapSkuTranslatables } from './events/unwrap'
+import { createCanonicals } from './middlewares/search/createCanonicals'
+import { getSearchStats } from './middlewares/search/getSearchStats'
+import { indexCanonicals } from './middlewares/search/indexCanonicals'
+import { tenant } from './middlewares/tenant'
 import { State } from './typings/Colossus'
 
 const TIMEOUT_MS = 3000
 const TRANSLATION_CONCURRENCY = 5
 const TRANSLATION_RETRIES = 3
 
-const clients: ClientsConfig<IOClients> = {
-  implementation: IOClients,
+const clients: ClientsConfig<Clients> = {
+  implementation: Clients,
   options: {
     default: {
       retries: 2,
@@ -23,12 +27,13 @@ const clients: ClientsConfig<IOClients> = {
   },
 }
 
-export default new Service<IOClients, State>({
+export default new Service<Clients, State>({
   clients,
   events: {
     broadcasterBrand: [unwrapBrandTranslatables, saveIOMessage],
     broadcasterCategory: [unwrapCategoryTranslatables, saveIOMessage],
     broadcasterProduct: [unwrapProductTranslatables, saveIOMessage],
     broadcasterSku: [unwrapSkuTranslatables, saveIOMessage],
+    searchUrlsCountIndex: [getSearchStats, tenant, createCanonicals, indexCanonicals],
   },
 })
