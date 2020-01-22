@@ -1,4 +1,5 @@
 import { IOClients } from '@vtex/api'
+
 import { Catalog } from './catalog'
 import { RewriterGraphql } from './rewriterGraphql'
 import { SearchGraphql } from './searchGraphql'

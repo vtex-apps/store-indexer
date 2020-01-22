@@ -1,4 +1,5 @@
 import { EventContext } from '@vtex/api'
+
 import { Clients } from '../clients'
 import { Settings } from '../middlewares/settings'
 

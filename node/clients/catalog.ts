@@ -1,6 +1,14 @@
 import { AppClient, InstanceOptions, IOContext, RequestConfig } from '@vtex/api'
 
-export type PageType = 'Category' | 'Department' | 'Product' | 'FullText' | 'SubCategory' | 'Brand' | 'Search' | 'NotFound'
+export type PageType =
+  | 'Category'
+  | 'Department'
+  | 'Product'
+  | 'FullText'
+  | 'SubCategory'
+  | 'Brand'
+  | 'Search'
+  | 'NotFound'
 
 export interface CatalogPageTypeResponse {
   pageType: PageType
@@ -35,9 +43,8 @@ export class Catalog extends AppClient {
     super('vtex.catalog-api-proxy', ctx, opts)
   }
 
-  public pageType = (path: string, query?: Record<string, string>) => this.get<CatalogPageTypeResponse>(
-    `/pub/portal/pagetype${path}`,
-    {
+  public pageType = (path: string, query?: Record<string, string>) =>
+    this.get<CatalogPageTypeResponse>(`/pub/portal/pagetype${path}`, {
       headers: {
         ...(this.options && this.options.headers),
         'Proxy-Authorization': this.context.authToken,
@@ -46,22 +53,18 @@ export class Catalog extends AppClient {
       },
       metric: 'catalog-pagetype',
       params: query,
-    }
-  )
+    })
 
   public getField = (id: number) =>
-    this.get<FieldResponseAPI>(
-      `/pub/specification/fieldGet/${id}`,
-      {
-        headers: {
-          ...(this.options && this.options.headers),
-          'Proxy-Authorization': this.context.authToken,
-          'x-vtex-locale': this.context.locale,
-          'x-vtex-tenant': this.context.tenant,
-        },
-        metric: 'catalog-get-field-by-id',
-      }
-    )
+    this.get<FieldResponseAPI>(`/pub/specification/fieldGet/${id}`, {
+      headers: {
+        ...(this.options && this.options.headers),
+        'Proxy-Authorization': this.context.authToken,
+        'x-vtex-locale': this.context.locale,
+        'x-vtex-tenant': this.context.tenant,
+      },
+      metric: 'catalog-get-field-by-id',
+    })
 
   private get = <T = any>(url: string, config: RequestConfig = {}) =>
     this.http.get<T>(`/proxy/catalog${url}`, config)
