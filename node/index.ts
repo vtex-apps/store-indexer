@@ -1,6 +1,7 @@
 import { ClientsConfig, Service } from '@vtex/api'
 
 import { Clients } from './clients'
+import { saveInternalProductRoute } from './events/saveInternalRoute'
 import { saveIOMessage } from './events/saveIOMessage'
 import {
   unwrapBrandTranslatables,
@@ -39,7 +40,7 @@ export default new Service<Clients, State>({
   events: {
     broadcasterBrand: [unwrapBrandTranslatables, saveIOMessage],
     broadcasterCategory: [unwrapCategoryTranslatables, saveIOMessage],
-    broadcasterProduct: [unwrapProductTranslatables, saveIOMessage],
+    broadcasterProduct: [saveInternalProductRoute, unwrapProductTranslatables, saveIOMessage],
     broadcasterSku: [unwrapSkuTranslatables, saveIOMessage],
     searchUrlsCountIndex: [
       settings,
