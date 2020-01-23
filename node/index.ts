@@ -5,6 +5,7 @@ import { unwrapBrandTranslatables, unwrapCategoryTranslatables, unwrapProductTra
 import { createCanonicals } from './middlewares/search/createCanonicals'
 import { getSearchStats } from './middlewares/search/getSearchStats'
 import { indexCanonicals } from './middlewares/search/indexCanonicals'
+import { settings } from './middlewares/settings'
 import { tenant } from './middlewares/tenant'
 import { State } from './typings/Colossus'
 
@@ -34,6 +35,6 @@ export default new Service<Clients, State>({
     broadcasterCategory: [unwrapCategoryTranslatables, saveIOMessage],
     broadcasterProduct: [unwrapProductTranslatables, saveIOMessage],
     broadcasterSku: [unwrapSkuTranslatables, saveIOMessage],
-    searchUrlsCountIndex: [getSearchStats, tenant, createCanonicals, indexCanonicals],
+    searchUrlsCountIndex: [settings, getSearchStats, tenant, createCanonicals, indexCanonicals],
   },
 })
