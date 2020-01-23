@@ -23,16 +23,15 @@ export async function saveInternalProductRoute(
     clients: { rewriterGraphql },
   } = ctx
   console.log('---body', ctx.body)
-  const product: Product = ctx.body
+  const product: Product = ctx.body.data
   const slug = product.linkId?.toLocaleLowerCase()
 
   // TODO Get from store and interpolate with canonical
-  const path = `${slug}/p`
+  const path = `/${slug}/p`
 
   const internal: InternalInput = getProductInternal(path, product.id)
-  await rewriterGraphql.saveInternal(internal)
-
+  console.log('--INTERNAL', internal)
+  await rewriterGraphql.saveInternal(internal).catch(err => { console.log('--ERROR', err) })
 
   await next()
 }
-

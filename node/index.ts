@@ -40,7 +40,12 @@ export default new Service<Clients, State>({
   events: {
     broadcasterBrand: [unwrapBrandTranslatables, saveIOMessage],
     broadcasterCategory: [unwrapCategoryTranslatables, saveIOMessage],
-    broadcasterProduct: [saveInternalProductRoute, unwrapProductTranslatables, saveIOMessage],
+    broadcasterProduct: [
+      tenant,
+      saveInternalProductRoute,
+      unwrapProductTranslatables,
+      saveIOMessage,
+    ],
     broadcasterSku: [unwrapSkuTranslatables, saveIOMessage],
     searchUrlsCountIndex: [
       settings,

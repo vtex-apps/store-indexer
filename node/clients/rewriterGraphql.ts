@@ -9,13 +9,15 @@ const rewiterSaveManyInternalMutation = `mutation SaveMany($routes: [InternalInp
 
 const rewiterSaveInternalMutation = `mutation Save($route: InternalInput!) {
   internal {
-    save(routes: $routes)
+    save(route: $route) {
+      type
+    }
   }
 }`
 
 export class RewriterGraphql extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
-    super('vtex.rewriter', ctx, opts)
+    super('vtex.rewriter@1.x', ctx, opts)
   }
 
   public async saveManyInternals(internals: InternalInput[]){
