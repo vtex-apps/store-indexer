@@ -25,9 +25,6 @@ const TRANSLATION_RETRIES = 3
 const clients: ClientsConfig<Clients> = {
   implementation: Clients,
   options: {
-    catalogGraphQL: {
-      timeout: TIMEOUT_MS, // TODO correct parameters here
-    },
     default: {
       retries: 2,
       timeout: TIMEOUT_MS,
