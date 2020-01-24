@@ -3,7 +3,7 @@ import { Brand } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
 import { ColossusEventContext } from '../../typings/Colossus'
-import { PAGE_TYPES, ROUTES_JSON_PATH, STORE_LOCATOR } from './utils'
+import { PAGE_TYPES, ROUTES_JSON_PATH, slugify, STORE_LOCATOR } from './utils'
 
 interface ContentTypeDefinition {
   internal: string
@@ -32,8 +32,7 @@ export async function saveInternalBrandRoute(
   } = ctx
   try {
     const brand: Brand = ctx.body.data
-    // Use slugify
-    const brandName = brand.linkId?.toLocaleLowerCase()
+    const brandName = slugify(brand.name)
     const routesJSON = (await apps.getAppJSON(
       STORE_LOCATOR,
       ROUTES_JSON_PATH
