@@ -41,6 +41,12 @@ export default new Service<Clients, State>({
     broadcasterCategory: [unwrapCategoryTranslatables, saveIOMessage],
     broadcasterProduct: [unwrapProductTranslatables, saveIOMessage],
     broadcasterSku: [unwrapSkuTranslatables, saveIOMessage],
-    searchUrlsCountIndex: [settings, getSearchStats, tenant, createCanonicals, indexCanonicals],
+    searchUrlsCountIndex: [
+      settings,
+      getSearchStats,
+      tenant,
+      createCanonicals,
+      indexCanonicals,
+    ],
   },
 })
