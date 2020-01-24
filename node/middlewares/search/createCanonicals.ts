@@ -13,10 +13,10 @@ const enrichSegmentName = async (
     const { Name: specificationFilterName } = await catalog.getField(
       Number(fieldValue)
     )
-    return `${specificationFilterName}-${segment}`
+    return `${specificationFilterName.toLowerCase()}_${segment}`
   }
 
-  return segment
+  return segment.toLowerCase()
 }
 
 export async function createCanonicals(
@@ -43,7 +43,6 @@ export async function createCanonicals(
     }
 
     searchURL.canonicalPath = `/${enrichedPathSegments.join('/')}`
-      .toLowerCase()
       .replace(/\s/g, '-')
   }
 
