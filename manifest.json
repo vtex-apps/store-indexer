@@ -16,6 +16,18 @@
     "node": "4.x",
     "docs": "0.x"
   },
+  "settingsSchema": {
+    "title": "VTEX Store Indexer",
+    "type": "object",
+    "properties": {
+      "numberOfIndexedSearches": {
+        "title": "Number of search URLs to be indexed",
+        "type": "number",
+        "default": 500,
+        "description": "Store index will take this number of URLs, the most accessed ones based on access stats, make canonicals and index them at our sitemap."
+      }
+    }
+  },
   "scripts": {
     "prereleasy": "bash lint.sh"
   },
