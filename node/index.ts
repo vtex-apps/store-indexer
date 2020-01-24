@@ -1,7 +1,6 @@
 import { ClientsConfig, Service } from '@vtex/api'
 
 import { Clients } from './clients'
-import { saveInternalProductRoute } from './events/saveInternalRoute'
 import { saveIOMessage } from './events/saveIOMessage'
 import {
   unwrapBrandTranslatables,
@@ -9,6 +8,9 @@ import {
   unwrapProductTranslatables,
   unwrapSkuTranslatables,
 } from './events/unwrap'
+import { saveInternalBrandRoute } from './middlewares/internals/saveInternalBrandRoute'
+import { saveInternalCategoryRoute } from './middlewares/internals/saveInternalCategoryRoute'
+import { saveInternalProductRoute } from './middlewares/internals/saveInternalProductRoute'
 import { createCanonicals } from './middlewares/search/createCanonicals'
 import { getSearchStats } from './middlewares/search/getSearchStats'
 import { indexCanonicals } from './middlewares/search/indexCanonicals'
@@ -23,6 +25,9 @@ const TRANSLATION_RETRIES = 3
 const clients: ClientsConfig<Clients> = {
   implementation: Clients,
   options: {
+    catalogGraphQL: {
+      timeout: TIMEOUT_MS, // TODO correct parameters here
+    },
     default: {
       retries: 2,
       timeout: TIMEOUT_MS,
@@ -38,8 +43,18 @@ const clients: ClientsConfig<Clients> = {
 export default new Service<Clients, State>({
   clients,
   events: {
-    broadcasterBrand: [unwrapBrandTranslatables, saveIOMessage],
-    broadcasterCategory: [unwrapCategoryTranslatables, saveIOMessage],
+    broadcasterBrand: [
+      tenant,
+      saveInternalBrandRoute,
+      unwrapBrandTranslatables,
+      saveIOMessage,
+    ],
+    broadcasterCategory: [
+      tenant,
+      saveInternalCategoryRoute,
+      unwrapCategoryTranslatables,
+      saveIOMessage,
+    ],
     broadcasterProduct: [
       tenant,
       saveInternalProductRoute,
