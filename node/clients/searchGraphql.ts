@@ -11,18 +11,21 @@ export class SearchGraphql extends AppGraphQLClient {
     super('vtex.search-graphql', ctx, opts)
   }
 
-  public async getSearchURLsCount(limit: number){
-    return this.graphql.query<any, any>({
-      query: searchUrlsCountQuery,
-      variables: {
-        limit,
-      },
-    },
-    {
-      metric: 'search-urls-count',
-    }
-    ).then(({ data: { searchURLsCount } })=>{
-      return searchURLsCount
-    })
+  public async getSearchURLsCount(limit: number) {
+    return this.graphql
+      .query<any, any>(
+        {
+          query: searchUrlsCountQuery,
+          variables: {
+            limit,
+          },
+        },
+        {
+          metric: 'search-urls-count',
+        }
+      )
+      .then(({ data: { searchURLsCount } }) => {
+        return searchURLsCount
+      })
   }
 }

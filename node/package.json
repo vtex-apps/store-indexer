@@ -11,7 +11,12 @@
     "@vtex/api": "^3.7.0",
     "tslint": "^5.14.0",
     "tslint-config-vtex": "^2.1.0",
-    "typescript": "3.7.3"
+    "typescript": "3.7.3",
+    "vtex.rewriter": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.rewriter@1.22.5/public/@types/vtex.rewriter",
+    "vtex.search-graphql": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.search-graphql@0.14.0/public/@types/vtex.search-graphql",
+    "vtex.messages": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.messages@1.49.0/public/@types/vtex.messages",
+    "vtex.catalog-graphql": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-graphql@1.58.2/public/@types/vtex.catalog-graphql",
+    "vtex.catalog-api-proxy": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-api-proxy@0.6.0/public/_types/react"
   },
   "scripts": {
     "lint": "tsc --noEmit --pretty && tslint -c tslint.json --fix './**/*.ts'"

@@ -1,7 +1,13 @@
 import { ClientsConfig, Service } from '@vtex/api'
+
 import { Clients } from './clients'
 import { saveIOMessage } from './events/saveIOMessage'
-import { unwrapBrandTranslatables, unwrapCategoryTranslatables, unwrapProductTranslatables, unwrapSkuTranslatables } from './events/unwrap'
+import {
+  unwrapBrandTranslatables,
+  unwrapCategoryTranslatables,
+  unwrapProductTranslatables,
+  unwrapSkuTranslatables,
+} from './events/unwrap'
 import { createCanonicals } from './middlewares/search/createCanonicals'
 import { getSearchStats } from './middlewares/search/getSearchStats'
 import { indexCanonicals } from './middlewares/search/indexCanonicals'
@@ -35,6 +41,12 @@ export default new Service<Clients, State>({
     broadcasterCategory: [unwrapCategoryTranslatables, saveIOMessage],
     broadcasterProduct: [unwrapProductTranslatables, saveIOMessage],
     broadcasterSku: [unwrapSkuTranslatables, saveIOMessage],
-    searchUrlsCountIndex: [settings, getSearchStats, tenant, createCanonicals, indexCanonicals],
+    searchUrlsCountIndex: [
+      settings,
+      getSearchStats,
+      tenant,
+      createCanonicals,
+      indexCanonicals,
+    ],
   },
 })
