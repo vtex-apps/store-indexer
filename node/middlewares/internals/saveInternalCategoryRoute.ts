@@ -105,19 +105,16 @@ export async function saveInternalCategoryRoute(
     vtex: { logger },
   } = ctx
   try {
-    console.log('--body', ctx.body)
     const category: Category = ctx.body.data
     const { type, params, map } = await identifyCategory(
       category,
       catalogGraphQL
     )
-    console.log('---indentification', {type, params, map})
     const routesJSON = (await apps.getAppJSON(
       STORE_LOCATOR,
       ROUTES_JSON_PATH
     )) as Record<string, ContentTypeDefinition>
     const route = routesJSON[PAGE_TYPES[type]]
-    console.log('---route', route)
     const canonicalParser = new RouteParser(route.canonical)
 
     const path = canonicalParser.reverse(params)
