@@ -45,6 +45,11 @@ export async function saveInternalBrandRoute(
     const brandRoute = routesJSON[PAGE_TYPES.BRAND]
     const canonicalParser = new RouteParser(brandRoute.canonical)
     const path = canonicalParser.reverse({ brand: brandName })
+    if (!path) {
+      throw new Error(
+        `Parse error, params: ${{ brand: brandName }}, path: ${path}`
+      )
+    }
 
     const internal: InternalInput = getBrandInternal(path, brand.id)
 

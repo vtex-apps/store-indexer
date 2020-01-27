@@ -48,6 +48,9 @@ export async function saveInternalProductRoute(
     const productRoute = routesJSON[PAGE_TYPES.PRODUCT]
     const canonicalParser = new RouteParser(productRoute.canonical)
     const path = canonicalParser.reverse({ slug })
+    if (!path) {
+      throw new Error(`Parse error, params: ${{ slug }}, path: ${path}`)
+    }
 
     const internal: InternalInput = product.isActive
       ? getProductInternal(path, product.id)
