@@ -7,8 +7,8 @@ import {
   PAGE_TYPES,
   ROUTES_JSON_PATH,
   slugify,
-  SMALL_TTL,
   STORE_LOCATOR,
+  tenMinutesFromNowMS,
 } from './utils'
 
 interface ContentTypeDefinition {
@@ -18,7 +18,7 @@ interface ContentTypeDefinition {
 
 const getBrandInternal = (path: string, id: string): InternalInput => ({
   declarer: STORE_LOCATOR,
-  endDate: SMALL_TTL,
+  endDate: tenMinutesFromNowMS(),
   from: path,
   id,
   query: {

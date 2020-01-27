@@ -9,8 +9,8 @@ import {
   PAGE_TYPES,
   ROUTES_JSON_PATH,
   slugify,
-  SMALL_TTL,
   STORE_LOCATOR,
+  tenMinutesFromNowMS,
 } from './utils'
 
 interface ContentTypeDefinition {
@@ -38,7 +38,7 @@ const getInternal = (
   map: string
 ): InternalInput => ({
   declarer: STORE_LOCATOR,
-  endDate: SMALL_TTL,
+  endDate: tenMinutesFromNowMS(),
   from: path,
   id,
   query: {
@@ -125,6 +125,7 @@ export async function saveInternalCategoryRoute(
     const path = canonicalParser.reverse(params)
 
     const internal: InternalInput = getInternal(path, type, category.id, map)
+    console.log('--internal', internal)
 
     await rewriterGraphql.saveInternal(internal)
   } catch (error) {

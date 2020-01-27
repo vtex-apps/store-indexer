@@ -1,7 +1,7 @@
-const DAYS_TO_EXPIRE = 3
-export const SMALL_TTL = new Date(Date.now() + DAYS_TO_EXPIRE).toUTCString()
-export const STORE_LOCATOR = 'vtex.store@2.x'
-export const ROUTES_JSON_PATH = '/dist/vtex.store-indexer/build.json'
+export const tenMinutesFromNowMS = () =>
+  `${new Date(Date.now() + 10 * 60 * 1000)}`
+export const STORE_LOCATOR = 'vtex.store@2.85.1-beta.0'
+export const ROUTES_JSON_PATH = 'dist/vtex.store-indexer/build.json'
 export const PAGE_TYPES = {
   ['PRODUCT']: 'product',
   ['BRAND']: 'brand',
