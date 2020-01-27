@@ -5,7 +5,13 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { CatalogGraphQL } from '../../clients/catalogGraphQL/index'
 import { ColossusEventContext } from '../../typings/Colossus'
-import { PAGE_TYPES, ROUTES_JSON_PATH, slugify, STORE_LOCATOR } from './utils'
+import {
+  PAGE_TYPES,
+  ROUTES_JSON_PATH,
+  slugify,
+  SMALL_TTL,
+  STORE_LOCATOR,
+} from './utils'
 
 interface ContentTypeDefinition {
   internal: string
@@ -32,14 +38,13 @@ const getInternal = (
   map: string
 ): InternalInput => ({
   declarer: STORE_LOCATOR,
+  endDate: SMALL_TTL,
   from: path,
   id,
   query: {
     map,
   },
   type: PAGE_TYPES[type],
-  // TODO ????? bindings?: Maybe<Array<Scalars['String']>>,
-  // TODO ???? endDate?: Maybe<Scalars['Str/ing']>,
 })
 
 const identifyCategory = async (
@@ -105,7 +110,7 @@ export async function saveInternalCategoryRoute(
     vtex: { logger },
   } = ctx
   try {
-    const category: Category = ctx.body.data
+    const category: Category = ctx.body
     const { type, params, map } = await identifyCategory(
       category,
       catalogGraphQL
@@ -120,7 +125,6 @@ export async function saveInternalCategoryRoute(
     const path = canonicalParser.reverse(params)
 
     const internal: InternalInput = getInternal(path, type, category.id, map)
-    console.log('--internal', internal)
 
     await rewriterGraphql.saveInternal(internal)
   } catch (error) {

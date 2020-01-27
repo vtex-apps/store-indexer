@@ -22,7 +22,7 @@ export async function unwrapTranslatables(
 ) {
   const tStrings = filter(
     (field: string) => field !== null,
-    Object.values(pick(translatableFields, ctx.body.data))) as string[]
+    Object.values(pick(translatableFields, ctx.body))) as string[]
   const id = ctx.body.id
   if (tStrings.length) {
     ctx.state.tStringsByGroupContext = [[`${groupCtxPrefix}.${id}`, tStrings]]

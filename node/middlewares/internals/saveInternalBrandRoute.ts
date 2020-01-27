@@ -3,7 +3,13 @@ import { Brand } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
 import { ColossusEventContext } from '../../typings/Colossus'
-import { PAGE_TYPES, ROUTES_JSON_PATH, slugify, STORE_LOCATOR } from './utils'
+import {
+  PAGE_TYPES,
+  ROUTES_JSON_PATH,
+  slugify,
+  SMALL_TTL,
+  STORE_LOCATOR,
+} from './utils'
 
 interface ContentTypeDefinition {
   internal: string
@@ -12,14 +18,13 @@ interface ContentTypeDefinition {
 
 const getBrandInternal = (path: string, id: string): InternalInput => ({
   declarer: STORE_LOCATOR,
+  endDate: SMALL_TTL,
   from: path,
   id,
   query: {
     map: 'b',
   },
   type: PAGE_TYPES.BRAND,
-  // TODO ????? bindings?: Maybe<Array<Scalars['String']>>,
-  // TODO ???? endDate?: Maybe<Scalars['Str/ing']>,
 })
 
 export async function saveInternalBrandRoute(
@@ -31,7 +36,7 @@ export async function saveInternalBrandRoute(
     vtex: { logger },
   } = ctx
   try {
-    const brand: Brand = ctx.body.data
+    const brand: Brand = ctx.body
     const brandName = slugify(brand.name)
     const routesJSON = (await apps.getAppJSON(
       STORE_LOCATOR,
