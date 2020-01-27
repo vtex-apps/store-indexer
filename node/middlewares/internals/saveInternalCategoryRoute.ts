@@ -13,6 +13,7 @@ import {
   tenMinutesFromNowMS,
 } from './utils'
 
+
 interface ContentTypeDefinition {
   internal: string
   canonical: string
@@ -123,9 +124,11 @@ export async function saveInternalCategoryRoute(
     const canonicalParser = new RouteParser(route.canonical)
 
     const path = canonicalParser.reverse(params)
+    if (!path) {
+      throw new Error(`Parse error, params: ${params}, path: ${path}`)
+    }
 
     const internal: InternalInput = getInternal(path, type, category.id, map)
-    console.log('--internal', internal)
 
     await rewriterGraphql.saveInternal(internal)
   } catch (error) {
