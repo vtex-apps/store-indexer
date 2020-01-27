@@ -5,15 +5,11 @@ import { InternalInput } from 'vtex.rewriter'
 import { ColossusEventContext } from '../../typings/Colossus'
 import {
   PAGE_TYPES,
+  Routes,
   ROUTES_JSON_PATH,
   STORE_LOCATOR,
   tenMinutesFromNowMS,
 } from './utils'
-
-interface ContentTypeDefinition {
-  internal: string
-  canonical: string
-}
 
 const getProductInternal = (path: string, id: string): InternalInput => ({
   declarer: STORE_LOCATOR,
@@ -41,10 +37,10 @@ export async function saveInternalProductRoute(
   try {
     const product: Product = ctx.body
     const slug = product.linkId?.toLowerCase()
-    const routesJSON = (await apps.getAppJSON(
+    const routesJSON = await apps.getAppJSON<Routes>(
       STORE_LOCATOR,
       ROUTES_JSON_PATH
-    )) as Record<string, ContentTypeDefinition>
+    )
     const productRoute = routesJSON[PAGE_TYPES.PRODUCT]
     const canonicalParser = new RouteParser(productRoute.canonical)
     const path = canonicalParser.reverse({ slug })

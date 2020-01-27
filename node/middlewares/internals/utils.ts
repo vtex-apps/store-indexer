@@ -17,3 +17,10 @@ export const slugify = (str: string) =>
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .replace(/\s+/g, '-')
+
+export interface ContentTypeDefinition {
+  internal: string
+  canonical: string
+}
+
+export type Routes = Record<string, ContentTypeDefinition>

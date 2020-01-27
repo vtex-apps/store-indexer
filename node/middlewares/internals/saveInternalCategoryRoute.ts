@@ -7,17 +7,12 @@ import { CatalogGraphQL } from '../../clients/catalogGraphQL/index'
 import { ColossusEventContext } from '../../typings/Colossus'
 import {
   PAGE_TYPES,
+  Routes,
   ROUTES_JSON_PATH,
   slugify,
   STORE_LOCATOR,
   tenMinutesFromNowMS,
 } from './utils'
-
-
-interface ContentTypeDefinition {
-  internal: string
-  canonical: string
-}
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
@@ -116,10 +111,10 @@ export async function saveInternalCategoryRoute(
       category,
       catalogGraphQL
     )
-    const routesJSON = (await apps.getAppJSON(
+    const routesJSON = await apps.getAppJSON<Routes>(
       STORE_LOCATOR,
       ROUTES_JSON_PATH
-    )) as Record<string, ContentTypeDefinition>
+    )>
     const route = routesJSON[PAGE_TYPES[type]]
     const canonicalParser = new RouteParser(route.canonical)
 
