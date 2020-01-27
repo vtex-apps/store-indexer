@@ -1,4 +1,4 @@
-import { ClientsConfig, Service } from '@vtex/api'
+import { Cached, ClientsConfig, LRUCache, Service } from '@vtex/api'
 
 import { Clients } from './clients'
 import { saveIOMessage } from './events/saveIOMessage'
@@ -22,6 +22,10 @@ const TIMEOUT_MS = 3000
 const TRANSLATION_CONCURRENCY = 5
 const TRANSLATION_RETRIES = 3
 
+const tenantCacheStorage = new LRUCache<string, Cached>({
+  max: 3000,
+})
+
 const clients: ClientsConfig<Clients> = {
   implementation: Clients,
   options: {
@@ -32,6 +36,10 @@ const clients: ClientsConfig<Clients> = {
     messagesGraphQL: {
       concurrency: TRANSLATION_CONCURRENCY,
       retries: TRANSLATION_RETRIES,
+      timeout: TIMEOUT_MS,
+    },
+    tenant: {
+      memoryCache: tenantCacheStorage,
       timeout: TIMEOUT_MS,
     },
   },
