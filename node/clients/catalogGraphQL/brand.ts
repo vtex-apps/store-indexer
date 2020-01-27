@@ -14,16 +14,3 @@ query GetBrand($id: ID!) {
   }
 }
 `
-
-export interface Brand {
-  id: ID
-  name: string
-  text?: string
-  keywords?: string[]
-  siteTitle?: string
-  active: boolean
-  menuHome: boolean
-  adWordsRemarketingCode?: string
-  lomadeeCampaignCode?: string
-  score?: Int
-}

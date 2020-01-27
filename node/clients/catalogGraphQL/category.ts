@@ -12,14 +12,3 @@ query GetCategory($id: ID!) {
   }
 }
 `
-
-export interface Category {
-  id: ID
-  name: string
-  title?: string
-  parentCategoryId?: ID
-  description?: string
-  isActive: boolean
-  globalCategoryId: Int
-  score?: Int
-}
