@@ -26,9 +26,16 @@ const tenantCacheStorage = new LRUCache<string, Cached>({
   max: 3000,
 })
 
+const appsCacheStorage = new LRUCache<string, Cached>({
+  max: 3000,
+})
+
 const clients: ClientsConfig<Clients> = {
   implementation: Clients,
   options: {
+    apps: {
+      memoryCache: appsCacheStorage,
+    },
     default: {
       retries: 2,
       timeout: TIMEOUT_MS,
