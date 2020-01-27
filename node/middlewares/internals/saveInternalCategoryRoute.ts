@@ -114,7 +114,7 @@ export async function saveInternalCategoryRoute(
     const routesJSON = await apps.getAppJSON<Routes>(
       STORE_LOCATOR,
       ROUTES_JSON_PATH
-    )>
+    )
     const route = routesJSON[PAGE_TYPES[type]]
     const canonicalParser = new RouteParser(route.canonical)
 
