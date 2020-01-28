@@ -8,7 +8,7 @@ export const PAGE_TYPES = {
   ['CATEGORY']: 'category',
   ['SUBCATEGORY']: 'subcategory',
   ['DEPARTMENT']: 'department',
-  ['PRODUCT_NOT_FOUND']: 'productNotFound',
+  ['PRODUCT_NOT_FOUND']: 'notFoundProduct',
 }
 
 export const slugify = (str: string) =>
