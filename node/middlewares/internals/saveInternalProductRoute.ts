@@ -3,13 +3,19 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { ColossusEventContext } from '../../typings/Colossus'
 import {
+  getBindings,
   getPath,
   PAGE_TYPES,
   STORE_LOCATOR,
   tenMinutesFromNowMS,
 } from './utils'
 
-const getProductInternal = (path: string, id: string): InternalInput => ({
+const getProductInternal = (
+  path: string,
+  id: string,
+  bindings: string[]
+): InternalInput => ({
+  bindings,
   declarer: STORE_LOCATOR,
   endDate: tenMinutesFromNowMS(),
   from: path,
@@ -36,9 +42,10 @@ export async function saveInternalProductRoute(
     const product: Product = ctx.body
     const slug = product.linkId?.toLowerCase()
     const path = await getPath(PAGE_TYPES.PRODUCT, { slug }, apps)
+    const bindings = getBindings(ctx.vtex.tenant, product.salesChannel)
 
     const internal: InternalInput = product.isActive
-      ? getProductInternal(path, product.id)
+      ? getProductInternal(path, product.id, bindings)
       : getProductNotFoundInternal(path)
 
     await rewriterGraphql.saveInternal(internal)
