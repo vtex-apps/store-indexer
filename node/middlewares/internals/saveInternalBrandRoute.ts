@@ -27,7 +27,7 @@ export async function saveInternalBrandRoute(
 ) {
   const {
     clients: { apps, rewriterGraphql },
-    vtex: { logger, binding },
+    vtex: { logger },
   } = ctx
   try {
     const brand: Brand = ctx.body
@@ -35,10 +35,6 @@ export async function saveInternalBrandRoute(
     const path = await getPath(PAGE_TYPES.BRAND, { brand: brandName }, apps)
 
     const internal: InternalInput = getBrandInternal(path, brand.id)
-
-    if (binding && binding.id) {
-      internal.bindings = [binding.id]
-    }
 
     await rewriterGraphql.saveInternal(internal)
   } catch (error) {

@@ -30,7 +30,7 @@ export async function saveInternalProductRoute(
 ) {
   const {
     clients: { apps, rewriterGraphql },
-    vtex: { logger, binding },
+    vtex: { logger },
   } = ctx
   try {
     const product: Product = ctx.body
@@ -40,10 +40,6 @@ export async function saveInternalProductRoute(
     const internal: InternalInput = product.isActive
       ? getProductInternal(path, product.id)
       : getProductNotFoundInternal(path)
-
-    if (binding && binding.id) {
-      internal.bindings = [binding.id]
-    }
 
     await rewriterGraphql.saveInternal(internal)
   } catch (error) {

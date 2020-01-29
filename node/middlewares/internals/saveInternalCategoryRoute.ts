@@ -101,7 +101,7 @@ export async function saveInternalCategoryRoute(
 ) {
   const {
     clients: { apps, rewriterGraphql, catalogGraphQL },
-    vtex: { logger, binding },
+    vtex: { logger },
   } = ctx
   try {
     const category: Category = ctx.body
@@ -111,10 +111,6 @@ export async function saveInternalCategoryRoute(
     )
     const path = await getPath(PAGE_TYPES[type], params, apps)
     const internal: InternalInput = getInternal(path, type, category.id, map)
-
-    if (binding && binding.id) {
-      internal.bindings = [binding.id]
-    }
 
     await rewriterGraphql.saveInternal(internal)
   } catch (error) {
