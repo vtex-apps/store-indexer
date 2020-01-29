@@ -1,14 +1,12 @@
 import { prop } from 'ramda'
-import RouteParser from 'route-parser'
 import { Category } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
 import { CatalogGraphQL } from '../../clients/catalogGraphQL/index'
 import { ColossusEventContext } from '../../typings/Colossus'
 import {
+  getPath,
   PAGE_TYPES,
-  Routes,
-  ROUTES_JSON_PATH,
   slugify,
   STORE_LOCATOR,
   tenMinutesFromNowMS,
@@ -103,7 +101,7 @@ export async function saveInternalCategoryRoute(
 ) {
   const {
     clients: { apps, rewriterGraphql, catalogGraphQL },
-    vtex: { logger },
+    vtex: { logger, binding },
   } = ctx
   try {
     const category: Category = ctx.body
@@ -111,19 +109,12 @@ export async function saveInternalCategoryRoute(
       category,
       catalogGraphQL
     )
-    const routesJSON = await apps.getAppJSON<Routes>(
-      STORE_LOCATOR,
-      ROUTES_JSON_PATH
-    )
-    const route = routesJSON[PAGE_TYPES[type]]
-    const canonicalParser = new RouteParser(route.canonical)
-
-    const path = canonicalParser.reverse(params)
-    if (!path) {
-      throw new Error(`Parse error, params: ${params}, path: ${path}`)
-    }
-
+    const path = await getPath(PAGE_TYPES[type], params, apps)
     const internal: InternalInput = getInternal(path, type, category.id, map)
+
+    if (binding && binding.id) {
+      internal.bindings = [binding.id]
+    }
 
     await rewriterGraphql.saveInternal(internal)
   } catch (error) {

@@ -1,12 +1,10 @@
-import RouteParser from 'route-parser'
 import { Brand } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
 import { ColossusEventContext } from '../../typings/Colossus'
 import {
+  getPath,
   PAGE_TYPES,
-  Routes,
-  ROUTES_JSON_PATH,
   slugify,
   STORE_LOCATOR,
   tenMinutesFromNowMS,
@@ -29,25 +27,18 @@ export async function saveInternalBrandRoute(
 ) {
   const {
     clients: { apps, rewriterGraphql },
-    vtex: { logger },
+    vtex: { logger, binding },
   } = ctx
   try {
     const brand: Brand = ctx.body
     const brandName = slugify(brand.name)
-    const routesJSON = await apps.getAppJSON<Routes>(
-      STORE_LOCATOR,
-      ROUTES_JSON_PATH
-    )
-    const brandRoute = routesJSON[PAGE_TYPES.BRAND]
-    const canonicalParser = new RouteParser(brandRoute.canonical)
-    const path = canonicalParser.reverse({ brand: brandName })
-    if (!path) {
-      throw new Error(
-        `Parse error, params: ${{ brand: brandName }}, path: ${path}`
-      )
-    }
+    const path = await getPath(PAGE_TYPES.BRAND, { brand: brandName }, apps)
 
     const internal: InternalInput = getBrandInternal(path, brand.id)
+
+    if (binding && binding.id) {
+      internal.bindings = [binding.id]
+    }
 
     await rewriterGraphql.saveInternal(internal)
   } catch (error) {
