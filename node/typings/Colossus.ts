@@ -15,6 +15,7 @@ export interface State {
   tStringsByGroupContext: Array<[string, string[]]>
   searchURLs: Array<{ path: string; canonicalPath?: string }>
   settings: Settings
+  tenantInfo: any
 }
 
 export interface ColossusEvent {
