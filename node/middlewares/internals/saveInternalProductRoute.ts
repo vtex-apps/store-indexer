@@ -42,7 +42,7 @@ export async function saveInternalProductRoute(
     const product: Product = ctx.body
     const slug = product.linkId?.toLowerCase()
     const path = await getPath(PAGE_TYPES.PRODUCT, { slug }, apps)
-    const bindings = getBindings(ctx.vtex.tenant, product.salesChannel)
+    const bindings = getBindings(ctx.state.tenantInfo, product.salesChannel)
 
     const internal: InternalInput = product.isActive
       ? getProductInternal(path, product.id, bindings)

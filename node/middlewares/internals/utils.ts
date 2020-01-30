@@ -31,7 +31,6 @@ export type Routes = Record<string, ContentTypeDefinition>
 
 type PageTypes = typeof PAGE_TYPES[keyof typeof PAGE_TYPES]
 
-
 export const getPath = async (
   type: PageTypes,
   params: any,
@@ -53,14 +52,14 @@ export const getPath = async (
 
 export const getBindings = (
   tenantInfo: any,
-  salesChannel: Maybe<SalesChannel[]>
+  salesChannels: Array<Maybe<SalesChannel>> | null | undefined
 ): string[] => {
-  if (!tenantInfo.bindings || !salesChannel) {
+  if (!tenantInfo.bindings || !salesChannels || salesChannels.length === 0) {
     return ['*']
   }
   const mapSalesChannelToBindingId = tenantInfo.bindings.reduce(
-    (acc: Record<string, string>, { id, extraContent }: any) => {
-      const salesChannelId = extraContent.salesChannel
+    (acc: Record<string, string>, { id, extraContext }: any) => {
+      const salesChannelId = extraContext.portal?.salesChannel
       if (salesChannelId) {
         acc[salesChannelId] = id
       }
@@ -69,5 +68,7 @@ export const getBindings = (
     {} as Record<string, string>
   )
 
-  return salesChannel.map(({ id }) => mapSalesChannelToBindingId[id])
+  return salesChannels.map(
+    salesChannel => salesChannel && mapSalesChannelToBindingId[salesChannel.id]
+  )
 }
