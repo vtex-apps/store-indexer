@@ -54,7 +54,7 @@ export const getBindings = (
   tenantInfo: any,
   salesChannels: Array<Maybe<SalesChannel>> | null | undefined
 ): string[] => {
-  if (!tenantInfo.bindings || !salesChannels || salesChannels.length === 0) {
+  if (!tenantInfo || !salesChannels || salesChannels.length === 0) {
     return ['*']
   }
   const mapSalesChannelToBindingId = tenantInfo.bindings.reduce(
