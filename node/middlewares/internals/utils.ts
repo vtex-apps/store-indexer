@@ -2,8 +2,6 @@ import { Apps } from '@vtex/api'
 import RouteParser from 'route-parser'
 import { Maybe, SalesChannel } from 'vtex.catalog-graphql'
 
-export const tenMinutesFromNowMS = () =>
-  `${new Date(Date.now() + 10 * 60 * 1000)}`
 export const STORE_LOCATOR = 'vtex.store@2.x'
 export const ROUTES_JSON_PATH = 'dist/vtex.store-indexer/build.json'
 export const PAGE_TYPES = {
