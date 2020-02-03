@@ -1,4 +1,4 @@
-import { MessageSaveInputV2 } from '@vtex/api'
+import { MessageSaveInput } from '@vtex/api'
 
 import { ColossusEventContext } from '../typings/Colossus'
 import { contentFromString, contextFromString } from '../utils/IOMessage'
@@ -29,7 +29,7 @@ export async function saveIOMessage(
         })
         return acc
       },
-      [] as MessageSaveInputV2[]
+      [] as MessageSaveInput[]
     )
 
     await messagesGraphQL.saveV2({

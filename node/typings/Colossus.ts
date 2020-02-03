@@ -1,4 +1,4 @@
-import { EventContext } from '@vtex/api'
+import { EventContext, RecorderState, Tenant } from '@vtex/api'
 
 import { Clients } from '../clients'
 import { Settings } from '../middlewares/settings'
@@ -11,11 +11,11 @@ export interface ColossusEventContext extends EventContext<Clients, State> {
   state: State
 }
 
-export interface State {
+export interface State extends RecorderState {
   tStringsByGroupContext: Array<[string, string[]]>
   searchURLs: Array<{ path: string; canonicalPath?: string }>
   settings: Settings
-  tenantInfo: any
+  tenantInfo?: Tenant
 }
 
 export interface ColossusEvent {
