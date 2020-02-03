@@ -1,3 +1,5 @@
+import { Tenant } from '@vtex/api'
+
 import { Clients } from '../clients'
 import { ColossusEventContext } from '../typings/Colossus'
 
@@ -5,7 +7,7 @@ const TEN_MINUTES_S = 10 * 60
 
 const getHeaders = async (
   clients: Clients,
-  tenantInfo: any
+  tenantInfo?: Tenant
 ): Promise<{ tenantHeader: { locale: string }; locale: string }> => {
   const { segment } = clients
   const segmentData = await segment.getSegmentByToken(null)

@@ -1,4 +1,10 @@
-import { Cached, ClientsConfig, LRUCache, Service } from '@vtex/api'
+import {
+  Cached,
+  ClientsConfig,
+  LRUCache,
+  ParamsContext,
+  Service,
+} from '@vtex/api'
 
 import { Clients } from './clients'
 import { saveIOMessage } from './events/saveIOMessage'
@@ -52,7 +58,7 @@ const clients: ClientsConfig<Clients> = {
   },
 }
 
-export default new Service<Clients, State>({
+export default new Service<Clients, State, ParamsContext>({
   clients,
   events: {
     broadcasterBrand: [
