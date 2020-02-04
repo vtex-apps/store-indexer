@@ -1,5 +1,6 @@
 import { Apps } from '@vtex/api'
 import RouteParser from 'route-parser'
+import { Maybe, SalesChannel } from 'vtex.catalog-graphql'
 
 export const tenMinutesFromNowMS = () =>
   `${new Date(Date.now() + 10 * 60 * 1000)}`
@@ -27,6 +28,7 @@ export interface ContentTypeDefinition {
 }
 
 export type Routes = Record<string, ContentTypeDefinition>
+
 type PageTypes = typeof PAGE_TYPES[keyof typeof PAGE_TYPES]
 
 export const getPath = async (
@@ -46,4 +48,30 @@ export const getPath = async (
     throw new Error(`Parse error, params: ${params}, path: ${path}`)
   }
   return path
+}
+
+export const getBindings = (
+  tenantInfo: any,
+  salesChannels: Array<Maybe<SalesChannel>> | null | undefined
+): string[] => {
+  if (!tenantInfo || !salesChannels || salesChannels.length === 0) {
+    return ['*']
+  }
+  const mapSalesChannelToBindingId = tenantInfo.bindings.reduce(
+    (acc: Record<string, string>, { id, extraContext }: any) => {
+      const salesChannelId = extraContext.portal?.salesChannel
+      if (salesChannelId) {
+        acc[salesChannelId] = id
+      }
+      return acc
+    },
+    {} as Record<string, string>
+  )
+
+  return salesChannels.reduce((acc, salesChannel) => {
+    if (salesChannel) {
+      acc.push(mapSalesChannelToBindingId[salesChannel.id])
+    }
+    return acc
+  }, [] as string[])
 }
