@@ -68,7 +68,10 @@ export const getBindings = (
     {} as Record<string, string>
   )
 
-  return salesChannels.map(
-    salesChannel => salesChannel && mapSalesChannelToBindingId[salesChannel.id]
-  )
+  return salesChannels.reduce((acc, salesChannel) => {
+    if (salesChannel) {
+      acc.push(mapSalesChannelToBindingId[salesChannel.id])
+    }
+    return acc
+  }, [] as string[])
 }
