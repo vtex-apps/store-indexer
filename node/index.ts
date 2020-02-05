@@ -14,6 +14,7 @@ import {
   unwrapProductTranslatables,
   unwrapSkuTranslatables,
 } from './events/unwrap'
+import { initialize } from './middlewares/initialize'
 import { saveInternalBrandRoute } from './middlewares/internals/saveInternalBrandRoute'
 import { saveInternalCategoryRoute } from './middlewares/internals/saveInternalCategoryRoute'
 import { saveInternalProductRoute } from './middlewares/internals/saveInternalProductRoute'
@@ -69,6 +70,7 @@ export default new Service<Clients, State, ParamsContext>({
   events: {
     broadcasterBrand: [
       throttle,
+      initialize,
       tenant,
       saveInternalBrandRoute,
       unwrapBrandTranslatables,
@@ -76,6 +78,7 @@ export default new Service<Clients, State, ParamsContext>({
     ],
     broadcasterCategory: [
       throttle,
+      initialize,
       tenant,
       saveInternalCategoryRoute,
       unwrapCategoryTranslatables,
@@ -83,6 +86,7 @@ export default new Service<Clients, State, ParamsContext>({
     ],
     broadcasterProduct: [
       throttle,
+      initialize,
       tenant,
       saveInternalProductRoute,
       unwrapProductTranslatables,
