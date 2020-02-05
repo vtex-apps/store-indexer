@@ -5,6 +5,7 @@ export class Resources {
   public idUrlIndex: IdUrlIndex
 
   constructor(ctx: ColossusEventContext) {
-    this.idUrlIndex = new IdUrlIndex(ctx.clients.vbase)
+    const { vbase, rewriterGraphql } = ctx.clients
+    this.idUrlIndex = new IdUrlIndex(vbase, rewriterGraphql)
   }
 }
