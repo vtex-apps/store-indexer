@@ -79,7 +79,7 @@ const saveCategoryTree = async (
   const { type, params, map } = await saveCategoryTree(parentCategory, clients)
   if (type === 'DEPARTMENT') {
     const identifiedCategory = {
-      id: parentCategory.id,
+      id: category.id,
       map: `${map},c`,
       params: {
         ...params,
@@ -91,7 +91,7 @@ const saveCategoryTree = async (
     return identifiedCategory
   } else if (type === 'CATEGORY') {
     const identifiedCategory = {
-      id: parentCategory.id,
+      id: category.id,
       map: `${map},c`,
       params: {
         ...params,
@@ -103,7 +103,7 @@ const saveCategoryTree = async (
     return identifiedCategory
   } else {
     const identifiedCategory = {
-      id: parentCategory.id,
+      id: category.id,
       map: `${map},c`,
       params: {
         ...params,
