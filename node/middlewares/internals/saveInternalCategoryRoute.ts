@@ -2,7 +2,7 @@ import { prop } from 'ramda'
 import { Category } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
-import { CatalogGraphQL } from '../../clients/catalogGraphQL/index'
+import { Clients } from '../../clients'
 import { ColossusEventContext } from '../../typings/Colossus'
 import {
   getPath,
@@ -14,9 +14,10 @@ import {
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
-interface IndentifiedCategory {
+interface IdentifiedCategory {
   type: CategoryTypes
   map: string
+  id: string
   params: {
     department?: string
     category?: string
@@ -41,48 +42,68 @@ const getInternal = (
   type: PAGE_TYPES[type],
 })
 
-const identifyCategory = async (
+const saveCategoryInternal = async (
+  identifiedCategory: IdentifiedCategory,
+  clients: Clients
+) => {
+  const { rewriterGraphql, apps } = clients
+  const { type, params, id, map } = identifiedCategory
+  const path = await getPath(PAGE_TYPES[type], params, apps)
+  const internal: InternalInput = getInternal(path, type, id, map)
+
+  await rewriterGraphql.saveInternal(internal)
+}
+
+const saveCategoryTree = async (
   category: Category,
-  catalogGraphQL: CatalogGraphQL
-): Promise<IndentifiedCategory> => {
+  clients: Clients
+): Promise<IdentifiedCategory> => {
+  const { catalogGraphQL } = clients
   const { parentCategoryId, name } = category
   if (!parentCategoryId) {
-    return {
+    const identifiedCategory = {
+      id: category.id,
       map: 'c',
       params: {
         department: slugify(name!),
       },
-      type: 'DEPARTMENT',
+      type: 'DEPARTMENT' as CategoryTypes,
     }
+    await saveCategoryInternal(identifiedCategory, clients)
+    return identifiedCategory
   }
 
   const parentCategory = await catalogGraphQL
     .category(parentCategoryId)
     .then(prop('category'))
-  const { type, params, map } = await identifyCategory(
-    parentCategory,
-    catalogGraphQL
-  )
+  const { type, params, map } = await saveCategoryTree(parentCategory, clients)
   if (type === 'DEPARTMENT') {
-    return {
+    const identifiedCategory = {
+      id: parentCategory.id,
       map: `${map},c`,
       params: {
         ...params,
         category: slugify(name!),
       },
-      type: 'CATEGORY',
+      type: 'CATEGORY' as CategoryTypes,
     }
+    await saveCategoryInternal(identifiedCategory, clients)
+    return identifiedCategory
   } else if (type === 'CATEGORY') {
-    return {
+    const identifiedCategory = {
+      id: parentCategory.id,
       map: `${map},c`,
       params: {
         ...params,
         subcategory: slugify(name!),
       },
-      type: 'SUBCATEGORY',
+      type: 'SUBCATEGORY' as CategoryTypes,
     }
+    await saveCategoryInternal(identifiedCategory, clients)
+    return identifiedCategory
   } else {
-    return {
+    const identifiedCategory = {
+      id: parentCategory.id,
       map: `${map},c`,
       params: {
         ...params,
@@ -92,27 +113,24 @@ const identifyCategory = async (
       },
       type,
     }
+    await saveCategoryInternal(identifiedCategory, clients)
+    return identifiedCategory
   }
+
 }
+
 
 export async function saveInternalCategoryRoute(
   ctx: ColossusEventContext,
   next: () => Promise<any>
 ) {
   const {
-    clients: { apps, rewriterGraphql, catalogGraphQL },
+    clients,
     vtex: { logger },
   } = ctx
   try {
     const category: Category = ctx.body
-    const { type, params, map } = await identifyCategory(
-      category,
-      catalogGraphQL
-    )
-    const path = await getPath(PAGE_TYPES[type], params, apps)
-    const internal: InternalInput = getInternal(path, type, category.id, map)
-
-    await rewriterGraphql.saveInternal(internal)
+    await saveCategoryTree(category, clients)
   } catch (error) {
     logger.error(error)
   }
