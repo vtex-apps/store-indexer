@@ -1,7 +1,6 @@
 import { Category } from '@vtex/api/lib/clients/apps/catalogGraphQL/category'
 import { InternalInput } from 'vtex.rewriter'
 
-import { Clients } from '../../clients'
 import { ColossusEventContext } from '../../typings/Colossus'
 import { getPath, PAGE_TYPES, slugify, STORE_LOCATOR } from './utils'
 
@@ -36,13 +35,17 @@ const getInternal = (
 
 const saveCategoriesInternal = async (
   identifiedCategories: IdentifiedCategory[],
-  clients: Clients
+  ctx: ColossusEventContext
 ) => {
-  const { rewriterGraphql, apps } = clients
+  const {
+    clients: { rewriterGraphql, apps },
+    resources: { idUrlIndex },
+  } = ctx
   const internals = await Promise.all(
     identifiedCategories.map(async identifiedCategory => {
       const { type, params, id, map } = identifiedCategory
       const path = await getPath(PAGE_TYPES[type], params, apps)
+      await idUrlIndex.save(id, path)
       return getInternal(path, type, id, map)
     })
   )
@@ -52,9 +55,9 @@ const saveCategoriesInternal = async (
 
 const saveCategoryTree = async (
   category: Category,
-  clients: Clients
+  ctx: ColossusEventContext
 ): Promise<IdentifiedCategory[]> => {
-  const { catalogGraphQL } = clients
+  const { catalogGraphQL } = ctx.clients
   const { parentCategoryId, name } = category
   if (!parentCategoryId) {
     const identifiedCategory = {
@@ -71,7 +74,7 @@ const saveCategoryTree = async (
   const parentCategory = await catalogGraphQL
     .category(parentCategoryId)
     .then(res => res!.category)
-  const identifiedCategories = await saveCategoryTree(parentCategory, clients)
+  const identifiedCategories = await saveCategoryTree(parentCategory, ctx)
   const { type, params, map } = identifiedCategories[0]
   if (type === 'DEPARTMENT') {
     const identifiedCategory = {
@@ -116,13 +119,12 @@ export async function saveInternalCategoryRoute(
   next: () => Promise<any>
 ) {
   const {
-    clients,
     vtex: { logger },
   } = ctx
   try {
     const category: Category = ctx.body
-    const identifiedCategories = await saveCategoryTree(category, clients)
-    await saveCategoriesInternal(identifiedCategories, clients)
+    const identifiedCategories = await saveCategoryTree(category, ctx)
+    await saveCategoriesInternal(identifiedCategories, ctx)
   } catch (error) {
     logger.error(error)
   }

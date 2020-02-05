@@ -44,7 +44,7 @@ export async function saveInternalProductRoute(
 
     await Promise.all([
       rewriterGraphql.saveInternal(internal),
-      idUrlIndex.save(product.id, bindings, path),
+      idUrlIndex.save(product.id, path, bindings),
     ])
   } catch (error) {
     logger.error(error)

@@ -26,7 +26,7 @@ export class IdUrlIndex {
     return response
   }
 
-  public save = async (id: string, bindings: string[], url: string) => {
+  public save = async (id: string, url: string, bindings: string[] = ['*']) => {
     const canonical = (await this.get(id, bindings)) as string | null
     if (canonical && canonical !== url) {
       const { id: canonicalId } = (await this.rewriterGraphql.getInternal(
