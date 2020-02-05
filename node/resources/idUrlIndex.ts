@@ -6,12 +6,11 @@ import { RewriterGraphql } from '../clients/rewriterGraphql'
 const INDEX = 'INDEX'
 const REVERSE_INDEX = 'ID_TO_URL'
 
-const tenMinutesFromNowMS = () =>
-  `${new Date(Date.now() + 10 * 60 * 1000)}`
+const tenMinutesFromNowMS = () => `${new Date(Date.now() + 10 * 60 * 1000)}`
 
 const toReverseIndexKey = (id: string, bindings: string[]) =>
   `${id}__${bindings.join('_')}`
-// TODO receives multiple bindings
+
 export class IdUrlIndex {
   private bucket: string
   constructor(
