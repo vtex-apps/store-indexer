@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Saves reverse index, from id to url and saves redirect in case of change in route
 
 ## [0.7.1] - 2020-02-11
 ### Fixed
