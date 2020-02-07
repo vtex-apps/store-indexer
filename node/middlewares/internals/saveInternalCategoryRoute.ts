@@ -4,13 +4,7 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { Clients } from '../../clients'
 import { ColossusEventContext } from '../../typings/Colossus'
-import {
-  getPath,
-  PAGE_TYPES,
-  slugify,
-  STORE_LOCATOR,
-  tenMinutesFromNowMS,
-} from './utils'
+import { getPath, PAGE_TYPES, slugify, STORE_LOCATOR } from './utils'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
@@ -33,7 +27,6 @@ const getInternal = (
   map: string
 ): InternalInput => ({
   declarer: STORE_LOCATOR,
-  endDate: tenMinutesFromNowMS(),
   from: path,
   id,
   query: {

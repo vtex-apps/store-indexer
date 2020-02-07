@@ -2,13 +2,7 @@ import { Product } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
 import { ColossusEventContext } from '../../typings/Colossus'
-import {
-  getBindings,
-  getPath,
-  PAGE_TYPES,
-  STORE_LOCATOR,
-  tenMinutesFromNowMS,
-} from './utils'
+import { getBindings, getPath, PAGE_TYPES, STORE_LOCATOR } from './utils'
 
 const getProductInternal = (
   path: string,
@@ -17,7 +11,6 @@ const getProductInternal = (
 ): InternalInput => ({
   bindings,
   declarer: STORE_LOCATOR,
-  endDate: tenMinutesFromNowMS(),
   from: path,
   id,
   type: PAGE_TYPES.PRODUCT,
