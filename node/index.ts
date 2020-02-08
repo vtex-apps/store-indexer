@@ -18,7 +18,10 @@ import { settings } from './middlewares/settings'
 import { tenant } from './middlewares/tenant'
 import { State } from './typings/Colossus'
 
-const TIMEOUT_MS = 3000
+const TIMEOUT_MS = 1000
+const CONCURRENCY = 5
+
+const TRANSLATION_TIMEOUT_MS = 3000
 const TRANSLATION_CONCURRENCY = 5
 const TRANSLATION_RETRIES = 3
 
@@ -37,17 +40,17 @@ const clients: ClientsConfig<Clients> = {
       memoryCache: appsCacheStorage,
     },
     default: {
+      concurrency: CONCURRENCY,
       retries: 2,
       timeout: TIMEOUT_MS,
     },
     messagesGraphQL: {
       concurrency: TRANSLATION_CONCURRENCY,
       retries: TRANSLATION_RETRIES,
-      timeout: TIMEOUT_MS,
+      timeout: TRANSLATION_TIMEOUT_MS,
     },
     tenant: {
       memoryCache: tenantCacheStorage,
-      timeout: TIMEOUT_MS,
     },
   },
 }

@@ -2,7 +2,13 @@ import { Product } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
 import { ColossusEventContext } from '../../typings/Colossus'
-import { getBindings, getPath, PAGE_TYPES, STORE_LOCATOR } from './utils'
+import {
+  getBindings,
+  getPath,
+  INDEXED_ORIGIN,
+  PAGE_TYPES,
+  STORE_LOCATOR,
+} from './utils'
 
 const getProductInternal = (
   path: string,
@@ -13,6 +19,7 @@ const getProductInternal = (
   declarer: STORE_LOCATOR,
   from: path,
   id,
+  origin: INDEXED_ORIGIN,
   type: PAGE_TYPES.PRODUCT,
 })
 

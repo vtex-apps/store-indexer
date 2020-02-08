@@ -4,7 +4,13 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { Clients } from '../../clients'
 import { ColossusEventContext } from '../../typings/Colossus'
-import { getPath, PAGE_TYPES, slugify, STORE_LOCATOR } from './utils'
+import {
+  getPath,
+  INDEXED_ORIGIN,
+  PAGE_TYPES,
+  slugify,
+  STORE_LOCATOR,
+} from './utils'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
@@ -32,6 +38,7 @@ const getInternal = (
   query: {
     map,
   },
+  origin: INDEXED_ORIGIN,
   type: PAGE_TYPES[type],
 })
 
@@ -43,6 +50,7 @@ const saveCategoryInternal = async (
   const { type, params, id, map } = identifiedCategory
   const path = await getPath(PAGE_TYPES[type], params, apps)
   const internal: InternalInput = getInternal(path, type, id, map)
+  console.log('--INTERNAL', internal)
 
   await rewriterGraphql.saveInternal(internal)
 }
@@ -109,9 +117,7 @@ const saveCategoryTree = async (
     await saveCategoryInternal(identifiedCategory, clients)
     return identifiedCategory
   }
-
 }
-
 
 export async function saveInternalCategoryRoute(
   ctx: ColossusEventContext,

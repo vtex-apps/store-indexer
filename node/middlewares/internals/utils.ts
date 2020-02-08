@@ -2,6 +2,7 @@ import { Apps } from '@vtex/api'
 import RouteParser from 'route-parser'
 import { Maybe, SalesChannel } from 'vtex.catalog-graphql'
 
+export const INDEXED_ORIGIN = 'store-indexer:routes-indexing'
 export const STORE_LOCATOR = 'vtex.store@2.x'
 export const ROUTES_JSON_PATH = 'dist/vtex.store-indexer/build.json'
 export const PAGE_TYPES = {
@@ -18,7 +19,7 @@ export const slugify = (str: string) =>
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/\s+/g, '-')
+    .replace(/&|\s+/g, '-')
 
 export interface ContentTypeDefinition {
   internal: string

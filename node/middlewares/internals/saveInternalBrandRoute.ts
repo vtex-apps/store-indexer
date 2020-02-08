@@ -2,7 +2,13 @@ import { Brand } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
 import { ColossusEventContext } from '../../typings/Colossus'
-import { getPath, PAGE_TYPES, slugify, STORE_LOCATOR } from './utils'
+import {
+  getPath,
+  INDEXED_ORIGIN,
+  PAGE_TYPES,
+  slugify,
+  STORE_LOCATOR,
+} from './utils'
 
 const getBrandInternal = (path: string, id: string): InternalInput => ({
   declarer: STORE_LOCATOR,
@@ -11,6 +17,7 @@ const getBrandInternal = (path: string, id: string): InternalInput => ({
   query: {
     map: 'b',
   },
+  origin: INDEXED_ORIGIN,
   type: PAGE_TYPES.BRAND,
 })
 
