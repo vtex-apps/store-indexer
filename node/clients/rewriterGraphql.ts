@@ -108,7 +108,7 @@ export class RewriterGraphql extends AppGraphQLClient {
             'x-vtex-locale': locale,
             'x-vtex-tenant': tenant,
           },
-          metric: 'rewriter-save-internal',
+          metric: 'rewriter-get-internal',
         }
       )
       .then(res => res.data)
