@@ -37,11 +37,22 @@ const appsCacheStorage = new LRUCache<string, Cached>({
   max: 3000,
 })
 
+const catalogCacheStorage = new LRUCache<string, Cached>({
+  max: 5000,
+})
+
+metrics.trackCache('catalog', catalogCacheStorage)
+metrics.trackCache('tenant', tenantCacheStorage)
+metrics.trackCache('apps', appsCacheStorage)
+
 const clients: ClientsConfig<Clients> = {
   implementation: Clients,
   options: {
     apps: {
       memoryCache: appsCacheStorage,
+    },
+    catalogGraphQL: {
+      memoryCache: catalogCacheStorage,
     },
     default: {
       concurrency: CONCURRENCY,
