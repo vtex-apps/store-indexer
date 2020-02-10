@@ -1,7 +1,7 @@
 {
   "name": "store-indexer",
   "vendor": "vtex",
-  "version": "0.6.3",
+  "version": "0.6.4-beta.0",
   "title": "Store Indexer",
   "description": "Listens to  IO-broadcaster for catalog itens changes.",
   "mustUpdateAt": "2020-07-29",
