@@ -71,6 +71,7 @@ const saveCategoryTree = async (
   const parentCategory = await catalogGraphQL
     .category(parentCategoryId)
     .then(prop('category'))
+
   const identifiedCategories = await saveCategoryTree(parentCategory, clients)
   const { type, params, map } = identifiedCategories[0]
   if (type === 'DEPARTMENT') {
