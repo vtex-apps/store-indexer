@@ -19,7 +19,7 @@ export const slugify = (str: string) =>
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/&|\s+/g, '-')
+    .replace(/[*+~.()'"!:@&\[\]`,/ %$#?{}|><=_^]/g, '-')
 
 export interface ContentTypeDefinition {
   internal: string
