@@ -35,22 +35,26 @@ const getInternal = (
   type: PAGE_TYPES[type],
 })
 
-const saveCategoryInternal = async (
-  identifiedCategory: IdentifiedCategory,
+const saveCategoriesInternal = async (
+  identifiedCategories: IdentifiedCategory[],
   clients: Clients
 ) => {
   const { rewriterGraphql, apps } = clients
-  const { type, params, id, map } = identifiedCategory
-  const path = await getPath(PAGE_TYPES[type], params, apps)
-  const internal: InternalInput = getInternal(path, type, id, map)
+  const internals = await Promise.all(
+    identifiedCategories.map(async identifiedCategory => {
+      const { type, params, id, map } = identifiedCategory
+      const path = await getPath(PAGE_TYPES[type], params, apps)
+      return getInternal(path, type, id, map)
+    })
+  )
 
-  await rewriterGraphql.saveInternal(internal)
+  await rewriterGraphql.saveManyInternals(internals)
 }
 
 const saveCategoryTree = async (
   category: Category,
   clients: Clients
-): Promise<IdentifiedCategory> => {
+): Promise<IdentifiedCategory[]> => {
   const { catalogGraphQL } = clients
   const { parentCategoryId, name } = category
   if (!parentCategoryId) {
@@ -62,14 +66,14 @@ const saveCategoryTree = async (
       },
       type: 'DEPARTMENT' as CategoryTypes,
     }
-    await saveCategoryInternal(identifiedCategory, clients)
-    return identifiedCategory
+    return [identifiedCategory]
   }
 
   const parentCategory = await catalogGraphQL
     .category(parentCategoryId)
     .then(prop('category'))
-  const { type, params, map } = await saveCategoryTree(parentCategory, clients)
+  const identifiedCategories = await saveCategoryTree(parentCategory, clients)
+  const { type, params, map } = identifiedCategories[0]
   if (type === 'DEPARTMENT') {
     const identifiedCategory = {
       id: category.id,
@@ -80,8 +84,7 @@ const saveCategoryTree = async (
       },
       type: 'CATEGORY' as CategoryTypes,
     }
-    await saveCategoryInternal(identifiedCategory, clients)
-    return identifiedCategory
+    return [identifiedCategory, ...identifiedCategories]
   } else if (type === 'CATEGORY') {
     const identifiedCategory = {
       id: category.id,
@@ -92,8 +95,7 @@ const saveCategoryTree = async (
       },
       type: 'SUBCATEGORY' as CategoryTypes,
     }
-    await saveCategoryInternal(identifiedCategory, clients)
-    return identifiedCategory
+    return [identifiedCategory, ...identifiedCategories]
   } else {
     const identifiedCategory = {
       id: category.id,
@@ -106,12 +108,9 @@ const saveCategoryTree = async (
       },
       type,
     }
-    await saveCategoryInternal(identifiedCategory, clients)
-    return identifiedCategory
+    return [identifiedCategory, ...identifiedCategories]
   }
-
 }
-
 
 export async function saveInternalCategoryRoute(
   ctx: ColossusEventContext,
@@ -123,7 +122,8 @@ export async function saveInternalCategoryRoute(
   } = ctx
   try {
     const category: Category = ctx.body
-    await saveCategoryTree(category, clients)
+    const identifiedCategories = await saveCategoryTree(category, clients)
+    await saveCategoriesInternal(identifiedCategories, clients)
   } catch (error) {
     logger.error(error)
   }
