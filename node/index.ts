@@ -27,6 +27,7 @@ import { State } from './typings/Colossus'
 const TIMEOUT_MS = 3000
 const TRANSLATION_CONCURRENCY = 5
 const TRANSLATION_RETRIES = 3
+const CONCURRENCY = 10
 
 const tenantCacheStorage = new LRUCache<string, Cached>({
   max: 3000,
@@ -43,6 +44,7 @@ const clients: ClientsConfig<Clients> = {
       memoryCache: appsCacheStorage,
     },
     default: {
+      concurrency: CONCURRENCY,
       retries: 2,
       timeout: TIMEOUT_MS,
     },
