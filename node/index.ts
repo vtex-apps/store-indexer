@@ -8,6 +8,7 @@ import {
   unwrapProductTranslatables,
   unwrapSkuTranslatables,
 } from './events/unwrap'
+import { filter } from './middlewares/filter'
 import { saveInternalBrandRoute } from './middlewares/internals/saveInternalBrandRoute'
 import { saveInternalCategoryRoute } from './middlewares/internals/saveInternalCategoryRoute'
 import { saveInternalProductRoute } from './middlewares/internals/saveInternalProductRoute'
@@ -56,25 +57,29 @@ export default new Service<Clients, State>({
   clients,
   events: {
     broadcasterBrand: [
+      filter,
       tenant,
       saveInternalBrandRoute,
       unwrapBrandTranslatables,
       saveIOMessage,
     ],
     broadcasterCategory: [
+      filter,
       tenant,
       saveInternalCategoryRoute,
       unwrapCategoryTranslatables,
       saveIOMessage,
     ],
     broadcasterProduct: [
+      filter,
       tenant,
       saveInternalProductRoute,
       unwrapProductTranslatables,
       saveIOMessage,
     ],
-    broadcasterSku: [unwrapSkuTranslatables, saveIOMessage],
+    broadcasterSku: [filter, unwrapSkuTranslatables, saveIOMessage],
     searchUrlsCountIndex: [
+      filter,
       settings,
       getSearchStats,
       tenant,
