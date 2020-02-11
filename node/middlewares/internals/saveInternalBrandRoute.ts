@@ -20,6 +20,9 @@ export async function saveInternalBrandRoute(
 ) {
   const {
     clients: { apps, rewriterGraphql },
+    state: {
+      resources: { idUrlIndex },
+    },
     vtex: { logger },
   } = ctx
   try {
@@ -29,7 +32,10 @@ export async function saveInternalBrandRoute(
 
     const internal: InternalInput = getBrandInternal(path, brand.id)
 
-    await rewriterGraphql.saveInternal(internal)
+    await Promise.all([
+      rewriterGraphql.saveInternal(internal),
+      idUrlIndex.save(brand.id, path),
+    ])
   } catch (error) {
     logger.error(error)
   }
