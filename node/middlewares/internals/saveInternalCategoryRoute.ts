@@ -1,5 +1,4 @@
-import { prop } from 'ramda'
-import { Category } from 'vtex.catalog-graphql'
+import { Category } from '@vtex/api/lib/clients/apps/catalogGraphQL/category'
 import { InternalInput } from 'vtex.rewriter'
 
 import { Clients } from '../../clients'
@@ -71,7 +70,7 @@ const saveCategoryTree = async (
 
   const parentCategory = await catalogGraphQL
     .category(parentCategoryId)
-    .then(prop('category'))
+    .then(res => res!.category)
   const identifiedCategories = await saveCategoryTree(parentCategory, clients)
   const { type, params, map } = identifiedCategories[0]
   if (type === 'DEPARTMENT') {

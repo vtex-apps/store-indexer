@@ -1,4 +1,4 @@
-import { Apps } from '@vtex/api'
+import { Apps, Binding, Tenant } from '@vtex/api'
 import RouteParser from 'route-parser'
 import { Maybe, SalesChannel } from 'vtex.catalog-graphql'
 
@@ -18,7 +18,7 @@ export const slugify = (str: string) =>
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
-    .replace(/\s+/g, '-')
+    .replace(/[*+~.()'"!:@&\[\]`,/ %$#?{}|><=_^]/g, '-')
 
 export interface ContentTypeDefinition {
   internal: string
@@ -49,14 +49,14 @@ export const getPath = async (
 }
 
 export const getBindings = (
-  tenantInfo: any,
+  tenantInfo: Tenant | undefined,
   salesChannels: Array<Maybe<SalesChannel>> | null | undefined
 ): string[] => {
   if (!tenantInfo || !salesChannels || salesChannels.length === 0) {
     return ['*']
   }
   const mapSalesChannelToBindingId = tenantInfo.bindings.reduce(
-    (acc: Record<string, string>, { id, extraContext }: any) => {
+    (acc: Record<string, string>, { id, extraContext }: Binding) => {
       const salesChannelId = extraContext.portal?.salesChannel
       if (salesChannelId) {
         acc[salesChannelId] = id
