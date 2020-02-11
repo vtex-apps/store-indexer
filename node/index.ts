@@ -8,7 +8,6 @@ import {
   unwrapProductTranslatables,
   unwrapSkuTranslatables,
 } from './events/unwrap'
-import { filter } from './middlewares/filter'
 import { saveInternalBrandRoute } from './middlewares/internals/saveInternalBrandRoute'
 import { saveInternalCategoryRoute } from './middlewares/internals/saveInternalCategoryRoute'
 import { saveInternalProductRoute } from './middlewares/internals/saveInternalProductRoute'
@@ -17,6 +16,7 @@ import { getSearchStats } from './middlewares/search/getSearchStats'
 import { indexCanonicals } from './middlewares/search/indexCanonicals'
 import { settings } from './middlewares/settings'
 import { tenant } from './middlewares/tenant'
+import { throttle } from './middlewares/throttle'
 import { State } from './typings/Colossus'
 
 const TIMEOUT_MS = 3000
@@ -57,29 +57,29 @@ export default new Service<Clients, State>({
   clients,
   events: {
     broadcasterBrand: [
-      filter,
+      throttle,
       tenant,
       saveInternalBrandRoute,
       unwrapBrandTranslatables,
       saveIOMessage,
     ],
     broadcasterCategory: [
-      filter,
+      throttle,
       tenant,
       saveInternalCategoryRoute,
       unwrapCategoryTranslatables,
       saveIOMessage,
     ],
     broadcasterProduct: [
-      filter,
+      throttle,
       tenant,
       saveInternalProductRoute,
       unwrapProductTranslatables,
       saveIOMessage,
     ],
-    broadcasterSku: [filter, unwrapSkuTranslatables, saveIOMessage],
+    broadcasterSku: [throttle, unwrapSkuTranslatables, saveIOMessage],
     searchUrlsCountIndex: [
-      filter,
+      throttle,
       settings,
       getSearchStats,
       tenant,
