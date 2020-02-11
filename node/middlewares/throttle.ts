@@ -1,10 +1,14 @@
 import { TooManyRequestsError } from '@vtex/api'
 
+import { ColossusEventContext } from '../typings/Colossus'
 
 const MAX_REQUEST = 100
 let COUNTER = 0
 
-export async function filter(_: any, next: () => Promise<any>) {
+export async function throttle(
+  _: ColossusEventContext,
+  next: () => Promise<void>
+) {
   COUNTER++
   try {
     if (COUNTER > MAX_REQUEST) {
