@@ -5,7 +5,7 @@ export async function initialize(
   ctx: ColossusEventContext,
   next: () => Promise<any>
 ) {
-  ctx.resources = new Resources(ctx)
+  ctx.state.resources = new Resources(ctx)
 
   await next()
 }

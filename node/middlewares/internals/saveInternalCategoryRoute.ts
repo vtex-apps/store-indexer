@@ -39,7 +39,9 @@ const saveCategoriesInternal = async (
 ) => {
   const {
     clients: { rewriterGraphql, apps },
-    resources: { idUrlIndex },
+    state: {
+      resources: { idUrlIndex },
+    },
   } = ctx
   const internals = await Promise.all(
     identifiedCategories.map(async identifiedCategory => {

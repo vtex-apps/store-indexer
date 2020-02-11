@@ -20,7 +20,9 @@ export async function saveInternalBrandRoute(
 ) {
   const {
     clients: { apps, rewriterGraphql },
-    resources: { idUrlIndex },
+    state: {
+      resources: { idUrlIndex },
+    },
     vtex: { logger },
   } = ctx
   try {

@@ -29,7 +29,9 @@ export async function saveInternalProductRoute(
 ) {
   const {
     clients: { apps, rewriterGraphql },
-    resources: { idUrlIndex },
+    state: {
+      resources: { idUrlIndex },
+    },
     vtex: { logger },
   } = ctx
   try {

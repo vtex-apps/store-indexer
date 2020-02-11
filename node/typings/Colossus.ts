@@ -10,10 +10,10 @@ export interface ColossusEventContext extends EventContext<Clients, State> {
   body: any
   clients: Clients
   state: State
-  resources: Resources
 }
 
 export interface State extends RecorderState {
+  resources: Resources
   tStringsByGroupContext: Array<[string, string[]]>
   searchURLs: Array<{ path: string; canonicalPath?: string }>
   settings: Settings
