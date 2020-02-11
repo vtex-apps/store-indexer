@@ -16,6 +16,7 @@ import { getSearchStats } from './middlewares/search/getSearchStats'
 import { indexCanonicals } from './middlewares/search/indexCanonicals'
 import { settings } from './middlewares/settings'
 import { tenant } from './middlewares/tenant'
+import { throttle } from './middlewares/throttle'
 import { State } from './typings/Colossus'
 
 const TIMEOUT_MS = 3000
@@ -56,25 +57,29 @@ export default new Service<Clients, State>({
   clients,
   events: {
     broadcasterBrand: [
+      throttle,
       tenant,
       saveInternalBrandRoute,
       unwrapBrandTranslatables,
       saveIOMessage,
     ],
     broadcasterCategory: [
+      throttle,
       tenant,
       saveInternalCategoryRoute,
       unwrapCategoryTranslatables,
       saveIOMessage,
     ],
     broadcasterProduct: [
+      throttle,
       tenant,
       saveInternalProductRoute,
       unwrapProductTranslatables,
       saveIOMessage,
     ],
-    broadcasterSku: [unwrapSkuTranslatables, saveIOMessage],
+    broadcasterSku: [throttle, unwrapSkuTranslatables, saveIOMessage],
     searchUrlsCountIndex: [
+      throttle,
       settings,
       getSearchStats,
       tenant,
