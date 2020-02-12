@@ -5,6 +5,7 @@ import { ColossusEventContext } from '../../typings/Colossus'
 import {
   getPath,
   INDEXED_ORIGIN,
+  OneMonthFromNowMS,
   PAGE_TYPES,
   slugify,
   STORE_LOCATOR,
@@ -23,10 +24,10 @@ const getBrandInternal = (path: string, id: string): InternalInput => ({
 
 const getBrandNotFoundInternal = (path: string): InternalInput => ({
   declarer: STORE_LOCATOR,
+  endDate: OneMonthFromNowMS(),
   from: path,
   id: 'brand',
   type: PAGE_TYPES.SEARCH_NOT_FOUND,
-  // endDate:  ONE MONTH???
 })
 
 export async function saveInternalBrandRoute(
