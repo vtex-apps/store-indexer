@@ -47,6 +47,7 @@ const getNotFoundInternal = (path: string): InternalInput => ({
   endDate: OneMonthFromNowMS(),
   from: path,
   id: 'category',
+  origin: INDEXED_ORIGIN,
   type: PAGE_TYPES.SEARCH_NOT_FOUND,
 })
 

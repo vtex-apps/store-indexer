@@ -27,6 +27,7 @@ const getBrandNotFoundInternal = (path: string): InternalInput => ({
   endDate: OneMonthFromNowMS(),
   from: path,
   id: 'brand',
+  origin: INDEXED_ORIGIN,
   type: PAGE_TYPES.SEARCH_NOT_FOUND,
 })
 
