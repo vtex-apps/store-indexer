@@ -2,7 +2,13 @@ import { Category } from '@vtex/api/lib/clients/apps/catalogGraphQL/category'
 import { InternalInput } from 'vtex.rewriter'
 
 import { ColossusEventContext } from '../../typings/Colossus'
-import { getPath, PAGE_TYPES, slugify, STORE_LOCATOR } from './utils'
+import {
+  getPath,
+  INDEXED_ORIGIN,
+  PAGE_TYPES,
+  slugify,
+  STORE_LOCATOR,
+} from './utils'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
@@ -27,6 +33,7 @@ const getInternal = (
   declarer: STORE_LOCATOR,
   from: path,
   id,
+  origin: INDEXED_ORIGIN,
   query: {
     map,
   },
