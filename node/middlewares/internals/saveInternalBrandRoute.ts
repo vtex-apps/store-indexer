@@ -21,6 +21,14 @@ const getBrandInternal = (path: string, id: string): InternalInput => ({
   type: PAGE_TYPES.BRAND,
 })
 
+const getBrandNotFoundInternal = (path: string): InternalInput => ({
+  declarer: STORE_LOCATOR,
+  from: path,
+  id: 'brand',
+  type: PAGE_TYPES.SEARCH_NOT_FOUND,
+  // endDate:  ONE MONTH???
+})
+
 export async function saveInternalBrandRoute(
   ctx: ColossusEventContext,
   next: () => Promise<any>
@@ -37,7 +45,9 @@ export async function saveInternalBrandRoute(
     const brandName = slugify(brand.name)
     const path = await getPath(PAGE_TYPES.BRAND, { brand: brandName }, apps)
 
-    const internal: InternalInput = getBrandInternal(path, brand.id)
+    const internal: InternalInput = brand.active
+      ? getBrandInternal(path, brand.id)
+      : getBrandNotFoundInternal(path)
 
     await Promise.all([
       rewriterGraphql.saveInternal(internal),

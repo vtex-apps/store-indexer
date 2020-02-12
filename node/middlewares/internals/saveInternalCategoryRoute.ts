@@ -22,6 +22,7 @@ interface IdentifiedCategory {
     subcategory?: string
     terms?: string
   }
+  isActive: boolean
 }
 
 const getInternal = (
@@ -40,6 +41,13 @@ const getInternal = (
   type: PAGE_TYPES[type],
 })
 
+const getNotFoundInternal = (path: string): InternalInput => ({
+  declarer: STORE_LOCATOR,
+  from: path,
+  id: 'category',
+  type: PAGE_TYPES.SEARCH_NOT_FOUND,
+})
+
 const saveCategoriesInternal = async (
   identifiedCategories: IdentifiedCategory[],
   ctx: ColossusEventContext
@@ -52,10 +60,12 @@ const saveCategoriesInternal = async (
   } = ctx
   const internals = await Promise.all(
     identifiedCategories.map(async identifiedCategory => {
-      const { type, params, id, map } = identifiedCategory
+      const { type, params, id, map, isActive } = identifiedCategory
       const path = await getPath(PAGE_TYPES[type], params, apps)
       await idUrlIndex.save(id, path)
-      return getInternal(path, type, id, map)
+      return isActive
+        ? getInternal(path, type, id, map)
+        : getNotFoundInternal(path)
     })
   )
 
@@ -71,6 +81,7 @@ const saveCategoryTree = async (
   if (!parentCategoryId) {
     const identifiedCategory = {
       id: category.id,
+      isActive: category.isActive,
       map: 'c',
       params: {
         department: slugify(name!),
@@ -88,6 +99,7 @@ const saveCategoryTree = async (
   if (type === 'DEPARTMENT') {
     const identifiedCategory = {
       id: category.id,
+      isActive: category.isActive,
       map: `${map},c`,
       params: {
         ...params,
@@ -99,6 +111,7 @@ const saveCategoryTree = async (
   } else if (type === 'CATEGORY') {
     const identifiedCategory = {
       id: category.id,
+      isActive: category.isActive,
       map: `${map},c`,
       params: {
         ...params,
@@ -110,6 +123,7 @@ const saveCategoryTree = async (
   } else {
     const identifiedCategory = {
       id: category.id,
+      isActive: category.isActive,
       map: `${map},c`,
       params: {
         ...params,
