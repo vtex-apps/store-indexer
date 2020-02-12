@@ -5,7 +5,7 @@ import { contentFromString, contextFromString } from '../utils/IOMessage'
 
 export async function saveIOMessage(
   ctx: ColossusEventContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   const {
     clients: { segment, messagesGraphQL },

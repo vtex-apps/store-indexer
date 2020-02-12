@@ -2,7 +2,7 @@ import { ColossusEventContext } from '../../typings/Colossus'
 
 export async function getSearchStats(
   ctx: ColossusEventContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   const {
     clients: { searchGraphql },

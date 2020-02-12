@@ -72,7 +72,7 @@ const toInternalURL = async (
 
 export async function indexCanonicals(
   ctx: ColossusEventContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   const {
     clients: { rewriterGraphql, catalog },

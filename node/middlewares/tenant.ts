@@ -31,7 +31,7 @@ const getTenant = (clients: Clients) =>
 
 export async function tenant(
   ctx: ColossusEventContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   const tenantInfo = await getTenant(ctx.clients)
   ctx.state.tenantInfo = tenantInfo

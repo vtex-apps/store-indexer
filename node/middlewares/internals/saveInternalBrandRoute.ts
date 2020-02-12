@@ -31,7 +31,7 @@ const getBrandNotFoundInternal = (path: string): InternalInput => ({
 
 export async function saveInternalBrandRoute(
   ctx: ColossusEventContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   const {
     clients: { apps, rewriterGraphql },

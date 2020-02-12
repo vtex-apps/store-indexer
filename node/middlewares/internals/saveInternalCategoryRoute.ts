@@ -139,7 +139,7 @@ const saveCategoryTree = async (
 
 export async function saveInternalCategoryRoute(
   ctx: ColossusEventContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   const {
     vtex: { logger },

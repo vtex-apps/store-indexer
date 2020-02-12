@@ -21,7 +21,7 @@ const enrichSegmentName = async (
 
 export async function createCanonicals(
   ctx: ColossusEventContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   const {
     clients: { catalog: catalog },
