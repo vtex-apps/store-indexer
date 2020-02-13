@@ -2,11 +2,12 @@ import { VBase } from '@vtex/api'
 import { RedirectInput, RedirectTypes } from 'vtex.rewriter'
 
 import { RewriterGraphql } from '../clients/rewriterGraphql'
+import { OneYearFromNow } from '../utils/dates'
 
 const INDEX = 'INDEX'
 const REVERSE_INDEX = 'ID_TO_URL'
 
-const tenMinutesFromNowMS = () => `${new Date(Date.now() + 10 * 60 * 1000)}`
+const REDIRECT_ORIGIN = 'vtex.store-indexer@0.x:redirect'
 
 const toReverseIndexKey = (id: string, bindings: string[]) =>
   `${id}__${bindings.join('_')}`
@@ -35,8 +36,9 @@ export class IdUrlIndex {
       if (canonicalId !== id) {
         const redirect: RedirectInput = {
           bindings,
-          endDate: tenMinutesFromNowMS(),
+          endDate: OneYearFromNow(),
           from: canonical,
+          origin: REDIRECT_ORIGIN,
           to: url,
           type: RedirectTypes.Temporary,
         }
