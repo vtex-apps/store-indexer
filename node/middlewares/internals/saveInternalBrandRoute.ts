@@ -5,7 +5,6 @@ import { ColossusEventContext } from '../../typings/Colossus'
 import {
   getPath,
   INDEXED_ORIGIN,
-  OneMonthFromNowMS,
   PAGE_TYPES,
   slugify,
   STORE_LOCATOR,
@@ -24,7 +23,6 @@ const getBrandInternal = (path: string, id: string): InternalInput => ({
 
 const getBrandNotFoundInternal = (path: string): InternalInput => ({
   declarer: STORE_LOCATOR,
-  endDate: OneMonthFromNowMS(),
   from: path,
   id: 'brand',
   origin: INDEXED_ORIGIN,
