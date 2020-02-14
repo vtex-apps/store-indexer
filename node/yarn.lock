@@ -1497,7 +1497,7 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
-"stats-lite@github:vtex/node-stats-lite#dist":
+stats-lite@vtex/node-stats-lite#dist:
   version "2.2.0"
   resolved "https://codeload.github.com/vtex/node-stats-lite/tar.gz/1b0d39cc41ef7aaecfd541191f877887a2044797"
   dependencies:
@@ -1751,9 +1751,9 @@ vary@^1.1.2:
   version "1.49.0"
   resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.messages@1.49.0/public/@types/vtex.messages#68744aa5e153daf66dcebea9219a67e39d5e2e14"
 
-"vtex.rewriter@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.rewriter@1.22.5/public/@types/vtex.rewriter":
-  version "1.22.5"
-  resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.rewriter@1.22.5/public/@types/vtex.rewriter#aaac539595b4b0251b51256534235e46de3d9eba"
+"vtex.rewriter@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.rewriter@1.27.2/public/@types/vtex.rewriter":
+  version "1.27.2"
+  resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.rewriter@1.27.2/public/@types/vtex.rewriter#a50e997a7bc44dd0e623a5b4081d56c749742de0"
 
 "vtex.search-graphql@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.search-graphql@0.14.0/public/@types/vtex.search-graphql":
   version "0.14.0"
