@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Saves inavtive categories and brands as notFound
+- Saves inactive categories and brands as notFound
 
 ## [0.8.1] - 2020-02-14
 ### Fixed
