@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Set default indexed canonical searches to 0
+- Fix pageType resolution
 
 ## [0.8.1] - 2020-02-14
 ### Fixed
