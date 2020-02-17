@@ -5,6 +5,7 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { Catalog, CatalogPageTypeResponse } from '../../clients/catalog'
 import { ColossusEventContext } from '../../typings/Colossus'
+import { PAGE_TYPES, PAGE_TYPE_TO_STORE_ENTITIES } from '../internals/utils'
 
 const BUCKET_SIZE = 100
 const DAYS_TO_EXPIRE = 7
@@ -58,6 +59,11 @@ const toInternalURL = async (
   const [path, query] = uri.split('?')
   const parsedQuery = querystring.parse(query)
   const { pageType } = await getPageType(path, `?${query}`, catalog)
+  const type = PAGE_TYPE_TO_STORE_ENTITIES[pageType]
+
+  if(!type){
+    return 
+  }
 
   return {
     declarer: 'vtex.store@2.x',
@@ -66,7 +72,7 @@ const toInternalURL = async (
     id: 'search',
     query: parsedQuery,
     resolveAs: path,
-    type: pageType.toLowerCase(),
+    type,
   }
 }
 
@@ -82,7 +88,7 @@ export async function indexCanonicals(
   const endDate = new Date()
   endDate.setDate(endDate.getDate() + DAYS_TO_EXPIRE)
   for (const URLsBucket of buckets) {
-    const internals = await Promise.all(
+    const internals = (await Promise.all(
       URLsBucket.map<Promise<InternalInput>>(url =>
         toInternalURL(
           url.path,
@@ -91,7 +97,7 @@ export async function indexCanonicals(
           catalog
         )
       )
-    )
+    )).filter(internal => internal)
     await rewriterGraphql.saveManyInternals(internals)
   }
   await next()
