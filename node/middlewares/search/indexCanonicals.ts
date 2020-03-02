@@ -5,7 +5,7 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { Catalog, CatalogPageTypeResponse } from '../../clients/catalog'
 import { ColossusEventContext } from '../../typings/Colossus'
-import { PAGE_TYPE_TO_STORE_ENTITIES, INDEXED_ORIGIN, STORE_LOCATOR } from '../internals/utils'
+import { INDEXED_ORIGIN, PAGE_TYPE_TO_STORE_ENTITIES, STORE_LOCATOR } from '../internals/utils'
 
 const BUCKET_SIZE = 100
 const DAYS_TO_EXPIRE = 7
