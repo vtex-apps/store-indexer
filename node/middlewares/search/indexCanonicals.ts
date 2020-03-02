@@ -5,6 +5,7 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { Catalog, CatalogPageTypeResponse } from '../../clients/catalog'
 import { ColossusEventContext } from '../../typings/Colossus'
+import { INDEXED_ORIGIN, PAGE_TYPE_TO_STORE_ENTITIES, STORE_LOCATOR } from '../internals/utils'
 
 const BUCKET_SIZE = 100
 const DAYS_TO_EXPIRE = 7
@@ -54,19 +55,25 @@ const toInternalURL = async (
   canonicalPath: string,
   endDate: string,
   catalog: Catalog
-) => {
+): Promise<InternalInput | null> => {
   const [path, query] = uri.split('?')
   const parsedQuery = querystring.parse(query)
   const { pageType } = await getPageType(path, `?${query}`, catalog)
+  const type = PAGE_TYPE_TO_STORE_ENTITIES[pageType]
+
+  if(!type){
+    return null
+  }
 
   return {
-    declarer: 'vtex.store@2.x',
+    declarer: STORE_LOCATOR,
     endDate,
     from: canonicalPath,
     id: 'search',
+    origin: INDEXED_ORIGIN,
     query: parsedQuery,
     resolveAs: path,
-    type: pageType.toLowerCase(),
+    type,
   }
 }
 
@@ -83,7 +90,7 @@ export async function indexCanonicals(
   endDate.setDate(endDate.getDate() + DAYS_TO_EXPIRE)
   for (const URLsBucket of buckets) {
     const internals = await Promise.all(
-      URLsBucket.map<Promise<InternalInput>>(url =>
+      URLsBucket.map<Promise<InternalInput| null>>(url =>
         toInternalURL(
           url.path,
           url.canonicalPath!,
@@ -92,7 +99,9 @@ export async function indexCanonicals(
         )
       )
     )
-    await rewriterGraphql.saveManyInternals(internals)
+    await rewriterGraphql.saveManyInternals(
+      internals.filter(internal => internal !== null) as InternalInput[]
+    )
   }
   await next()
 }

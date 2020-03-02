@@ -7,7 +7,7 @@ export interface Settings {
 export const APP_ID = process.env.VTEX_APP_ID!
 
 export const DEFAULT_SETTINGS: Settings = {
-  numberOfIndexedSearches: 500,
+  numberOfIndexedSearches: 0,
 }
 
 export async function settings(ctx: ColossusEventContext, next: () => Promise<any>) {

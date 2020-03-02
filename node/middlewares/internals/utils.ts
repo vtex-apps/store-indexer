@@ -5,6 +5,18 @@ import { Maybe, SalesChannel } from 'vtex.catalog-graphql'
 export const INDEXED_ORIGIN = 'vtex.store-indexer@0.x:routes-indexing'
 export const STORE_LOCATOR = 'vtex.store@2.x'
 export const ROUTES_JSON_PATH = 'dist/vtex.store-indexer/build.json'
+
+export const PAGE_TYPE_TO_STORE_ENTITIES = {
+  'Brand': 'brand',
+  'Category': 'category',
+  'Department': 'department',
+  'FullText': null,
+  'NotFound': null,
+  'Product': 'product',
+  'Search': null,
+  'SubCategory': 'subcategory',
+}
+
 export const PAGE_TYPES = {
   BRAND: 'brand',
   CATEGORY: 'category',
