@@ -5,7 +5,7 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { Catalog, CatalogPageTypeResponse } from '../../clients/catalog'
 import { ColossusEventContext } from '../../typings/Colossus'
-import { PAGE_TYPE_TO_STORE_ENTITIES } from '../internals/utils'
+import { PAGE_TYPE_TO_STORE_ENTITIES, INDEXED_ORIGIN } from '../internals/utils'
 
 const BUCKET_SIZE = 100
 const DAYS_TO_EXPIRE = 7
@@ -70,6 +70,7 @@ const toInternalURL = async (
     endDate,
     from: canonicalPath,
     id: 'search',
+    origin: INDEXED_ORIGIN,
     query: parsedQuery,
     resolveAs: path,
     type,
