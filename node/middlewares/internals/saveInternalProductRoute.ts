@@ -33,7 +33,7 @@ const getProductNotFoundInternal = (path: string): InternalInput => ({
 
 export async function saveInternalProductRoute(
   ctx: ColossusEventContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   const {
     clients: { apps, rewriterGraphql },

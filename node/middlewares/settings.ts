@@ -10,7 +10,10 @@ export const DEFAULT_SETTINGS: Settings = {
   numberOfIndexedSearches: 0,
 }
 
-export async function settings(ctx: ColossusEventContext, next: () => Promise<any>) {
+export async function settings(
+  ctx: ColossusEventContext,
+  next: () => Promise<void>
+) {
   const {
     clients: { apps },
   } = ctx

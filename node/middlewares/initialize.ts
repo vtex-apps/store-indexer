@@ -3,7 +3,7 @@ import { ColossusEventContext } from '../typings/Colossus'
 
 export async function initialize(
   ctx: ColossusEventContext,
-  next: () => Promise<any>
+  next: () => Promise<void>
 ) {
   ctx.state.resources = new Resources(ctx)
 
