@@ -10,12 +10,11 @@
     "@types/node": "^12.12.17",
     "@types/ramda": "^0.26.38",
     "@types/route-parser": "^0.1.3",
-    "@vtex/api": "6.13.1",
+    "@vtex/api": "6.17.0",
     "tslint": "^5.14.0",
     "tslint-config-vtex": "^2.1.0",
     "typescript": "3.7.3",
     "vtex.catalog-api-proxy": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-api-proxy@0.6.0/public/_types/react",
-    "vtex.catalog-graphql": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-graphql@1.58.2/public/@types/vtex.catalog-graphql",
     "vtex.messages": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.messages@1.49.0/public/@types/vtex.messages",
     "vtex.rewriter": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.rewriter@1.27.2/public/@types/vtex.rewriter",
     "vtex.search-graphql": "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.search-graphql@0.14.0/public/@types/vtex.search-graphql"

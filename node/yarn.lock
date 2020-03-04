@@ -148,10 +148,10 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
-"@vtex/api@6.13.1":
-  version "6.13.1"
-  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.13.1.tgz#2dc7c00e492d3c474667c5fd09dfeb4d4a79fc61"
-  integrity sha512-ZDlH2+297CPIryIomkjMlzinGu7y77g8fQIkkV0jsikNPYhy/QxDpG3eA7wBsxU40meQG6Lb9Rnu/O5wsl3Thw==
+"@vtex/api@6.17.0":
+  version "6.17.0"
+  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.17.0.tgz#4498bb1e7a51936fee22d681b5ce47c489cabda0"
+  integrity sha512-CFBkmMbnYGR9RCQoGwTM2mduj/MNXbg/CCzeojAOqepoPE4olNh0mG3X/L25YgJjXrw8d2hyrqrOF2JlE7JhQQ==
   dependencies:
     "@types/koa" "^2.11.0"
     "@types/koa-compose" "^3.2.3"
@@ -1742,10 +1742,6 @@ vary@^1.1.2:
 "vtex.catalog-api-proxy@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-api-proxy@0.6.0/public/_types/react":
   version "0.0.0"
   resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-api-proxy@0.6.0/public/_types/react#fa7a0347e046eab3dd768998fc9252b2c0dd5aef"
-
-"vtex.catalog-graphql@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-graphql@1.58.2/public/@types/vtex.catalog-graphql":
-  version "1.58.2"
-  resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-graphql@1.58.2/public/@types/vtex.catalog-graphql#31d7adf53222bccc30fafda5a04a83a3a0f75dc9"
 
 "vtex.messages@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.messages@1.49.0/public/@types/vtex.messages":
   version "1.49.0"

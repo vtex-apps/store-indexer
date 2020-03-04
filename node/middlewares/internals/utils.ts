@@ -65,25 +65,25 @@ export const getPath = async (
 export const getBindings = (
   tenantInfo: Tenant | undefined,
   salesChannels: Array<Maybe<SalesChannel>> | null | undefined
-): string[] => {
+): Binding[] | null => {
   if (!tenantInfo || !salesChannels || salesChannels.length === 0) {
-    return ['*']
+    return null
   }
   const mapSalesChannelToBindingId = tenantInfo.bindings.reduce(
-    (acc: Record<string, string>, { id, extraContext }: Binding) => {
-      const salesChannelId = extraContext.portal?.salesChannel
+    (acc: Record<string, Binding>, binding: Binding) => {
+      const salesChannelId = binding.extraContext.portal?.salesChannel
       if (salesChannelId) {
-        acc[salesChannelId] = id
+        acc[salesChannelId] = binding
       }
       return acc
     },
-    {} as Record<string, string>
+    {} as Record<string, Binding>
   )
 
   return salesChannels.reduce((acc, salesChannel) => {
-    if (salesChannel) {
+    if (salesChannel && mapSalesChannelToBindingId[salesChannel.id]) {
       acc.push(mapSalesChannelToBindingId[salesChannel.id])
     }
     return acc
-  }, [] as string[])
+  }, [] as Binding[])
 }
