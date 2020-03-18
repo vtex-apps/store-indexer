@@ -7,19 +7,19 @@
   "workers": 1,
   "events": {
     "broadcasterSku": {
-      "sender": "vtex.broadcaster",
+      "sender": "vtex.broadcaster-worker",
       "keys": ["broadcaster.sku"]
     },
     "broadcasterProduct": {
-      "sender": "vtex.broadcaster",
+      "sender": "vtex.broadcaster-worker",
       "keys": ["broadcaster.product"]
     },
     "broadcasterBrand": {
-      "sender": "vtex.broadcaster",
+      "sender": "vtex.broadcaster-worker",
       "keys": ["broadcaster.brand"]
     },
     "broadcasterCategory": {
-      "sender": "vtex.broadcaster",
+      "sender": "vtex.broadcaster-worker",
       "keys": ["broadcaster.category"]
     },
     "searchUrlsCountIndex": {
