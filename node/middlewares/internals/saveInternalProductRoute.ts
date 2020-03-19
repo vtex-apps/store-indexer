@@ -48,9 +48,10 @@ export async function saveInternalProductRoute(
     const path = await getPath(PAGE_TYPES.PRODUCT, { slug }, apps)
     const bindings = getBindings(ctx.state.tenantInfo, product.salesChannel)
 
-    const internal: InternalInput = product.isActive
-      ? getProductInternal(path, product.id, bindings)
-      : getProductNotFoundInternal(path)
+    const internal: InternalInput =
+      product.isActive && bindings.length
+        ? getProductInternal(path, product.id, bindings)
+        : getProductNotFoundInternal(path)
 
     await Promise.all([
       rewriterGraphql.saveInternal(internal),
