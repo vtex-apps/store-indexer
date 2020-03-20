@@ -6,10 +6,6 @@
   "maxReplicas": 4,
   "workers": 1,
   "events": {
-    "broadcasterSku": {
-      "sender": "vtex.broadcaster-worker",
-      "keys": ["broadcaster.sku"]
-    },
     "broadcasterProduct": {
       "sender": "vtex.broadcaster-worker",
       "keys": ["broadcaster.product"]
