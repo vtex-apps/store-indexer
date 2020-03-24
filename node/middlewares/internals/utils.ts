@@ -7,14 +7,14 @@ export const STORE_LOCATOR = 'vtex.store@2.x'
 export const ROUTES_JSON_PATH = 'dist/vtex.store-indexer/build.json'
 
 export const PAGE_TYPE_TO_STORE_ENTITIES = {
-  'Brand': 'brand',
-  'Category': 'category',
-  'Department': 'department',
-  'FullText': null,
-  'NotFound': null,
-  'Product': 'product',
-  'Search': null,
-  'SubCategory': 'subcategory',
+  Brand: 'brand',
+  Category: 'category',
+  Department: 'department',
+  FullText: null,
+  NotFound: null,
+  Product: 'product',
+  Search: null,
+  SubCategory: 'subcategory',
 }
 
 export const PAGE_TYPES = {
@@ -81,8 +81,10 @@ export const getBindings = (
   )
 
   return salesChannels.reduce((acc, salesChannel) => {
-    if (salesChannel) {
-      acc.push(mapSalesChannelToBindingId[salesChannel.id])
+    const bindingId =
+      salesChannel && mapSalesChannelToBindingId[salesChannel.id]
+    if (bindingId) {
+      acc.push(bindingId)
     }
     return acc
   }, [] as string[])

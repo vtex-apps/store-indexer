@@ -2,7 +2,7 @@ import { TooManyRequestsError } from '@vtex/api'
 
 import { ColossusEventContext } from '../typings/Colossus'
 
-const MAX_REQUEST = 100
+const MAX_REQUEST = 10
 let COUNTER = 0
 
 export async function throttle(
