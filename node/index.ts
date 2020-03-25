@@ -7,13 +7,6 @@ import {
 } from '@vtex/api'
 
 import { Clients } from './clients'
-import { saveIOMessage } from './events/saveIOMessage'
-import {
-  unwrapBrandTranslatables,
-  unwrapCategoryTranslatables,
-  unwrapProductTranslatables,
-  unwrapSkuTranslatables,
-} from './events/unwrap'
 import { initialize } from './middlewares/initialize'
 import { saveInternalBrandRoute } from './middlewares/internals/saveInternalBrandRoute'
 import { saveInternalCategoryRoute } from './middlewares/internals/saveInternalCategoryRoute'
@@ -68,31 +61,19 @@ const clients: ClientsConfig<Clients> = {
 export default new Service<Clients, State, ParamsContext>({
   clients,
   events: {
-    broadcasterBrand: [
-      throttle,
-      initialize,
-      tenant,
-      saveInternalBrandRoute,
-      unwrapBrandTranslatables,
-      saveIOMessage,
-    ],
+    broadcasterBrand: [throttle, initialize, tenant, saveInternalBrandRoute],
     broadcasterCategory: [
       throttle,
       initialize,
       tenant,
       saveInternalCategoryRoute,
-      unwrapCategoryTranslatables,
-      saveIOMessage,
     ],
     broadcasterProduct: [
       throttle,
       initialize,
       tenant,
       saveInternalProductRoute,
-      unwrapProductTranslatables,
-      saveIOMessage,
     ],
-    broadcasterSku: [throttle, unwrapSkuTranslatables, saveIOMessage],
     searchUrlsCountIndex: [
       throttle,
       settings,
