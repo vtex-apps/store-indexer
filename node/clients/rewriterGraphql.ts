@@ -57,7 +57,7 @@ export class RewriterGraphql extends AppGraphQLClient {
 
   public async saveInternal(internal: InternalInput) {
     const { tenant, locale } = this.context
-    this.graphql.mutate<boolean, { route: InternalInput }>(
+    return this.graphql.mutate<boolean, { route: InternalInput }>(
       {
         mutate: rewriterSaveInternalMutation,
         variables: { route: internal },
@@ -96,7 +96,7 @@ export class RewriterGraphql extends AppGraphQLClient {
   public async getInternal(path: string) {
     const { tenant, locale } = this.context
     return this.graphql
-      .query<Internal, { path: string }>(
+      .query<{ internal: { get: Internal } }, { path: string }>(
         {
           query: rewriterGetInternal,
           variables: { path },
@@ -111,6 +111,6 @@ export class RewriterGraphql extends AppGraphQLClient {
           metric: 'rewriter-get-internal',
         }
       )
-      .then(res => res.data)
+      .then(res => res.data?.internal.get)
   }
 }
