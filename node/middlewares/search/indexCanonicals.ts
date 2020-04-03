@@ -1,11 +1,16 @@
+/* eslint-disable no-await-in-loop */
 import * as querystring from 'querystring'
 
 import { includes, propEq, splitAt, splitEvery } from 'ramda'
 import { InternalInput } from 'vtex.rewriter'
 
 import { Catalog, CatalogPageTypeResponse } from '../../clients/catalog'
-import { ColossusEventContext } from '../../typings/Colossus'
-import { INDEXED_ORIGIN, PAGE_TYPE_TO_STORE_ENTITIES, STORE_LOCATOR } from '../internals/utils'
+import { Context } from '../../typings/global'
+import {
+  INDEXED_ORIGIN,
+  PAGE_TYPE_TO_STORE_ENTITIES,
+  STORE_LOCATOR,
+} from '../internals/utils'
 
 const BUCKET_SIZE = 100
 const DAYS_TO_EXPIRE = 7
@@ -45,7 +50,7 @@ const getPageType = async (path: string, search: string, catalog: Catalog) => {
     })
   )
   const pageTypeResponse =
-    responses.find(response => !propEq('pageType', 'NotFound')(response)) ||
+    responses.find(response => !propEq('pageType', 'NotFound')(response)) ??
     ({} as CatalogPageTypeResponse)
   return handleResponse(pageTypeResponse, path)
 }
@@ -61,7 +66,7 @@ const toInternalURL = async (
   const { pageType } = await getPageType(path, `?${query}`, catalog)
   const type = PAGE_TYPE_TO_STORE_ENTITIES[pageType]
 
-  if(!type){
+  if (!type) {
     return null
   }
 
@@ -77,10 +82,7 @@ const toInternalURL = async (
   }
 }
 
-export async function indexCanonicals(
-  ctx: ColossusEventContext,
-  next: () => Promise<void>
-) {
+export async function indexCanonicals(ctx: Context, next: () => Promise<void>) {
   const {
     clients: { rewriterGraphql, catalog },
     state: { searchURLs },
@@ -90,7 +92,7 @@ export async function indexCanonicals(
   endDate.setDate(endDate.getDate() + DAYS_TO_EXPIRE)
   for (const URLsBucket of buckets) {
     const internals = await Promise.all(
-      URLsBucket.map<Promise<InternalInput| null>>(url =>
+      URLsBucket.map<Promise<InternalInput | null>>(url =>
         toInternalURL(
           url.path,
           url.canonicalPath!,

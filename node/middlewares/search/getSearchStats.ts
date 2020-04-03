@@ -1,9 +1,6 @@
-import { ColossusEventContext } from '../../typings/Colossus'
+import { Context } from '../../typings/global'
 
-export async function getSearchStats(
-  ctx: ColossusEventContext,
-  next: () => Promise<void>
-) {
+export async function getSearchStats(ctx: Context, next: () => Promise<void>) {
   const {
     clients: { searchGraphql },
     state: {

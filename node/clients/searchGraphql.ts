@@ -8,7 +8,7 @@ const searchUrlsCountQuery = `query SearchURLsCount($limit: Int){
 
 export class SearchGraphql extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
-    super('vtex.search-graphql', ctx, opts)
+    super('vtex.search-graphql@0.x', ctx, opts)
   }
 
   public async getSearchURLsCount(limit: number) {

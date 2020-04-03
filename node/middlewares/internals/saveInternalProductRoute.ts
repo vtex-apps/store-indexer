@@ -1,7 +1,7 @@
 import { Product } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
-import { ColossusEventContext } from '../../typings/Colossus'
+import { Context } from '../../typings/global'
 import {
   getBindings,
   getPath,
@@ -32,7 +32,7 @@ const getProductNotFoundInternal = (path: string): InternalInput => ({
 })
 
 export async function saveInternalProductRoute(
-  ctx: ColossusEventContext,
+  ctx: Context,
   next: () => Promise<void>
 ) {
   const {
