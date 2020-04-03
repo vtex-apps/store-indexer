@@ -1,5 +1,5 @@
 import { VBase } from '@vtex/api'
-import { RedirectInput, RedirectTypes } from 'vtex.rewriter'
+import { RedirectInput } from 'vtex.rewriter'
 
 import { RewriterGraphql } from '../clients/rewriterGraphql'
 import { OneYearFromNow } from '../utils/dates'
@@ -32,7 +32,7 @@ export class IdUrlIndex {
     if (canonical && canonical !== url) {
       const { id: canonicalId } = (await this.rewriterGraphql.getInternal(
         url
-      )) || { id: null }
+      )) ?? { id: null }
       if (canonicalId !== id) {
         const redirect: RedirectInput = {
           bindings,
@@ -40,7 +40,7 @@ export class IdUrlIndex {
           from: canonical,
           origin: REDIRECT_ORIGIN,
           to: url,
-          type: RedirectTypes.Temporary,
+          type: 'TEMPORARY',
         }
         await this.rewriterGraphql.saveRedirect(redirect)
       }
