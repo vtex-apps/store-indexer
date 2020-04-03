@@ -39,8 +39,8 @@ export interface FieldResponseAPI {
 }
 
 export class Catalog extends AppClient {
-  public constructor(ctx: IOContext, opts?: InstanceOptions) {
-    super('vtex.catalog-api-proxy', ctx, opts)
+  constructor(ctx: IOContext, opts?: InstanceOptions) {
+    super('vtex.catalog-api-proxy@0.x', ctx, opts)
   }
 
   public pageType = (path: string, query?: Record<string, string>) =>
