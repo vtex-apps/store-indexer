@@ -4,13 +4,7 @@ import { Clients } from '../clients'
 import { Settings } from '../middlewares/settings'
 import { Resources } from '../resources'
 
-export interface ColossusEventContext extends EventContext<Clients, State> {
-  key: string
-  sender: string
-  body: any
-  clients: Clients
-  state: State
-}
+export type Context = EventContext<Clients, State>
 
 export interface State extends RecorderState {
   resources: Resources
@@ -20,7 +14,7 @@ export interface State extends RecorderState {
   tenantInfo?: Tenant
 }
 
-export interface ColossusEvent {
+export interface Event {
   appId: string
   key: string
   message: string

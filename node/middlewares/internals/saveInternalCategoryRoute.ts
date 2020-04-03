@@ -1,7 +1,7 @@
 import { Category } from '@vtex/api/lib/clients/apps/catalogGraphQL/category'
 import { InternalInput } from 'vtex.rewriter'
 
-import { ColossusEventContext } from '../../typings/Colossus'
+import { Context } from '../../typings/global'
 import {
   getPath,
   INDEXED_ORIGIN,
@@ -51,7 +51,7 @@ const getNotFoundInternal = (path: string): InternalInput => ({
 
 const saveCategoriesInternal = async (
   identifiedCategories: IdentifiedCategory[],
-  ctx: ColossusEventContext
+  ctx: Context
 ) => {
   const {
     clients: { rewriterGraphql, apps },
@@ -75,7 +75,7 @@ const saveCategoriesInternal = async (
 
 const saveCategoryTree = async (
   category: Category,
-  ctx: ColossusEventContext
+  ctx: Context
 ): Promise<IdentifiedCategory[]> => {
   const { catalogGraphQL } = ctx.clients
   const { parentCategoryId, name } = category
@@ -85,7 +85,7 @@ const saveCategoryTree = async (
       isActive: category.isActive,
       map: 'c',
       params: {
-        department: slugify(name!),
+        department: slugify(name),
       },
       type: 'DEPARTMENT' as CategoryTypes,
     }
@@ -104,42 +104,40 @@ const saveCategoryTree = async (
       map: `${map},c`,
       params: {
         ...params,
-        category: slugify(name!),
+        category: slugify(name),
       },
       type: 'CATEGORY' as CategoryTypes,
     }
     return [identifiedCategory, ...identifiedCategories]
-  } else if (type === 'CATEGORY') {
+  }
+  if (type === 'CATEGORY') {
     const identifiedCategory = {
       id: category.id,
       isActive: category.isActive,
       map: `${map},c`,
       params: {
         ...params,
-        subcategory: slugify(name!),
+        subcategory: slugify(name),
       },
       type: 'SUBCATEGORY' as CategoryTypes,
     }
     return [identifiedCategory, ...identifiedCategories]
-  } else {
-    const identifiedCategory = {
-      id: category.id,
-      isActive: category.isActive,
-      map: `${map},c`,
-      params: {
-        ...params,
-        terms: params.terms
-          ? `${params.terms}${slugify(name!)}`
-          : slugify(name!),
-      },
-      type,
-    }
-    return [identifiedCategory, ...identifiedCategories]
   }
+  const identifiedCategory = {
+    id: category.id,
+    isActive: category.isActive,
+    map: `${map},c`,
+    params: {
+      ...params,
+      terms: params.terms ? `${params.terms}${slugify(name)}` : slugify(name),
+    },
+    type,
+  }
+  return [identifiedCategory, ...identifiedCategories]
 }
 
 export async function saveInternalCategoryRoute(
-  ctx: ColossusEventContext,
+  ctx: Context,
   next: () => Promise<void>
 ) {
   const {

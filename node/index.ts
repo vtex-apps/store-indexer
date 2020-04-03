@@ -17,7 +17,7 @@ import { indexCanonicals } from './middlewares/search/indexCanonicals'
 import { settings } from './middlewares/settings'
 import { tenant } from './middlewares/tenant'
 import { throttle } from './middlewares/throttle'
-import { State } from './typings/Colossus'
+import { State } from './typings/global'
 
 const TIMEOUT_MS = 3000
 const TRANSLATION_CONCURRENCY = 5

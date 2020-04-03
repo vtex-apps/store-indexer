@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { Apps, Binding, Tenant } from '@vtex/api'
 import RouteParser from 'route-parser'
 import { Maybe, SalesChannel } from 'vtex.catalog-graphql'

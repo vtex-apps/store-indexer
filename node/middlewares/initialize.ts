@@ -1,10 +1,7 @@
 import { Resources } from '../resources'
-import { ColossusEventContext } from '../typings/Colossus'
+import { Context } from '../typings/global'
 
-export async function initialize(
-  ctx: ColossusEventContext,
-  next: () => Promise<void>
-) {
+export async function initialize(ctx: Context, next: () => Promise<void>) {
   ctx.state.resources = new Resources(ctx)
 
   await next()

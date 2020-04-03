@@ -1,11 +1,8 @@
-import { ColossusEventContext } from '../typings/global'
+import { Context } from '../typings/global'
 
 const TEN_MINUTES_S = 10 * 60
 
-export async function tenant(
-  ctx: ColossusEventContext,
-  next: () => Promise<void>
-) {
+export async function tenant(ctx: Context, next: () => Promise<void>) {
   const {
     clients: { tenant: tenantClient },
   } = ctx

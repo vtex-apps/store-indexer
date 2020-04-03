@@ -1,4 +1,4 @@
-import { ColossusEventContext } from '../typings/Colossus'
+import { Context } from '../typings/global'
 
 export interface Settings {
   numberOfIndexedSearches: number
@@ -10,10 +10,7 @@ export const DEFAULT_SETTINGS: Settings = {
   numberOfIndexedSearches: 0,
 }
 
-export async function settings(
-  ctx: ColossusEventContext,
-  next: () => Promise<void>
-) {
+export async function settings(ctx: Context, next: () => Promise<void>) {
   const {
     clients: { apps },
   } = ctx

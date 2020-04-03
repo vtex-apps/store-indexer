@@ -1,7 +1,7 @@
 import { Brand } from 'vtex.catalog-graphql'
 import { InternalInput } from 'vtex.rewriter'
 
-import { ColossusEventContext } from '../../typings/Colossus'
+import { Context } from '../../typings/global'
 import {
   getPath,
   INDEXED_ORIGIN,
@@ -30,7 +30,7 @@ const getBrandNotFoundInternal = (path: string): InternalInput => ({
 })
 
 export async function saveInternalBrandRoute(
-  ctx: ColossusEventContext,
+  ctx: Context,
   next: () => Promise<void>
 ) {
   const {

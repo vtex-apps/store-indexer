@@ -1,7 +1,9 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-await-in-loop */
 import { zip } from 'ramda'
 
 import { Catalog } from '../../clients/catalog'
-import { ColossusEventContext } from '../../typings/Colossus'
+import { Context } from '../../typings/global'
 
 const enrichSegmentName = async (
   catalog: Catalog,
@@ -20,11 +22,11 @@ const enrichSegmentName = async (
 }
 
 export async function createCanonicals(
-  ctx: ColossusEventContext,
+  ctx: Context,
   next: () => Promise<void>
 ) {
   const {
-    clients: { catalog: catalog },
+    clients: { catalog },
     state: { searchURLs },
   } = ctx
 
@@ -42,8 +44,10 @@ export async function createCanonicals(
       )
     }
 
-    searchURL.canonicalPath = `/${enrichedPathSegments.join('/')}`
-      .replace(/\s/g, '-')
+    searchURL.canonicalPath = `/${enrichedPathSegments.join('/')}`.replace(
+      /\s/g,
+      '-'
+    )
   }
 
   await next()
