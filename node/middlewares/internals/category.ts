@@ -1,8 +1,10 @@
+import { Apps } from '@vtex/api'
 import { Category } from '@vtex/api/lib/clients/apps/catalogGraphQL/category'
 import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
 import {
+  filterBindings,
   getPath,
   INDEXED_ORIGIN,
   PAGE_TYPES,
@@ -25,29 +27,37 @@ interface IdentifiedCategory {
   isActive: boolean
 }
 
-const getInternal = (
+const getInternals = (
   path: string,
   type: CategoryTypes,
   id: string,
-  map: string
-): InternalInput => ({
-  declarer: STORE_LOCATOR,
-  from: path,
-  id,
-  origin: INDEXED_ORIGIN,
-  query: {
-    map,
-  },
-  type: PAGE_TYPES[type],
-})
+  map: string,
+  bindings: string[]
+): InternalInput[] =>
+  bindings.map(binding => ({
+    binding,
+    declarer: STORE_LOCATOR,
+    from: path,
+    id,
+    origin: INDEXED_ORIGIN,
+    query: {
+      map,
+    },
+    type: PAGE_TYPES[type],
+  }))
 
-const getNotFoundInternal = (path: string): InternalInput => ({
-  declarer: STORE_LOCATOR,
-  from: path,
-  id: 'category',
-  origin: INDEXED_ORIGIN,
-  type: PAGE_TYPES.SEARCH_NOT_FOUND,
-})
+const getNotFoundInternals = (
+  path: string,
+  bindings: string[]
+): InternalInput[] =>
+  bindings.map(binding => ({
+    binding,
+    declarer: STORE_LOCATOR,
+    from: path,
+    id: 'category',
+    origin: INDEXED_ORIGIN,
+    type: PAGE_TYPES.SEARCH_NOT_FOUND,
+  }))
 
 const internalsFromCategoryTree = async (
   category: Category,
@@ -118,6 +128,21 @@ const internalsFromCategoryTree = async (
   return [identifiedCategory, ...identifiedCategories]
 }
 
+const addPathToCategoryTreeInternals = (
+  apps: Apps,
+  categories: IdentifiedCategory[]
+) =>
+  Promise.all(
+    categories.map(async category => {
+      const { type, params } = category
+      const path = await getPath(PAGE_TYPES[type], params, apps)
+      return {
+        ...category,
+        path,
+      }
+    })
+  )
+
 export async function categoryInternals(
   ctx: Context,
   next: () => Promise<void>
@@ -128,17 +153,19 @@ export async function categoryInternals(
     state,
   } = ctx
   try {
+    const bindings = filterBindings(ctx.state.tenantInfo, null)
     const category: Category = ctx.body
     const categoryTreeInternals = await internalsFromCategoryTree(category, ctx)
+    const categoryTreeInternalsWithPath = await addPathToCategoryTreeInternals(
+      apps,
+      categoryTreeInternals
+    )
 
-    const internals = await Promise.all(
-      categoryTreeInternals.map(async identifiedCategory => {
-        const { type, params, id, map, isActive } = identifiedCategory
-        const path = await getPath(PAGE_TYPES[type], params, apps)
-        return isActive
-          ? getInternal(path, type, id, map)
-          : getNotFoundInternal(path)
-      })
+    const internals = categoryTreeInternalsWithPath.flatMap(
+      ({ type, id, map, isActive, path }) =>
+        isActive
+          ? getInternals(path, type, id, map, bindings)
+          : getNotFoundInternals(path, bindings)
     )
 
     state.internals = internals
