@@ -29,30 +29,22 @@ const getBrandNotFoundInternal = (path: string): InternalInput => ({
   type: PAGE_TYPES.SEARCH_NOT_FOUND,
 })
 
-export async function saveInternalBrandRoute(
-  ctx: Context,
-  next: () => Promise<void>
-) {
+export async function brandInternals(ctx: Context, next: () => Promise<void>) {
   const {
-    clients: { apps, rewriterGraphql },
-    state: {
-      resources: { idUrlIndex },
-    },
+    clients: { apps },
     vtex: { logger },
+    state,
   } = ctx
   try {
     const brand: Brand = ctx.body
     const brandName = slugify(brand.name)
     const path = await getPath(PAGE_TYPES.BRAND, { brand: brandName }, apps)
 
-    const internal: InternalInput = brand.active
+    const internal = brand.active
       ? getBrandInternal(path, brand.id)
       : getBrandNotFoundInternal(path)
 
-    await Promise.all([
-      rewriterGraphql.saveInternal(internal),
-      idUrlIndex.save(brand.id, path),
-    ])
+    state.internals = [internal]
   } catch (error) {
     logger.error(error)
   }

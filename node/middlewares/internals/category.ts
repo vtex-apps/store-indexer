@@ -49,45 +49,22 @@ const getNotFoundInternal = (path: string): InternalInput => ({
   type: PAGE_TYPES.SEARCH_NOT_FOUND,
 })
 
-const saveCategoriesInternal = async (
-  identifiedCategories: IdentifiedCategory[],
-  ctx: Context
-) => {
-  const {
-    clients: { rewriterGraphql, apps },
-    state: {
-      resources: { idUrlIndex },
-    },
-  } = ctx
-  const internals = await Promise.all(
-    identifiedCategories.map(async identifiedCategory => {
-      const { type, params, id, map, isActive } = identifiedCategory
-      const path = await getPath(PAGE_TYPES[type], params, apps)
-      await idUrlIndex.save(id, path)
-      return isActive
-        ? getInternal(path, type, id, map)
-        : getNotFoundInternal(path)
-    })
-  )
-
-  await rewriterGraphql.saveManyInternals(internals)
-}
-
-const saveCategoryTree = async (
+const internalsFromCategoryTree = async (
   category: Category,
   ctx: Context
 ): Promise<IdentifiedCategory[]> => {
   const { catalogGraphQL } = ctx.clients
   const { parentCategoryId, name } = category
+
   if (!parentCategoryId) {
-    const identifiedCategory = {
+    const identifiedCategory: IdentifiedCategory = {
       id: category.id,
       isActive: category.isActive,
       map: 'c',
       params: {
         department: slugify(name),
       },
-      type: 'DEPARTMENT' as CategoryTypes,
+      type: 'DEPARTMENT',
     }
     return [identifiedCategory]
   }
@@ -95,10 +72,15 @@ const saveCategoryTree = async (
   const parentCategory = await catalogGraphQL
     .category(parentCategoryId)
     .then(res => res!.category)
-  const identifiedCategories = await saveCategoryTree(parentCategory, ctx)
+
+  const identifiedCategories = await internalsFromCategoryTree(
+    parentCategory,
+    ctx
+  )
   const { type, params, map } = identifiedCategories[0]
+
   if (type === 'DEPARTMENT') {
-    const identifiedCategory = {
+    const identifiedCategory: IdentifiedCategory = {
       id: category.id,
       isActive: category.isActive,
       map: `${map},c`,
@@ -106,12 +88,12 @@ const saveCategoryTree = async (
         ...params,
         category: slugify(name),
       },
-      type: 'CATEGORY' as CategoryTypes,
+      type: 'CATEGORY',
     }
     return [identifiedCategory, ...identifiedCategories]
   }
   if (type === 'CATEGORY') {
-    const identifiedCategory = {
+    const identifiedCategory: IdentifiedCategory = {
       id: category.id,
       isActive: category.isActive,
       map: `${map},c`,
@@ -119,7 +101,7 @@ const saveCategoryTree = async (
         ...params,
         subcategory: slugify(name),
       },
-      type: 'SUBCATEGORY' as CategoryTypes,
+      type: 'SUBCATEGORY',
     }
     return [identifiedCategory, ...identifiedCategories]
   }
@@ -136,17 +118,30 @@ const saveCategoryTree = async (
   return [identifiedCategory, ...identifiedCategories]
 }
 
-export async function saveInternalCategoryRoute(
+export async function categoryInternals(
   ctx: Context,
   next: () => Promise<void>
 ) {
   const {
+    clients: { apps },
     vtex: { logger },
+    state,
   } = ctx
   try {
     const category: Category = ctx.body
-    const identifiedCategories = await saveCategoryTree(category, ctx)
-    await saveCategoriesInternal(identifiedCategories, ctx)
+    const categoryTreeInternals = await internalsFromCategoryTree(category, ctx)
+
+    const internals = await Promise.all(
+      categoryTreeInternals.map(async identifiedCategory => {
+        const { type, params, id, map, isActive } = identifiedCategory
+        const path = await getPath(PAGE_TYPES[type], params, apps)
+        return isActive
+          ? getInternal(path, type, id, map)
+          : getNotFoundInternal(path)
+      })
+    )
+
+    state.internals = internals
   } catch (error) {
     logger.error(error)
   }

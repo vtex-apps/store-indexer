@@ -31,13 +31,13 @@ const rewriterGetInternal = `query Internal($path: String!) {
   }
 }`
 
-export class RewriterGraphql extends AppGraphQLClient {
+export class Rewriter extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
     super('vtex.rewriter@1.x', ctx, opts)
   }
 
   public async saveManyInternals(internals: InternalInput[]) {
-    const { tenant, locale } = this.context
+    const { tenant } = this.context
     this.graphql.mutate<boolean, { routes: InternalInput[] }>(
       {
         mutate: rewriterSaveManyInternalMutation,
@@ -47,7 +47,6 @@ export class RewriterGraphql extends AppGraphQLClient {
         headers: {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
-          'x-vtex-locale': locale,
           'x-vtex-tenant': tenant,
         },
         metric: 'rewriter-save-many-internal',
@@ -56,7 +55,7 @@ export class RewriterGraphql extends AppGraphQLClient {
   }
 
   public async saveInternal(internal: InternalInput) {
-    const { tenant, locale } = this.context
+    const { tenant } = this.context
     return this.graphql.mutate<boolean, { route: InternalInput }>(
       {
         mutate: rewriterSaveInternalMutation,
@@ -66,7 +65,6 @@ export class RewriterGraphql extends AppGraphQLClient {
         headers: {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
-          'x-vtex-locale': locale,
           'x-vtex-tenant': tenant,
         },
         metric: 'rewriter-save-internal',
@@ -75,7 +73,7 @@ export class RewriterGraphql extends AppGraphQLClient {
   }
 
   public async saveRedirect(redirect: RedirectInput) {
-    const { tenant, locale } = this.context
+    const { tenant } = this.context
     this.graphql.mutate<boolean, { route: RedirectInput }>(
       {
         mutate: rewriterSaveRedirectMutation,
@@ -85,7 +83,6 @@ export class RewriterGraphql extends AppGraphQLClient {
         headers: {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
-          'x-vtex-locale': locale,
           'x-vtex-tenant': tenant,
         },
         metric: 'rewriter-save-redirect',
@@ -94,7 +91,7 @@ export class RewriterGraphql extends AppGraphQLClient {
   }
 
   public async getInternal(path: string) {
-    const { tenant, locale } = this.context
+    const { tenant } = this.context
     return this.graphql
       .query<{ internal: { get: Internal } }, { path: string }>(
         {
@@ -105,7 +102,6 @@ export class RewriterGraphql extends AppGraphQLClient {
           headers: {
             ...(this.options && this.options.headers),
             'Proxy-Authorization': this.context.authToken,
-            'x-vtex-locale': locale,
             'x-vtex-tenant': tenant,
           },
           metric: 'rewriter-get-internal',

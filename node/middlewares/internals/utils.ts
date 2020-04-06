@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
-import { Apps, Binding, Tenant } from '@vtex/api'
+import { Apps, Tenant } from '@vtex/api'
 import RouteParser from 'route-parser'
-import { Maybe, SalesChannel } from 'vtex.catalog-graphql'
+import { Product } from 'vtex.catalog-graphql'
 
 export const INDEXED_ORIGIN = 'vtex.store-indexer@0.x:routes-indexing'
 export const STORE_LOCATOR = 'vtex.store@2.x'
@@ -63,29 +63,24 @@ export const getPath = async (
   return path
 }
 
-export const getBindings = (
-  tenantInfo: Tenant | undefined,
-  salesChannels: Array<Maybe<SalesChannel>> | null | undefined
+export const filterBindings = (
+  tenantInfo: Tenant,
+  salesChannels: Product['salesChannel']
 ): string[] => {
-  if (!tenantInfo || !salesChannels || salesChannels.length === 0) {
-    return ['*']
-  }
-  const mapSalesChannelToBindingId = tenantInfo.bindings.reduce(
-    (acc: Record<string, string>, { id, extraContext }: Binding) => {
-      const salesChannelId = extraContext.portal?.salesChannel
-      if (salesChannelId) {
-        acc[salesChannelId] = id
-      }
-      return acc
-    },
-    {} as Record<string, string>
-  )
+  const salesChannelsSet = salesChannels?.reduce((acc, sc) => {
+    if (sc?.id) {
+      acc.add(sc.id)
+    }
+    return acc
+  }, new Set<string>())
 
-  return salesChannels.reduce((acc, salesChannel) => {
-    const bindingId =
-      salesChannel && mapSalesChannelToBindingId[salesChannel.id]
-    if (bindingId) {
-      acc.push(bindingId)
+  return tenantInfo.bindings.reduce((acc, binding) => {
+    if (binding.targetProduct === 'vtex-storefront') {
+      const bindingSC = binding.extraContext.portal?.salesChannel
+      const productActiveInBindingSC = salesChannelsSet?.has(bindingSC)
+      if (productActiveInBindingSC || !salesChannelsSet) {
+        acc.push(binding.id)
+      }
     }
     return acc
   }, [] as string[])

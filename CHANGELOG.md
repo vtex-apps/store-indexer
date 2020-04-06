@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Addded
+- How to test added in documentation along with curls
+
+### Changed
+- Adds new save pipeline so we can console.log whenever saving internals when linked. This will provide an easier testing
+
+### Removed
+- Reverse index for internal routes
+
+### Fixed
+- Removes unecessary IO since now every accounts has a tenant
 
 ## [0.11.0] - 2020-04-03
 

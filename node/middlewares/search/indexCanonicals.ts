@@ -84,7 +84,7 @@ const toInternalURL = async (
 
 export async function indexCanonicals(ctx: Context, next: () => Promise<void>) {
   const {
-    clients: { rewriterGraphql, catalog },
+    clients: { rewriter, catalog },
     state: { searchURLs },
   } = ctx
   const buckets = splitEvery(BUCKET_SIZE, searchURLs)
@@ -101,7 +101,7 @@ export async function indexCanonicals(ctx: Context, next: () => Promise<void>) {
         )
       )
     )
-    await rewriterGraphql.saveManyInternals(
+    await rewriter.saveManyInternals(
       internals.filter(internal => internal !== null) as InternalInput[]
     )
   }
