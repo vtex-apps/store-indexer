@@ -10,7 +10,7 @@ import {
   INDEXED_ORIGIN,
   PAGE_TYPE_TO_STORE_ENTITIES,
   STORE_LOCATOR,
-} from '../internals/utils'
+} from '../../utils/internals'
 
 const BUCKET_SIZE = 100
 const DAYS_TO_EXPIRE = 7

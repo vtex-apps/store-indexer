@@ -1,16 +1,14 @@
-import { Apps } from '@vtex/api'
 import { Category } from '@vtex/api/lib/clients/apps/catalogGraphQL/category'
-import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
+import { filterStoreBindings } from '../../utils/bindings'
 import {
-  filterBindings,
-  getPath,
   INDEXED_ORIGIN,
   PAGE_TYPES,
-  slugify,
+  routeFormatter,
   STORE_LOCATOR,
-} from './utils'
+} from '../../utils/internals'
+import { slugify } from '../../utils/slugify'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
@@ -27,39 +25,7 @@ interface IdentifiedCategory {
   isActive: boolean
 }
 
-const getInternals = (
-  path: string,
-  type: CategoryTypes,
-  id: string,
-  map: string,
-  bindings: string[]
-): InternalInput[] =>
-  bindings.map(binding => ({
-    binding,
-    declarer: STORE_LOCATOR,
-    from: path,
-    id,
-    origin: INDEXED_ORIGIN,
-    query: {
-      map,
-    },
-    type: PAGE_TYPES[type],
-  }))
-
-const getNotFoundInternals = (
-  path: string,
-  bindings: string[]
-): InternalInput[] =>
-  bindings.map(binding => ({
-    binding,
-    declarer: STORE_LOCATOR,
-    from: path,
-    id: 'category',
-    origin: INDEXED_ORIGIN,
-    type: PAGE_TYPES.SEARCH_NOT_FOUND,
-  }))
-
-const internalsFromCategoryTree = async (
+const categoriesFromCategoryTree = async (
   category: Category,
   ctx: Context
 ): Promise<IdentifiedCategory[]> => {
@@ -83,7 +49,7 @@ const internalsFromCategoryTree = async (
     .category(parentCategoryId)
     .then(res => res!.category)
 
-  const identifiedCategories = await internalsFromCategoryTree(
+  const identifiedCategories = await categoriesFromCategoryTree(
     parentCategory,
     ctx
   )
@@ -128,50 +94,47 @@ const internalsFromCategoryTree = async (
   return [identifiedCategory, ...identifiedCategories]
 }
 
-const addPathToCategoryTreeInternals = (
-  apps: Apps,
-  categories: IdentifiedCategory[]
-) =>
-  Promise.all(
-    categories.map(async category => {
-      const { type, params } = category
-      const path = await getPath(PAGE_TYPES[type], params, apps)
-      return {
-        ...category,
-        path,
-      }
-    })
-  )
-
 export async function categoryInternals(
   ctx: Context,
   next: () => Promise<void>
 ) {
   const {
     clients: { apps },
-    vtex: { logger },
     state,
   } = ctx
-  try {
-    const bindings = filterBindings(ctx.state.tenantInfo, null)
-    const category: Category = ctx.body
-    const categoryTreeInternals = await internalsFromCategoryTree(category, ctx)
-    const categoryTreeInternalsWithPath = await addPathToCategoryTreeInternals(
-      apps,
-      categoryTreeInternals
-    )
+  const category: Category = ctx.body
+  const bindings = filterStoreBindings(ctx.state.tenantInfo)
 
-    const internals = categoryTreeInternalsWithPath.flatMap(
-      ({ type, id, map, isActive, path }) =>
-        isActive
-          ? getInternals(path, type, id, map, bindings)
-          : getNotFoundInternals(path, bindings)
-    )
-
-    state.internals = internals
-  } catch (error) {
-    logger.error(error)
+  if (bindings.length === 0) {
+    return
   }
+
+  const categories = await categoriesFromCategoryTree(category, ctx)
+
+  const internals = await Promise.all(
+    categories.map(async cat => {
+      const { type, params, id, isActive, map } = cat
+      const pageType = PAGE_TYPES[type]
+      const formatRoute = await routeFormatter(apps, pageType)
+      return bindings.map(binding => {
+        const { defaultLocale, id: bindingId } = binding
+        const translatedParams = params
+        const path = formatRoute(translatedParams)
+
+        return {
+          binding: bindingId,
+          declarer: STORE_LOCATOR,
+          from: path,
+          id,
+          origin: INDEXED_ORIGIN,
+          query: isActive ? { map } : null,
+          type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
+        }
+      })
+    })
+  )
+
+  state.internals = internals.flat()
 
   await next()
 }
