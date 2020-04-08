@@ -117,7 +117,7 @@ export async function categoryInternals(
       const pageType = PAGE_TYPES[type]
       const formatRoute = await routeFormatter(apps, pageType)
       return bindings.map(binding => {
-        const { defaultLocale, id: bindingId } = binding
+        const { id: bindingId } = binding
         const translatedParams = params
         const path = formatRoute(translatedParams)
 

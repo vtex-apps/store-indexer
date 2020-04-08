@@ -28,7 +28,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
 
   const internals = await Promise.all(
     bindings.map(async binding => {
-      const { defaultLocale, id: bindingId } = binding
+      const { id: bindingId } = binding
       const translated = brandName
       const path = formatRoute({ brand: translated })
 

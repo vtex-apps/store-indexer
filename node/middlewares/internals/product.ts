@@ -33,7 +33,7 @@ export async function productInternals(
 
   const internals = await Promise.all(
     bindings.map(async binding => {
-      const { defaultLocale, id: bindingId } = binding
+      const { id: bindingId } = binding
       const translated = slug
       const path = formatRoute({ slug: translated })
 
