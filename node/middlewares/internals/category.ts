@@ -1,14 +1,14 @@
 import { Category } from '@vtex/api/lib/clients/apps/catalogGraphQL/category'
-import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
+import { filterStoreBindings } from '../../utils/bindings'
 import {
-  getPath,
   INDEXED_ORIGIN,
   PAGE_TYPES,
-  slugify,
+  routeFormatter,
   STORE_LOCATOR,
-} from './utils'
+} from '../../utils/internals'
+import { slugify } from '../../utils/slugify'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
@@ -25,69 +25,22 @@ interface IdentifiedCategory {
   isActive: boolean
 }
 
-const getInternal = (
-  path: string,
-  type: CategoryTypes,
-  id: string,
-  map: string
-): InternalInput => ({
-  declarer: STORE_LOCATOR,
-  from: path,
-  id,
-  origin: INDEXED_ORIGIN,
-  query: {
-    map,
-  },
-  type: PAGE_TYPES[type],
-})
-
-const getNotFoundInternal = (path: string): InternalInput => ({
-  declarer: STORE_LOCATOR,
-  from: path,
-  id: 'category',
-  origin: INDEXED_ORIGIN,
-  type: PAGE_TYPES.SEARCH_NOT_FOUND,
-})
-
-const saveCategoriesInternal = async (
-  identifiedCategories: IdentifiedCategory[],
-  ctx: Context
-) => {
-  const {
-    clients: { rewriterGraphql, apps },
-    state: {
-      resources: { idUrlIndex },
-    },
-  } = ctx
-  const internals = await Promise.all(
-    identifiedCategories.map(async identifiedCategory => {
-      const { type, params, id, map, isActive } = identifiedCategory
-      const path = await getPath(PAGE_TYPES[type], params, apps)
-      await idUrlIndex.save(id, path)
-      return isActive
-        ? getInternal(path, type, id, map)
-        : getNotFoundInternal(path)
-    })
-  )
-
-  await rewriterGraphql.saveManyInternals(internals)
-}
-
-const saveCategoryTree = async (
+const categoriesFromCategoryTree = async (
   category: Category,
   ctx: Context
 ): Promise<IdentifiedCategory[]> => {
   const { catalogGraphQL } = ctx.clients
   const { parentCategoryId, name } = category
+
   if (!parentCategoryId) {
-    const identifiedCategory = {
+    const identifiedCategory: IdentifiedCategory = {
       id: category.id,
       isActive: category.isActive,
       map: 'c',
       params: {
         department: slugify(name),
       },
-      type: 'DEPARTMENT' as CategoryTypes,
+      type: 'DEPARTMENT',
     }
     return [identifiedCategory]
   }
@@ -95,10 +48,15 @@ const saveCategoryTree = async (
   const parentCategory = await catalogGraphQL
     .category(parentCategoryId)
     .then(res => res!.category)
-  const identifiedCategories = await saveCategoryTree(parentCategory, ctx)
+
+  const identifiedCategories = await categoriesFromCategoryTree(
+    parentCategory,
+    ctx
+  )
   const { type, params, map } = identifiedCategories[0]
+
   if (type === 'DEPARTMENT') {
-    const identifiedCategory = {
+    const identifiedCategory: IdentifiedCategory = {
       id: category.id,
       isActive: category.isActive,
       map: `${map},c`,
@@ -106,12 +64,12 @@ const saveCategoryTree = async (
         ...params,
         category: slugify(name),
       },
-      type: 'CATEGORY' as CategoryTypes,
+      type: 'CATEGORY',
     }
     return [identifiedCategory, ...identifiedCategories]
   }
   if (type === 'CATEGORY') {
-    const identifiedCategory = {
+    const identifiedCategory: IdentifiedCategory = {
       id: category.id,
       isActive: category.isActive,
       map: `${map},c`,
@@ -119,7 +77,7 @@ const saveCategoryTree = async (
         ...params,
         subcategory: slugify(name),
       },
-      type: 'SUBCATEGORY' as CategoryTypes,
+      type: 'SUBCATEGORY',
     }
     return [identifiedCategory, ...identifiedCategories]
   }
@@ -136,20 +94,47 @@ const saveCategoryTree = async (
   return [identifiedCategory, ...identifiedCategories]
 }
 
-export async function saveInternalCategoryRoute(
+export async function categoryInternals(
   ctx: Context,
   next: () => Promise<void>
 ) {
   const {
-    vtex: { logger },
+    clients: { apps },
+    state,
   } = ctx
-  try {
-    const category: Category = ctx.body
-    const identifiedCategories = await saveCategoryTree(category, ctx)
-    await saveCategoriesInternal(identifiedCategories, ctx)
-  } catch (error) {
-    logger.error(error)
+  const category: Category = ctx.body
+  const bindings = filterStoreBindings(ctx.state.tenantInfo)
+
+  if (bindings.length === 0) {
+    return
   }
+
+  const categories = await categoriesFromCategoryTree(category, ctx)
+
+  const internals = await Promise.all(
+    categories.map(async cat => {
+      const { type, params, id, isActive, map } = cat
+      const pageType = PAGE_TYPES[type]
+      const formatRoute = await routeFormatter(apps, pageType)
+      return bindings.map(binding => {
+        const { id: bindingId } = binding
+        const translatedParams = params
+        const path = formatRoute(translatedParams)
+
+        return {
+          binding: bindingId,
+          declarer: STORE_LOCATOR,
+          from: path,
+          id,
+          origin: INDEXED_ORIGIN,
+          query: isActive ? { map } : null,
+          type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
+        }
+      })
+    })
+  )
+
+  state.internals = internals.flat()
 
   await next()
 }

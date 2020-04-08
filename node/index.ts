@@ -7,10 +7,10 @@ import {
 } from '@vtex/api'
 
 import { Clients } from './clients'
-import { initialize } from './middlewares/initialize'
-import { saveInternalBrandRoute } from './middlewares/internals/saveInternalBrandRoute'
-import { saveInternalCategoryRoute } from './middlewares/internals/saveInternalCategoryRoute'
-import { saveInternalProductRoute } from './middlewares/internals/saveInternalProductRoute'
+import { brandInternals } from './middlewares/internals/brand'
+import { categoryInternals } from './middlewares/internals/category'
+import { productInternals } from './middlewares/internals/product'
+import { saveInternals } from './middlewares/internals/save'
 import { createCanonicals } from './middlewares/search/createCanonicals'
 import { getSearchStats } from './middlewares/search/getSearchStats'
 import { indexCanonicals } from './middlewares/search/indexCanonicals'
@@ -61,19 +61,9 @@ const clients: ClientsConfig<Clients> = {
 export default new Service<Clients, State, ParamsContext>({
   clients,
   events: {
-    broadcasterBrand: [throttle, initialize, tenant, saveInternalBrandRoute],
-    broadcasterCategory: [
-      throttle,
-      initialize,
-      tenant,
-      saveInternalCategoryRoute,
-    ],
-    broadcasterProduct: [
-      throttle,
-      initialize,
-      tenant,
-      saveInternalProductRoute,
-    ],
+    broadcasterBrand: [throttle, tenant, brandInternals, saveInternals],
+    broadcasterCategory: [throttle, tenant, categoryInternals, saveInternals],
+    broadcasterProduct: [throttle, tenant, productInternals, saveInternals],
     searchUrlsCountIndex: [
       throttle,
       settings,

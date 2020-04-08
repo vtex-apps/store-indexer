@@ -2,7 +2,7 @@
 import { IOClients } from '@vtex/api'
 
 import { Catalog } from './catalog'
-import { RewriterGraphql } from './rewriterGraphql'
+import { Rewriter } from './rewriter'
 import { SearchGraphql } from './searchGraphql'
 
 export class Clients extends IOClients {
@@ -14,7 +14,7 @@ export class Clients extends IOClients {
     return this.getOrSet('catalog', Catalog)
   }
 
-  get rewriterGraphql() {
-    return this.getOrSet('rewriterGraphql', RewriterGraphql)
+  get rewriter() {
+    return this.getOrSet('rewriter', Rewriter)
   }
 }

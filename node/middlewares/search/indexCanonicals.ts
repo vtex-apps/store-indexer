@@ -10,7 +10,7 @@ import {
   INDEXED_ORIGIN,
   PAGE_TYPE_TO_STORE_ENTITIES,
   STORE_LOCATOR,
-} from '../internals/utils'
+} from '../../utils/internals'
 
 const BUCKET_SIZE = 100
 const DAYS_TO_EXPIRE = 7
@@ -84,7 +84,7 @@ const toInternalURL = async (
 
 export async function indexCanonicals(ctx: Context, next: () => Promise<void>) {
   const {
-    clients: { rewriterGraphql, catalog },
+    clients: { rewriter, catalog },
     state: { searchURLs },
   } = ctx
   const buckets = splitEvery(BUCKET_SIZE, searchURLs)
@@ -101,7 +101,7 @@ export async function indexCanonicals(ctx: Context, next: () => Promise<void>) {
         )
       )
     )
-    await rewriterGraphql.saveManyInternals(
+    await rewriter.saveManyInternals(
       internals.filter(internal => internal !== null) as InternalInput[]
     )
   }
