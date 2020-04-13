@@ -10,7 +10,7 @@
     "@types/node": "^12.12.17",
     "@types/ramda": "^0.26.38",
     "@types/route-parser": "^0.1.3",
-    "@vtex/api": "6.24.3",
+    "@vtex/api": "6.24.4",
     "tslint": "^5.14.0",
     "tslint-config-vtex": "^2.1.0",
     "typescript": "3.8.3",
