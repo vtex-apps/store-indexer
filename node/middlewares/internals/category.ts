@@ -12,86 +12,47 @@ import { slugify } from '../../utils/slugify'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
-interface IdentifiedCategory {
-  type: CategoryTypes
-  map: string
-  id: string
-  params: {
-    department?: string
-    category?: string
-    subcategory?: string
-    terms?: string
-  }
-  isActive: boolean
+interface IdentifiedCategory extends Category {
+  parentsNames: string[]
 }
 
-const categoriesFromCategoryTree = async (
-  category: Category,
-  ctx: Context
-): Promise<IdentifiedCategory[]> => {
-  const { catalogGraphQL } = ctx.clients
-  const { parentCategoryId, name } = category
-
-  if (!parentCategoryId) {
-    const identifiedCategory: IdentifiedCategory = {
-      id: category.id,
-      isActive: category.isActive,
-      map: 'c',
-      params: {
-        department: slugify(name),
-      },
-      type: 'DEPARTMENT',
-    }
-    return [identifiedCategory]
+const getCategoryType = (
+  categoryTree: string[]
+): { type: CategoryTypes; map: string; params: Record<string, string> } => {
+  const height = categoryTree.length
+  const slugifiedCategoryTree = categoryTree.map(slugify)
+  switch (height) {
+    case 1:
+      return {
+        map: 'c',
+        params: {
+          department: slugifiedCategoryTree[0],
+        },
+        type: 'DEPARTMENT',
+      }
+    case 2:
+      return {
+        map: 'c,c',
+        params: {
+          category: slugifiedCategoryTree[1],
+          department: slugifiedCategoryTree[0],
+        },
+        type: 'CATEGORY',
+      }
+    default:
+      return {
+        map: Array(height)
+          .fill('c')
+          .join(','),
+        params: {
+          category: slugifiedCategoryTree[1],
+          department: slugifiedCategoryTree[0],
+          subcategory: slugifiedCategoryTree[2],
+          terms: slugifiedCategoryTree.slice(3).join('/'),
+        },
+        type: 'SUBCATEGORY',
+      }
   }
-
-  const parentCategory = await catalogGraphQL
-    .category(parentCategoryId)
-    .then(res => res!.category)
-
-  const identifiedCategories = await categoriesFromCategoryTree(
-    parentCategory,
-    ctx
-  )
-  const { type, params, map } = identifiedCategories[0]
-
-  if (type === 'DEPARTMENT') {
-    const identifiedCategory: IdentifiedCategory = {
-      id: category.id,
-      isActive: category.isActive,
-      map: `${map},c`,
-      params: {
-        ...params,
-        category: slugify(name),
-      },
-      type: 'CATEGORY',
-    }
-    return [identifiedCategory, ...identifiedCategories]
-  }
-  if (type === 'CATEGORY') {
-    const identifiedCategory: IdentifiedCategory = {
-      id: category.id,
-      isActive: category.isActive,
-      map: `${map},c`,
-      params: {
-        ...params,
-        subcategory: slugify(name),
-      },
-      type: 'SUBCATEGORY',
-    }
-    return [identifiedCategory, ...identifiedCategories]
-  }
-  const identifiedCategory = {
-    id: category.id,
-    isActive: category.isActive,
-    map: `${map},c`,
-    params: {
-      ...params,
-      terms: params.terms ? `${params.terms}${slugify(name)}` : slugify(name),
-    },
-    type,
-  }
-  return [identifiedCategory, ...identifiedCategories]
 }
 
 export async function categoryInternals(
@@ -102,39 +63,33 @@ export async function categoryInternals(
     clients: { apps },
     state,
   } = ctx
-  const category: Category = ctx.body
+  const category: IdentifiedCategory = ctx.body
   const bindings = filterStoreBindings(ctx.state.tenantInfo)
 
   if (bindings.length === 0) {
     return
   }
+  const { id, isActive, name, parentsNames } = category
+  const { map, type, params } = getCategoryType([...parentsNames, name])
+  const pageType = PAGE_TYPES[type]
+  const formatRoute = await routeFormatter(apps, pageType)
+  const internals = bindings.map(binding => {
+    const { id: bindingId } = binding
+    const translatedParams = params
+    const path = formatRoute(translatedParams)
 
-  const categories = await categoriesFromCategoryTree(category, ctx)
+    return {
+      binding: bindingId,
+      declarer: STORE_LOCATOR,
+      from: path,
+      id,
+      origin: INDEXED_ORIGIN,
+      query: isActive ? { map } : null,
+      type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
+    }
+  })
 
-  const internals = await Promise.all(
-    categories.map(async cat => {
-      const { type, params, id, isActive, map } = cat
-      const pageType = PAGE_TYPES[type]
-      const formatRoute = await routeFormatter(apps, pageType)
-      return bindings.map(binding => {
-        const { id: bindingId } = binding
-        const translatedParams = params
-        const path = formatRoute(translatedParams)
-
-        return {
-          binding: bindingId,
-          declarer: STORE_LOCATOR,
-          from: path,
-          id,
-          origin: INDEXED_ORIGIN,
-          query: isActive ? { map } : null,
-          type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
-        }
-      })
-    })
-  )
-
-  state.internals = internals.flat()
+  state.internals = internals
 
   await next()
 }
