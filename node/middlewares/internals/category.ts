@@ -17,16 +17,16 @@ interface IdentifiedCategory extends Category {
 }
 
 const getCategoryType = (
-  parentsNames: string[]
+  categoryTree: string[]
 ): { type: CategoryTypes; map: string; params: Record<string, string> } => {
-  const height = parentsNames.length
-  const slugifiedParentsNames = parentsNames.map(slugify)
+  const height = categoryTree.length
+  const slugifiedCategoryTree = categoryTree.map(slugify)
   switch (height) {
     case 1:
       return {
         map: 'c',
         params: {
-          department: slugifiedParentsNames[0],
+          department: slugifiedCategoryTree[0],
         },
         type: 'DEPARTMENT',
       }
@@ -34,8 +34,8 @@ const getCategoryType = (
       return {
         map: 'c,c',
         params: {
-          category: slugifiedParentsNames[1],
-          department: slugifiedParentsNames[0],
+          category: slugifiedCategoryTree[1],
+          department: slugifiedCategoryTree[0],
         },
         type: 'CATEGORY',
       }
@@ -45,10 +45,10 @@ const getCategoryType = (
           .fill('c')
           .join(','),
         params: {
-          category: slugifiedParentsNames[1],
-          department: slugifiedParentsNames[0],
-          subcategory: slugifiedParentsNames[2],
-          terms: slugifiedParentsNames.slice(3).join('/'),
+          category: slugifiedCategoryTree[1],
+          department: slugifiedCategoryTree[0],
+          subcategory: slugifiedCategoryTree[2],
+          terms: slugifiedCategoryTree.slice(3).join('/'),
         },
         type: 'SUBCATEGORY',
       }
