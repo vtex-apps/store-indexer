@@ -8,29 +8,39 @@ import {
   routeFormatter,
   STORE_LOCATOR,
 } from '../../utils/internals'
+import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
 
 export async function brandInternals(ctx: Context, next: () => Promise<void>) {
   const {
-    clients: { apps },
-    state,
+    clients: { apps, messagesGraphQL },
+    state: {
+      tenantInfo: { defaultLocale: tenantLocale },
+      tenantInfo,
+    },
   } = ctx
   const brand: Brand = ctx.body
   const { name, active, id } = brand
-  const brandName = slugify(name)
-  const bindings = filterStoreBindings(ctx.state.tenantInfo)
+  const bindings = filterStoreBindings(tenantInfo)
 
   if (bindings.length === 0) {
     return
   }
 
   const formatRoute = await routeFormatter(apps, PAGE_TYPES.BRAND)
+  const translate = createTranslator(messagesGraphQL)
+  const messages = [{ content: name, context: id }]
 
   const internals = await Promise.all(
     bindings.map(async binding => {
-      const { id: bindingId } = binding
-      const translated = brandName
-      const path = formatRoute({ brand: translated })
+      const { id: bindingId, defaultLocale: bindingLocale } = binding
+      const [translated] = await translate(
+        tenantLocale,
+        bindingLocale,
+        messages
+      )
+      const translatedSlug = slugify(translated).toLowerCase()
+      const path = formatRoute({ brand: translatedSlug })
 
       return {
         binding: bindingId,
@@ -44,7 +54,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
     })
   )
 
-  state.internals = internals
+  ctx.state.internals = internals
 
   await next()
 }
