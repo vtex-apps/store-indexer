@@ -1,29 +1,26 @@
 import { MessagesGraphQL } from '@vtex/api'
 
 interface Message {
-  from: string
-  to: string
   content: string
   context: string
 }
 
-export const createTranslator = (messages: MessagesGraphQL) => async ({
-  from,
-  to,
-  content,
-  context,
-}: Message) => {
+export const createTranslator = (service: MessagesGraphQL) => async (
+  from: string,
+  to: string,
+  messages: Message[]
+) => {
   if (from.toLowerCase() === to.toLowerCase()) {
-    return content
+    return messages.map(({ content }) => content)
   }
-  const translations = await messages.translate({
+  const translations = await service.translate({
     indexedByFrom: [
       {
         from,
-        messages: [{ content, context }],
+        messages,
       },
     ],
     to,
   })
-  return translations[0]
+  return translations
 }

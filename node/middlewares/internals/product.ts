@@ -35,16 +35,16 @@ export async function productInternals(
 
   const formatRoute = await routeFormatter(apps, PAGE_TYPES.PRODUCT)
   const translate = createTranslator(messagesGraphQL)
+  const messages = [{ content: slug, context: id }]
 
   const internals = await Promise.all(
     bindings.map(async binding => {
       const { defaultLocale: bindingLocale, id: bindingId } = binding
-      const translated = await translate({
-        content: slug,
-        context: id,
-        from: tenantLocale,
-        to: bindingLocale,
-      })
+      const [translated] = await translate(
+        tenantLocale,
+        bindingLocale,
+        messages
+      )
       const path = formatRoute({ slug: translated })
 
       return {

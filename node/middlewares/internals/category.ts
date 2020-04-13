@@ -8,35 +8,28 @@ import {
   routeFormatter,
   STORE_LOCATOR,
 } from '../../utils/internals'
+import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
 interface IdentifiedCategory extends Category {
-  parentsNames: string[]
+  parents: Array<Pick<Category, 'name' | 'id'>>
 }
 
 const getCategoryType = (
-  categoryTree: string[]
-): { type: CategoryTypes; map: string; params: Record<string, string> } => {
-  const height = categoryTree.length
-  const slugifiedCategoryTree = categoryTree.map(slugify)
+  parents: IdentifiedCategory['parents']
+): { type: CategoryTypes; map: string } => {
+  const height = parents.length
   switch (height) {
-    case 1:
+    case 0:
       return {
         map: 'c',
-        params: {
-          department: slugifiedCategoryTree[0],
-        },
         type: 'DEPARTMENT',
       }
-    case 2:
+    case 1:
       return {
         map: 'c,c',
-        params: {
-          category: slugifiedCategoryTree[1],
-          department: slugifiedCategoryTree[0],
-        },
         type: 'CATEGORY',
       }
     default:
@@ -44,52 +37,71 @@ const getCategoryType = (
         map: Array(height)
           .fill('c')
           .join(','),
-        params: {
-          category: slugifiedCategoryTree[1],
-          department: slugifiedCategoryTree[0],
-          subcategory: slugifiedCategoryTree[2],
-          terms: slugifiedCategoryTree.slice(3).join('/'),
-        },
         type: 'SUBCATEGORY',
       }
   }
 }
+
+const toParams = ([department, category, subcategory, ...terms]: string[]) => ({
+  category: category ? slugify(category) : undefined,
+  department: department ? slugify(department) : undefined,
+  subcategory: subcategory ? slugify(subcategory) : undefined,
+  terms: terms.map(term => slugify(term)).join('/'),
+})
 
 export async function categoryInternals(
   ctx: Context,
   next: () => Promise<void>
 ) {
   const {
-    clients: { apps },
-    state,
+    clients: { apps, messagesGraphQL },
+    state: {
+      tenantInfo: { defaultLocale: tenantLocale },
+      tenantInfo,
+    },
   } = ctx
   const category: IdentifiedCategory = ctx.body
-  const bindings = filterStoreBindings(ctx.state.tenantInfo)
+  const bindings = filterStoreBindings(tenantInfo)
 
   if (bindings.length === 0) {
     return
   }
-  const { id, isActive, name, parentsNames } = category
-  const { map, type, params } = getCategoryType([...parentsNames, name])
+
+  const { id, isActive, name, parents } = category
+  const { map, type } = getCategoryType(parents)
   const pageType = PAGE_TYPES[type]
+  const messages = [...parents, { id, name }].map(c => ({
+    content: c.name,
+    context: c.id,
+  }))
+
   const formatRoute = await routeFormatter(apps, pageType)
-  const internals = bindings.map(binding => {
-    const { id: bindingId } = binding
-    const translatedParams = params
-    const path = formatRoute(translatedParams)
+  const translate = createTranslator(messagesGraphQL)
 
-    return {
-      binding: bindingId,
-      declarer: STORE_LOCATOR,
-      from: path,
-      id,
-      origin: INDEXED_ORIGIN,
-      query: isActive ? { map } : null,
-      type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
-    }
-  })
+  const internals = await Promise.all(
+    bindings.map(async binding => {
+      const { id: bindingId, defaultLocale: bindingLocale } = binding
+      const translatedTree = await translate(
+        tenantLocale,
+        bindingLocale,
+        messages
+      )
+      const params = toParams(translatedTree)
+      const path = formatRoute(params)
 
-  state.internals = internals
+      return {
+        binding: bindingId,
+        declarer: STORE_LOCATOR,
+        from: path,
+        id,
+        origin: INDEXED_ORIGIN,
+        query: isActive ? { map } : null,
+        type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
+      }
+    })
+  )
+
+  ctx.state.internals = internals
 
   await next()
 }

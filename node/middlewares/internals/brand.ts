@@ -29,16 +29,16 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
 
   const formatRoute = await routeFormatter(apps, PAGE_TYPES.BRAND)
   const translate = createTranslator(messagesGraphQL)
+  const messages = [{ content: name.toLowerCase(), context: id }]
 
   const internals = await Promise.all(
     bindings.map(async binding => {
       const { id: bindingId, defaultLocale: bindingLocale } = binding
-      const translated = await translate({
-        content: name.toLowerCase(),
-        context: id,
-        from: tenantLocale,
-        to: bindingLocale,
-      })
+      const [translated] = await translate(
+        tenantLocale,
+        bindingLocale,
+        messages
+      )
       const path = formatRoute({ brand: slugify(translated) })
 
       return {
