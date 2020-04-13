@@ -39,7 +39,8 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
         bindingLocale,
         messages
       )
-      const path = formatRoute({ brand: slugify(translated) })
+      const translatedSlug = slugify(translated).toLowerCase()
+      const path = formatRoute({ brand: translatedSlug })
 
       return {
         binding: bindingId,

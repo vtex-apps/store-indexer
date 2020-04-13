@@ -9,6 +9,7 @@ import {
   STORE_LOCATOR,
 } from '../../utils/internals'
 import { createTranslator } from '../../utils/messages'
+import { slugify } from '../../utils/slugify'
 
 export async function productInternals(
   ctx: Context,
@@ -45,7 +46,8 @@ export async function productInternals(
         bindingLocale,
         messages
       )
-      const path = formatRoute({ slug: translated })
+      const translatedSlug = slugify(translated).toLowerCase()
+      const path = formatRoute({ slug: translatedSlug })
 
       return {
         binding: bindingId,

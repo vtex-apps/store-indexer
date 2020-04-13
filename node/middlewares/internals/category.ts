@@ -43,9 +43,9 @@ const getCategoryType = (
 }
 
 const toParams = ([department, category, subcategory, ...terms]: string[]) => ({
-  category: category ? slugify(category) : undefined,
-  department: department ? slugify(department) : undefined,
-  subcategory: subcategory ? slugify(subcategory) : undefined,
+  category: category ? slugify(category).toLowerCase() : undefined,
+  department: department ? slugify(department).toLowerCase() : undefined,
+  subcategory: subcategory ? slugify(subcategory).toLowerCase() : undefined,
   terms: terms.map(term => slugify(term)).join('/'),
 })
 
