@@ -14,8 +14,10 @@ export const filterBindingsBySalesChannel = (
 
   return tenantInfo.bindings.filter(binding => {
     if (binding.targetProduct === 'vtex-storefront') {
-      const bindingSC = binding.extraContext.portal?.salesChannel
-      const productActiveInBindingSC = salesChannelsSet?.has(bindingSC)
+      const bindingSC: number | undefined =
+        binding.extraContext.portal?.salesChannel
+      const productActiveInBindingSC =
+        bindingSC && salesChannelsSet?.has(bindingSC.toString())
       if (productActiveInBindingSC || !salesChannelsSet) {
         return true
       }
