@@ -7,28 +7,13 @@
   "workers": 1,
   "events": {
     "broadcasterProduct": {
-      "sender": "vtex.broadcaster-worker",
       "keys": ["broadcaster.product"]
     },
     "broadcasterBrand": {
-      "sender": "vtex.broadcaster-worker",
       "keys": ["broadcaster.brand"]
     },
     "broadcasterCategory": {
-      "sender": "vtex.broadcaster-worker",
       "keys": ["broadcaster.category"]
-    },
-    "catalogBrand": {
-      "sender": "vtex.catalog-graphql",
-      "keys": ["broadcaster.brand"]
-    },
-    "catalogCategory": {
-      "sender": "vtex.catalog-graphql",
-      "keys": ["broadcaster.category"]
-    },
-    "catalogProduct": {
-      "sender": "vtex.catalog-graphql",
-      "keys": ["broadcaster.product"]
     },
     "searchUrlsCountIndex": {
       "sender": "vtex.search-graphql",
