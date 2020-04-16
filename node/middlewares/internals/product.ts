@@ -24,19 +24,18 @@ export async function productInternals(
   } = ctx
   const product: Product = ctx.body
   const { linkId, isActive, id } = product
-  const slug = linkId?.toLowerCase()
   const bindings = filterBindingsBySalesChannel(
     tenantInfo,
     product.salesChannel
   )
 
-  if (!slug || bindings.length === 0) {
+  if (!linkId || bindings.length === 0) {
     return
   }
 
   const formatRoute = await routeFormatter(apps, PAGE_TYPES.PRODUCT)
   const translate = createTranslator(messagesGraphQL)
-  const messages = [{ content: slug, context: id }]
+  const messages = [{ content: linkId, context: id }]
 
   const internals = await Promise.all(
     bindings.map(async binding => {

@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Listens to events raised by catalog-graphql
+
+### Fixed
+- translate before lowering the string, so product link are translated correctly
 
 ## [0.13.1] - 2020-04-14
 ### Fixed 
