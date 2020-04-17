@@ -1,11 +1,11 @@
-import { MessagesGraphQL } from '@vtex/api'
+import { Messages } from '../clients/messages'
 
 interface Message {
   content: string
   context: string
 }
 
-export const createTranslator = (service: MessagesGraphQL) => async (
+export const createTranslator = (service: Messages) => async (
   from: string,
   to: string,
   messages: Message[]
@@ -13,7 +13,7 @@ export const createTranslator = (service: MessagesGraphQL) => async (
   if (from.toLowerCase() === to.toLowerCase()) {
     return messages.map(({ content }) => content)
   }
-  const translations = await service.translate({
+  const translations = await service.translateNoCache({
     indexedByFrom: [
       {
         from,
