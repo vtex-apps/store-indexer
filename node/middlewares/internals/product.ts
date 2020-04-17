@@ -16,7 +16,7 @@ export async function productInternals(
   next: () => Promise<void>
 ) {
   const {
-    clients: { apps, messagesGraphQL },
+    clients: { apps, messages: messagesClient },
     state: {
       tenantInfo: { defaultLocale: tenantLocale },
       tenantInfo,
@@ -34,7 +34,7 @@ export async function productInternals(
   }
 
   const formatRoute = await routeFormatter(apps, PAGE_TYPES.PRODUCT)
-  const translate = createTranslator(messagesGraphQL)
+  const translate = createTranslator(messagesClient)
   const messages = [{ content: linkId, context: id }]
 
   const internals = await Promise.all(

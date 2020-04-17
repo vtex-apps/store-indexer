@@ -20,7 +20,7 @@ import { throttle } from './middlewares/throttle'
 import { State } from './typings/global'
 
 const TIMEOUT_MS = 3000
-const TRANSLATION_CONCURRENCY = 5
+const TRANSLATION_CONCURRENCY = 10
 const TRANSLATION_RETRIES = 3
 const CONCURRENCY = 10
 
@@ -46,7 +46,7 @@ const clients: ClientsConfig<Clients> = {
       retries: 2,
       timeout: TIMEOUT_MS,
     },
-    messagesGraphQL: {
+    messages: {
       concurrency: TRANSLATION_CONCURRENCY,
       retries: TRANSLATION_RETRIES,
       timeout: TIMEOUT_MS,

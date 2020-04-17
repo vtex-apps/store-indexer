@@ -13,7 +13,7 @@ import { slugify } from '../../utils/slugify'
 
 export async function brandInternals(ctx: Context, next: () => Promise<void>) {
   const {
-    clients: { apps, messagesGraphQL },
+    clients: { apps, messages: messagesClient },
     state: {
       tenantInfo: { defaultLocale: tenantLocale },
       tenantInfo,
@@ -28,7 +28,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
   }
 
   const formatRoute = await routeFormatter(apps, PAGE_TYPES.BRAND)
-  const translate = createTranslator(messagesGraphQL)
+  const translate = createTranslator(messagesClient)
   const messages = [{ content: name, context: id }]
 
   const internals = await Promise.all(

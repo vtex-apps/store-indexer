@@ -54,7 +54,7 @@ export async function categoryInternals(
   next: () => Promise<void>
 ) {
   const {
-    clients: { apps, messagesGraphQL },
+    clients: { apps, messages: messagesClient },
     state: {
       tenantInfo: { defaultLocale: tenantLocale },
       tenantInfo,
@@ -76,7 +76,7 @@ export async function categoryInternals(
   }))
 
   const formatRoute = await routeFormatter(apps, pageType)
-  const translate = createTranslator(messagesGraphQL)
+  const translate = createTranslator(messagesClient)
 
   const internals = await Promise.all(
     bindings.map(async binding => {
