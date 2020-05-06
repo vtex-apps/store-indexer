@@ -34,7 +34,7 @@ const getCategoryType = (
       }
     default:
       return {
-        map: Array(height)
+        map: Array(height + 1)
           .fill('c')
           .join(','),
         type: 'SUBCATEGORY',
