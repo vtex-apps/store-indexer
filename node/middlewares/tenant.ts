@@ -8,8 +8,8 @@ export async function tenant(ctx: Context, next: () => Promise<void>) {
   } = ctx
   const tenantInfo = await tenantClient.info({
     forceMaxAge: TEN_MINUTES_S,
-    nullIfNotFound: true,
   })
+
   const locale = tenantInfo.defaultLocale
 
   ctx.state.tenantInfo = tenantInfo
