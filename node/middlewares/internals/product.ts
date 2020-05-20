@@ -11,6 +11,11 @@ import {
 import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
 
+type Params = Record<string, string | undefined> | null | undefined
+
+const pathFromRoute = (formatRoute: (x: Params) => string, slug: string) =>
+  formatRoute({ slug: slugify(slug).toLowerCase() })
+
 export async function productInternals(
   ctx: Context,
   next: () => Promise<void>
@@ -37,6 +42,8 @@ export async function productInternals(
   const translate = createTranslator(messagesClient)
   const messages = [{ content: linkId, context: id }]
 
+  const tenantPath = pathFromRoute(formatRoute, linkId)
+
   const internals = await Promise.all(
     bindings.map(async binding => {
       const { defaultLocale: bindingLocale, id: bindingId } = binding
@@ -45,8 +52,7 @@ export async function productInternals(
         bindingLocale,
         messages
       )
-      const translatedSlug = slugify(translated).toLowerCase()
-      const path = formatRoute({ slug: translatedSlug })
+      const path = pathFromRoute(formatRoute, translated)
 
       return {
         binding: bindingId,
@@ -54,6 +60,7 @@ export async function productInternals(
         from: path,
         id,
         origin: INDEXED_ORIGIN,
+        resolveAs: tenantPath,
         type: isActive ? PAGE_TYPES.PRODUCT : PAGE_TYPES.PRODUCT_NOT_FOUND,
       }
     })
