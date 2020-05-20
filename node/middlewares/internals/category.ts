@@ -49,6 +49,11 @@ const toParams = ([department, category, subcategory, ...terms]: string[]) => ({
   terms: terms.join('/'),
 })
 
+type Params = ReturnType<typeof toParams>
+
+const pathFromTree = (formatRoute: (x: Params) => string, tree: string[]) =>
+  formatRoute(toParams(tree.map(x => slugify(x).toLowerCase())))
+
 export async function categoryInternals(
   ctx: Context,
   next: () => Promise<void>
@@ -78,6 +83,11 @@ export async function categoryInternals(
   const formatRoute = await routeFormatter(apps, pageType)
   const translate = createTranslator(messagesClient)
 
+  const tenantPath = pathFromTree(
+    formatRoute,
+    messages.map(x => x.content)
+  )
+
   const internals = await Promise.all(
     bindings.map(async binding => {
       const { id: bindingId, defaultLocale: bindingLocale } = binding
@@ -86,9 +96,7 @@ export async function categoryInternals(
         bindingLocale,
         messages
       )
-      const slugifiedTree = translatedTree.map(x => slugify(x).toLowerCase())
-      const params = toParams(slugifiedTree)
-      const path = formatRoute(params)
+      const path = pathFromTree(formatRoute, translatedTree)
 
       return {
         binding: bindingId,
@@ -97,6 +105,7 @@ export async function categoryInternals(
         id,
         origin: INDEXED_ORIGIN,
         query: isActive ? { map } : null,
+        resolveAs: tenantPath,
         type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
       }
     })
