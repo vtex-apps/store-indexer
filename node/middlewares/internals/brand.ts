@@ -11,6 +11,11 @@ import {
 import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
 
+type Params = Record<string, string | undefined> | null | undefined
+
+const pathFromRoute = (formatRoute: (x: Params) => string, brand: string) =>
+  formatRoute({ brand: slugify(brand).toLowerCase() })
+
 export async function brandInternals(ctx: Context, next: () => Promise<void>) {
   const {
     clients: { apps, messages: messagesClient },
@@ -31,6 +36,8 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
   const translate = createTranslator(messagesClient)
   const messages = [{ content: name, context: id }]
 
+  const tenantPath = pathFromRoute(formatRoute, name)
+
   const internals = await Promise.all(
     bindings.map(async binding => {
       const { id: bindingId, defaultLocale: bindingLocale } = binding
@@ -39,8 +46,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
         bindingLocale,
         messages
       )
-      const translatedSlug = slugify(translated).toLowerCase()
-      const path = formatRoute({ brand: translatedSlug })
+      const path = pathFromRoute(formatRoute, translated)
 
       return {
         binding: bindingId,
@@ -49,6 +55,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
         id,
         origin: INDEXED_ORIGIN,
         query: active ? { map: 'b' } : null,
+        resolveAs: tenantPath,
         type: active ? PAGE_TYPES.BRAND : PAGE_TYPES.SEARCH_NOT_FOUND,
       }
     })
