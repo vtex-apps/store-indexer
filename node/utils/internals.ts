@@ -2,7 +2,7 @@
 import { Apps } from '@vtex/api'
 import RouteParser from 'route-parser'
 
-export const INDEXED_ORIGIN = 'vtex.store-indexer@0.x:routes-indexing'
+export const INDEXED_ORIGIN = `${process.env.VTEX_APP_ID!}:routes-indexing`
 export const STORE_LOCATOR = 'vtex.store@2.x'
 export const ROUTES_JSON_PATH = 'dist/vtex.store-indexer/build.json'
 
