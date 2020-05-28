@@ -41,6 +41,8 @@ export const routeFormatter = async (apps: Apps, type: PageTypes) => {
     STORE_LOCATOR,
     ROUTES_JSON_PATH
   )
+  routesJSON.subcategory.canonical =
+    '/:department/:category/:subcategory(/*terms)'
   const route = routesJSON[type]
   const canonicalParser = new RouteParser(route.canonical)
   return (params?: Record<string, string | undefined> | null) => {
