@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.15.2] - 2020-05-28
+
 ## [0.15.1] - 2020-05-27
 ### Fixed
 - Saves origin with complete app name and version
