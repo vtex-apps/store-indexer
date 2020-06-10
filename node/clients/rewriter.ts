@@ -1,5 +1,12 @@
 import { AppGraphQLClient, InstanceOptions, IOContext } from '@vtex/api'
-import { Internal, InternalInput, RedirectInput } from 'vtex.rewriter'
+import {
+  EntityLocator,
+  Internal,
+  InternalInput,
+  RedirectInput,
+  RouteLocator,
+  RoutesByBinding,
+} from 'vtex.rewriter'
 
 const rewriterSaveManyInternalMutation = `mutation SaveMany($routes: [InternalInput!]!) {
   internal {
@@ -30,6 +37,24 @@ const rewriterGetInternal = `query Internal($path: String!) {
     }
   }
 }`
+
+const rewriterDeleteInternalMutation = `mutation Delete($path: String!, $locator: RouteLocator) {
+  internal {
+    delete(path: $path, locator: $locator) {
+      id
+    }
+  }
+}`
+
+const rewriterRoutesById = `query Routes($locator: EntityLocator!) {
+  internal {
+    routes(locator: $locator) {
+      route
+      binding
+    }
+  }
+}
+`
 
 export class Rewriter extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
@@ -108,5 +133,37 @@ export class Rewriter extends AppGraphQLClient {
         }
       )
       .then(res => res.data?.internal.get)
+  }
+
+  public routesById(locator: EntityLocator): Promise<RoutesByBinding[]> {
+    return this.graphql
+      .query<
+        { internal: { routes: RoutesByBinding[] } },
+        { locator: EntityLocator }
+      >(
+        {
+          query: rewriterRoutesById,
+          variables: { locator },
+        },
+        {
+          metric: 'rewriter-get-routes-by-id',
+        }
+      )
+      .then(res => res.data?.internal?.routes) as Promise<RoutesByBinding[]>
+  }
+
+  public async deleteInternal(locator: RouteLocator) {
+    return this.graphql.mutate<
+      boolean,
+      { path: string; locator: RouteLocator }
+    >(
+      {
+        mutate: rewriterDeleteInternalMutation,
+        variables: { path: locator.from, locator },
+      },
+      {
+        metric: 'rewriter-delete-internal',
+      }
+    )
   }
 }
