@@ -10,6 +10,7 @@ import {
 } from '../../utils/internals'
 import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
+import { deleteOldTranslation } from './delete'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
@@ -59,7 +60,7 @@ export async function categoryInternals(
   next: () => Promise<void>
 ) {
   const {
-    clients: { apps, messages: messagesClient },
+    clients: { apps, messages: messagesClient, rewriter },
     state: {
       tenantInfo: { defaultLocale: tenantLocale },
       tenantInfo,
@@ -97,6 +98,7 @@ export async function categoryInternals(
         messages
       )
       const path = pathFromTree(formatRoute, translatedTree)
+      await deleteOldTranslation(id, pageType, bindingId, rewriter)
 
       return {
         binding: bindingId,
