@@ -15,8 +15,9 @@ export const deleteOldTranslation = async (
   if (!oldPath) {
     return
   }
+  await rewriter.deleteInternal({ from: oldPath.route, binding: bindingId })
+
   if (LINKED) {
     console.log('Deleted', { from: oldPath.route, binding: bindingId })
   }
-  await rewriter.deleteInternal({ from: oldPath.route, binding: bindingId })
 }
