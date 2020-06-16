@@ -10,6 +10,7 @@ import {
 } from '../../utils/internals'
 import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
+import { deleteOldTranslation } from './delete'
 
 type Params = Record<string, string | undefined> | null | undefined
 
@@ -21,7 +22,7 @@ export async function productInternals(
   next: () => Promise<void>
 ) {
   const {
-    clients: { apps, messages: messagesClient },
+    clients: { apps, messages: messagesClient, rewriter },
     state: {
       tenantInfo: { defaultLocale: tenantLocale },
       tenantInfo,
@@ -53,6 +54,7 @@ export async function productInternals(
         messages
       )
       const path = pathFromRoute(formatRoute, translated)
+      await deleteOldTranslation(id, 'product', bindingId, rewriter)
 
       return {
         binding: bindingId,

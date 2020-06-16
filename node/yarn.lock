@@ -148,10 +148,10 @@
     "@types/express-serve-static-core" "*"
     "@types/mime" "*"
 
-"@vtex/api@6.30.1":
-  version "6.30.1"
-  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.30.1.tgz#e71ebed6cff6bfdec928535133ffe6d0522797ae"
-  integrity sha512-HfE5Jxii3daU8s3B0FS/5fKeoObkqZkdGBSz8iwWvhYN+nCrvJWm7J0KT5MyGNphp0E3ShxoHQhF46RUG8yXVA==
+"@vtex/api@6.31.1":
+  version "6.31.1"
+  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.31.1.tgz#dcb7bddb0b77d6a1ad936da0a6bbc42d577b7883"
+  integrity sha512-KogyA3ZL4behY/8HG7SormxbcOnETJAre6sWkUvSbl1SYLoeL/znvMigzp5812lGDxqjwcIxW6AdFP2Qla+8zw==
   dependencies:
     "@types/koa" "^2.11.0"
     "@types/koa-compose" "^3.2.3"
@@ -1588,7 +1588,7 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
 
-"stats-lite@github:vtex/node-stats-lite#dist":
+stats-lite@vtex/node-stats-lite#dist:
   version "2.2.0"
   resolved "https://codeload.github.com/vtex/node-stats-lite/tar.gz/1b0d39cc41ef7aaecfd541191f877887a2044797"
   dependencies:
@@ -1844,29 +1844,29 @@ vary@^1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
-"vtex.catalog-api-proxy@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-api-proxy@0.7.2/public/_types/react":
+"vtex.catalog-api-proxy@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-api-proxy@0.9.0/public/_types/react":
   version "0.0.0"
-  resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-api-proxy@0.7.2/public/_types/react#fa7a0347e046eab3dd768998fc9252b2c0dd5aef"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-api-proxy@0.9.0/public/_types/react#fa7a0347e046eab3dd768998fc9252b2c0dd5aef"
 
-"vtex.catalog-graphql@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-graphql@1.68.0/public/@types/vtex.catalog-graphql":
-  version "1.68.0"
-  resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.catalog-graphql@1.68.0/public/@types/vtex.catalog-graphql#7ac52cb196791ac824beeec892f9a5d744d60dd6"
+"vtex.catalog-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.79.2/public/@types/vtex.catalog-graphql":
+  version "1.79.2"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.79.2/public/@types/vtex.catalog-graphql#11592e444bd3d3ba42d712589472d9fd8303d0b6"
 
-"vtex.messages@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.messages@1.59.2/public/@types/vtex.messages":
-  version "1.59.2"
-  resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.messages@1.59.2/public/@types/vtex.messages#63cf1bc42e926b8d0eccb8a24b1e10f35c17dabf"
+"vtex.messages@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.messages@1.60.2/public/@types/vtex.messages":
+  version "1.60.2"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.messages@1.60.2/public/@types/vtex.messages#e9b6005f11925e99ac3bb56d47d3ea6ad6d18280"
 
-"vtex.rewriter@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.rewriter@1.35.1/public/@types/vtex.rewriter":
-  version "1.35.1"
-  resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.rewriter@1.35.1/public/@types/vtex.rewriter#32477e0ca215c999525dfcd72cbc57ce372613bf"
+"vtex.rewriter@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.rewriter@1.45.2/public/@types/vtex.rewriter":
+  version "1.45.2"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.rewriter@1.45.2/public/@types/vtex.rewriter#1dc0d87a3a5d0c5948dc7f83886fc55841be0891"
 
-"vtex.search-graphql@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.search-graphql@0.21.1/public/@types/vtex.search-graphql":
-  version "0.21.1"
-  resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.search-graphql@0.21.1/public/@types/vtex.search-graphql#6b708e0948485dc252645451c83383b1a7631705"
-
-"vtex.store-indexer@http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.store-indexer@0.9.4/public/_types/react":
+"vtex.search-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.search-graphql@0.27.2/public/_types/react":
   version "0.0.0"
-  resolved "http://vtex.vteximg.com.br/_v/public/typings/v1/vtex.store-indexer@0.9.4/public/_types/react#fa7a0347e046eab3dd768998fc9252b2c0dd5aef"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.search-graphql@0.27.2/public/_types/react#fa7a0347e046eab3dd768998fc9252b2c0dd5aef"
+
+"vtex.store-indexer@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.store-indexer@0.15.2/public/_types/react":
+  version "0.0.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.store-indexer@0.15.2/public/_types/react#fa7a0347e046eab3dd768998fc9252b2c0dd5aef"
 
 wide-align@^1.1.0:
   version "1.1.3"
