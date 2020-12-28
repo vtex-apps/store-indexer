@@ -84,11 +84,6 @@ export async function categoryInternals(
   const formatRoute = await routeFormatter(apps, pageType)
   const translate = createTranslator(messagesClient)
 
-  const tenantPath = pathFromTree(
-    formatRoute,
-    messages.map(x => x.content)
-  )
-
   const internals = await Promise.all(
     bindings.map(async binding => {
       const { id: bindingId, defaultLocale: bindingLocale } = binding
@@ -107,7 +102,6 @@ export async function categoryInternals(
         id,
         origin: INDEXED_ORIGIN,
         query: isActive ? { map } : null,
-        resolveAs: tenantPath,
         type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
       }
     })

@@ -9,7 +9,6 @@ import {
 import { Clients } from './clients'
 import { brandInternals } from './middlewares/internals/brand'
 import { categoryInternals } from './middlewares/internals/category'
-import { productInternals } from './middlewares/internals/product'
 import { saveInternals } from './middlewares/internals/save'
 import { createCanonicals } from './middlewares/search/createCanonicals'
 import { getSearchStats } from './middlewares/search/getSearchStats'
@@ -63,7 +62,6 @@ export default new Service<Clients, State, ParamsContext>({
   events: {
     broadcasterBrand: [throttle, tenant, brandInternals, saveInternals],
     broadcasterCategory: [throttle, tenant, categoryInternals, saveInternals],
-    broadcasterProduct: [throttle, tenant, productInternals, saveInternals],
     searchUrlsCountIndex: [
       throttle,
       settings,
