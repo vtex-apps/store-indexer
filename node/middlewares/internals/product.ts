@@ -26,6 +26,7 @@ export async function productInternals(
     state: {
       tenantInfo: { defaultLocale: tenantLocale },
       tenantInfo,
+      settings: { usesMultiLanguageSearch },
     },
   } = ctx
   const product: Product = ctx.body
@@ -62,7 +63,7 @@ export async function productInternals(
         from: path,
         id,
         origin: INDEXED_ORIGIN,
-        resolveAs: tenantPath,
+        resolveAs: usesMultiLanguageSearch ? null : tenantPath,
         type: isActive ? PAGE_TYPES.PRODUCT : PAGE_TYPES.PRODUCT_NOT_FOUND,
       }
     })

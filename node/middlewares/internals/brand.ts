@@ -23,6 +23,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
     state: {
       tenantInfo: { defaultLocale: tenantLocale },
       tenantInfo,
+      settings: { usesMultiLanguageSearch },
     },
   } = ctx
   const brand: Brand = ctx.body
@@ -57,7 +58,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
         id,
         origin: INDEXED_ORIGIN,
         query: active ? { map: 'b' } : null,
-        resolveAs: tenantPath,
+        resolveAs: usesMultiLanguageSearch ? null : tenantPath,
         type: active ? PAGE_TYPES.BRAND : PAGE_TYPES.SEARCH_NOT_FOUND,
       }
     })
