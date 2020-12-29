@@ -26,6 +26,12 @@
         "type": "number",
         "default": 0,
         "description": "Store index will take this number of URLs, the most accessed ones based on access stats, make canonicals and index them at our sitemap."
+      },
+      "usesMultiLanguageSearch": {
+        "title": "Uses a Search that supports multi-language",
+        "type": "boolean",
+        "default": false,
+        "description": "Uses a Search that supports multi-language and can receive the search parameters in other languages"
       }
     }
   },
@@ -73,8 +79,6 @@
       "name": "vtex.rewriter:resolve-graphql"
     }
   ],
-  "registries": [
-    "smartcheckout"
-  ],
+  "registries": ["smartcheckout"],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

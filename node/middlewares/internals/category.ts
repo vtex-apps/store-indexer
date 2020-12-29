@@ -64,6 +64,7 @@ export async function categoryInternals(
     state: {
       tenantInfo: { defaultLocale: tenantLocale },
       tenantInfo,
+      settings: { usesMultiLanguageSearch },
     },
   } = ctx
   const category: IdentifiedCategory = ctx.body
@@ -107,7 +108,7 @@ export async function categoryInternals(
         id,
         origin: INDEXED_ORIGIN,
         query: isActive ? { map } : null,
-        resolveAs: tenantPath,
+        resolveAs: usesMultiLanguageSearch ? null : tenantPath,
         type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
       }
     })

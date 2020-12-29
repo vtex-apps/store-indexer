@@ -4,10 +4,12 @@ import { Context } from '../typings/global'
 
 export interface Settings {
   numberOfIndexedSearches: number
+  usesMultiLanguageSearch: boolean
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   numberOfIndexedSearches: 0,
+  usesMultiLanguageSearch: false,
 }
 
 export async function settings(ctx: Context, next: () => Promise<void>) {

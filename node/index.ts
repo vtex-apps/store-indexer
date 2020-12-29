@@ -61,9 +61,27 @@ const clients: ClientsConfig<Clients> = {
 export default new Service<Clients, State, ParamsContext>({
   clients,
   events: {
-    broadcasterBrand: [throttle, tenant, brandInternals, saveInternals],
-    broadcasterCategory: [throttle, tenant, categoryInternals, saveInternals],
-    broadcasterProduct: [throttle, tenant, productInternals, saveInternals],
+    broadcasterBrand: [
+      throttle,
+      settings,
+      tenant,
+      brandInternals,
+      saveInternals,
+    ],
+    broadcasterCategory: [
+      throttle,
+      settings,
+      tenant,
+      categoryInternals,
+      saveInternals,
+    ],
+    broadcasterProduct: [
+      throttle,
+      settings,
+      tenant,
+      productInternals,
+      saveInternals,
+    ],
     searchUrlsCountIndex: [
       throttle,
       settings,
