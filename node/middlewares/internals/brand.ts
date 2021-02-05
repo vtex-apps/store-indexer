@@ -36,8 +36,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
 
   const formatRoute = await routeFormatter(apps, PAGE_TYPES.BRAND)
   const translate = createTranslator(messagesClient)
-  const messages = [{ content: name, context: id }]
-
+  const messages = [{ content: name, context: id, behavior: 'USER_ONLY'}]
   const tenantPath = pathFromRoute(formatRoute, name)
 
   const internals = await Promise.all(
