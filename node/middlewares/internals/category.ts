@@ -1,4 +1,5 @@
 import { Category } from '@vtex/api/lib/clients/apps/catalogGraphQL/category'
+import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
 import { filterStoreBindings } from '../../utils/bindings'
@@ -66,6 +67,7 @@ export async function categoryInternals(
       tenantInfo,
       settings: { usesMultiLanguageSearch },
     },
+    vtex: { logger },
   } = ctx
   const category: IdentifiedCategory = ctx.body
   const bindings = filterStoreBindings(tenantInfo)
@@ -92,29 +94,35 @@ export async function categoryInternals(
 
   const internals = await Promise.all(
     bindings.map(async binding => {
-      const { id: bindingId, defaultLocale: bindingLocale } = binding
-      const translatedTree = await translate(
-        tenantLocale,
-        bindingLocale,
-        messages
-      )
-      const path = pathFromTree(formatRoute, translatedTree)
-      await deleteOldTranslation(id, pageType, bindingId, rewriter)
-
-      return {
-        binding: bindingId,
-        declarer: STORE_LOCATOR,
-        from: path,
-        id,
-        origin: INDEXED_ORIGIN,
-        query: isActive ? { map } : null,
-        resolveAs: usesMultiLanguageSearch ? null : tenantPath,
-        type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
+      try {
+        const { id: bindingId, defaultLocale: bindingLocale } = binding
+        const translatedTree = await translate(
+          tenantLocale,
+          bindingLocale,
+          messages
+        )
+        const path = pathFromTree(formatRoute, translatedTree)
+        await deleteOldTranslation(id, pageType, bindingId, rewriter)
+        return {
+          binding: bindingId,
+          declarer: STORE_LOCATOR,
+          from: path,
+          id,
+          origin: INDEXED_ORIGIN,
+          query: isActive ? { map } : null,
+          resolveAs: usesMultiLanguageSearch ? null : tenantPath,
+          type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
+        } as InternalInput
+      } catch (error) {
+        logger.error({ message: 'Error creating internal', error })
+        return null
       }
     })
   )
 
-  ctx.state.internals = internals
+  ctx.state.internals = internals.filter(
+    internal => internal != null
+  ) as InternalInput[]
 
   await next()
 }
