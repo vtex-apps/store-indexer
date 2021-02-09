@@ -56,6 +56,12 @@ const rewriterRoutesById = `query Routes($locator: EntityLocator!) {
 }
 `
 
+const rewriterDeleteManyInternalMutation = `mutation DeleteMany($paths: [String!]!, $locators: [RouteLocator!]) {
+  internal {
+    deleteMany(paths: $paths, locators: $locators)
+  }
+}`
+
 export class Rewriter extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
     super('vtex.rewriter@1.x', ctx, opts)
@@ -63,7 +69,7 @@ export class Rewriter extends AppGraphQLClient {
 
   public async saveManyInternals(internals: InternalInput[]) {
     const { tenant } = this.context
-    this.graphql.mutate<boolean, { routes: InternalInput[] }>(
+    return this.graphql.mutate<boolean, { routes: InternalInput[] }>(
       {
         mutate: rewriterSaveManyInternalMutation,
         variables: { routes: internals },
@@ -102,7 +108,7 @@ export class Rewriter extends AppGraphQLClient {
 
   public async saveRedirect(redirect: RedirectInput) {
     const { tenant } = this.context
-    this.graphql.mutate<boolean, { route: RedirectInput }>(
+    return this.graphql.mutate<boolean, { route: RedirectInput }>(
       {
         mutate: rewriterSaveRedirectMutation,
         variables: { route: redirect },
@@ -166,6 +172,28 @@ export class Rewriter extends AppGraphQLClient {
       },
       {
         metric: 'rewriter-delete-internal',
+      }
+    )
+  }
+
+  public async deleteManyInternals(locators: RouteLocator[]) {
+    const { tenant } = this.context
+    const paths = locators.map(locator => locator.from)
+    return this.graphql.mutate<
+      boolean,
+      { locators: RouteLocator[]; paths: string[] }
+    >(
+      {
+        mutate: rewriterDeleteManyInternalMutation,
+        variables: { locators, paths },
+      },
+      {
+        headers: {
+          ...(this.options && this.options.headers),
+          'Proxy-Authorization': this.context.authToken,
+          'x-vtex-tenant': tenant,
+        },
+        metric: 'rewriter-delete-many-internal',
       }
     )
   }
