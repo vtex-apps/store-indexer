@@ -3,15 +3,16 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
 import { filterBindingsBySalesChannel } from '../../utils/bindings'
+import { deleteOldTranslation } from '../../utils/delete'
 import {
   INDEXED_ORIGIN,
   PAGE_TYPES,
+  processInternalAndOldRoute,
   routeFormatter,
   STORE_LOCATOR,
 } from '../../utils/internals'
 import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
-import { deleteOldTranslation } from './delete'
 
 type Params = Record<string, string | undefined> | null | undefined
 
@@ -48,7 +49,7 @@ export async function productInternals(
 
   const tenantPath = pathFromRoute(formatRoute, linkId)
 
-  const internals = await Promise.all(
+  const internalsAndOldRoutes = await Promise.all(
     bindings.map(async binding => {
       try {
         const { defaultLocale: bindingLocale, id: bindingId } = binding
@@ -58,9 +59,14 @@ export async function productInternals(
           messages
         )
         const path = pathFromRoute(formatRoute, translated)
-        await deleteOldTranslation(id, 'product', bindingId, rewriter)
+        const oldRoute = await deleteOldTranslation(
+          id,
+          'product',
+          bindingId,
+          rewriter
+        )
 
-        return {
+        const internal: InternalInput = {
           binding: bindingId,
           declarer: STORE_LOCATOR,
           from: path,
@@ -68,7 +74,11 @@ export async function productInternals(
           origin: INDEXED_ORIGIN,
           resolveAs: usesMultiLanguageSearch ? null : tenantPath,
           type: isActive ? PAGE_TYPES.PRODUCT : PAGE_TYPES.PRODUCT_NOT_FOUND,
-        } as InternalInput
+        }
+        return {
+          internal,
+          oldRoute,
+        }
       } catch (error) {
         logger.error({
           binding: binding.id,
@@ -81,9 +91,12 @@ export async function productInternals(
     })
   )
 
-  ctx.state.internals = internals.filter(
-    internal => internal != null
-  ) as InternalInput[]
+  const { internals, oldRoutes } = processInternalAndOldRoute(
+    internalsAndOldRoutes
+  )
+
+  ctx.state.internals = internals
+  ctx.state.oldRoutes = oldRoutes
 
   await next()
 }

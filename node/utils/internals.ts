@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { Apps } from '@vtex/api'
 import RouteParser from 'route-parser'
+import { InternalInput, RouteLocator } from 'vtex.rewriter'
 
 export const INDEXED_ORIGIN = `${process.env.VTEX_APP_ID!}:routes-indexing`
 export const STORE_LOCATOR = 'vtex.store@2.x'
@@ -32,6 +33,11 @@ export interface ContentTypeDefinition {
   canonical: string
 }
 
+export interface InternalAndOldRoute {
+  internal: InternalInput
+  oldRoute: RouteLocator | null
+}
+
 export type Routes = Record<string, ContentTypeDefinition>
 
 type PageTypes = typeof PAGE_TYPES[keyof typeof PAGE_TYPES]
@@ -52,4 +58,23 @@ export const routeFormatter = async (apps: Apps, type: PageTypes) => {
     }
     return path
   }
+}
+
+export const processInternalAndOldRoute = (
+  internalsAndOldRoutes: Array<InternalAndOldRoute | null>
+) => {
+  return internalsAndOldRoutes.reduce(
+    (acc, data) => {
+      if (data === null) {
+        return acc
+      }
+      const { internal, oldRoute } = data
+      acc.internals.push(internal)
+      if (oldRoute) {
+        acc.oldRoutes.push(oldRoute)
+      }
+      return acc
+    },
+    { internals: [] as InternalInput[], oldRoutes: [] as RouteLocator[] }
+  )
 }

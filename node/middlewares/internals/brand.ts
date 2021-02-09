@@ -3,15 +3,16 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
 import { filterStoreBindings } from '../../utils/bindings'
+import { deleteOldTranslation } from '../../utils/delete'
 import {
   INDEXED_ORIGIN,
   PAGE_TYPES,
+  processInternalAndOldRoute,
   routeFormatter,
   STORE_LOCATOR,
 } from '../../utils/internals'
 import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
-import { deleteOldTranslation } from './delete'
 
 type Params = Record<string, string | undefined> | null | undefined
 
@@ -41,7 +42,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
   const messages = [{ content: name, context: id, behavior: 'USER_ONLY'}]
   const tenantPath = pathFromRoute(formatRoute, name)
 
-  const internals = await Promise.all(
+  const internalsAndOldRoutes = await Promise.all(
     bindings.map(async binding => {
       try {
         const { id: bindingId, defaultLocale: bindingLocale } = binding
@@ -51,9 +52,14 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
           messages
         )
         const path = pathFromRoute(formatRoute, translated)
-        await deleteOldTranslation(id, 'brand', bindingId, rewriter)
+        const oldRoute = await deleteOldTranslation(
+          id,
+          'brand',
+          bindingId,
+          rewriter
+        )
 
-        return {
+        const internal: InternalInput = {
           binding: bindingId,
           declarer: STORE_LOCATOR,
           from: path,
@@ -62,7 +68,11 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
           query: active ? { map: 'b' } : null,
           resolveAs: usesMultiLanguageSearch ? null : tenantPath,
           type: active ? PAGE_TYPES.BRAND : PAGE_TYPES.SEARCH_NOT_FOUND,
-        } as InternalInput
+        }
+        return {
+          internal,
+          oldRoute,
+        }
       } catch (error) {
         logger.error({
           binding: binding.id,
@@ -75,9 +85,12 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
     })
   )
 
-  ctx.state.internals = internals.filter(
-    internal => internal != null
-  ) as InternalInput[]
+  const { internals, oldRoutes } = processInternalAndOldRoute(
+    internalsAndOldRoutes
+  )
+
+  ctx.state.internals = internals
+  ctx.state.oldRoutes = oldRoutes
 
   await next()
 }

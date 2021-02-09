@@ -3,15 +3,17 @@ import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
 import { filterStoreBindings } from '../../utils/bindings'
+import { deleteOldTranslation } from '../../utils/delete'
 import {
   INDEXED_ORIGIN,
+  InternalAndOldRoute,
   PAGE_TYPES,
+  processInternalAndOldRoute,
   routeFormatter,
   STORE_LOCATOR,
 } from '../../utils/internals'
 import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
-import { deleteOldTranslation } from './delete'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
@@ -92,7 +94,7 @@ export async function categoryInternals(
     messages.map(x => x.content)
   )
 
-  const internals = await Promise.all(
+  const internalsAndOldRoutes = await Promise.all(
     bindings.map(async binding => {
       try {
         const { id: bindingId, defaultLocale: bindingLocale } = binding
@@ -102,8 +104,13 @@ export async function categoryInternals(
           messages
         )
         const path = pathFromTree(formatRoute, translatedTree)
-        await deleteOldTranslation(id, pageType, bindingId, rewriter)
-        return {
+        const oldRoute = await deleteOldTranslation(
+          id,
+          pageType,
+          bindingId,
+          rewriter
+        )
+        const internal: InternalInput = {
           binding: bindingId,
           declarer: STORE_LOCATOR,
           from: path,
@@ -112,7 +119,11 @@ export async function categoryInternals(
           query: isActive ? { map } : null,
           resolveAs: usesMultiLanguageSearch ? null : tenantPath,
           type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
-        } as InternalInput
+        }
+        return {
+          internal,
+          oldRoute,
+        } as InternalAndOldRoute
       } catch (error) {
         logger.error({
           binding: binding.id,
@@ -125,9 +136,12 @@ export async function categoryInternals(
     })
   )
 
-  ctx.state.internals = internals.filter(
-    internal => internal != null
-  ) as InternalInput[]
+  const { internals, oldRoutes } = processInternalAndOldRoute(
+    internalsAndOldRoutes
+  )
+
+  ctx.state.internals = internals
+  ctx.state.oldRoutes = oldRoutes
 
   await next()
 }

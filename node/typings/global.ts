@@ -1,5 +1,5 @@
 import { EventContext, RecorderState, Tenant } from '@vtex/api'
-import { InternalInput } from 'vtex.rewriter'
+import { InternalInput, RouteLocator } from 'vtex.rewriter'
 
 import { Clients } from '../clients'
 import { Settings } from '../middlewares/settings'
@@ -11,6 +11,7 @@ export interface State extends RecorderState {
   settings: Settings
   tenantInfo: Tenant
   internals?: InternalInput[]
+  oldRoutes?: RouteLocator[]
 }
 
 export interface Event {
