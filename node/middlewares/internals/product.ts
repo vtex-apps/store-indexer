@@ -1,4 +1,5 @@
 import { Product } from 'vtex.catalog-graphql'
+import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
 import { filterBindingsBySalesChannel } from '../../utils/bindings'
@@ -28,6 +29,7 @@ export async function productInternals(
       tenantInfo,
       settings: { usesMultiLanguageSearch },
     },
+    vtex: { logger },
   } = ctx
   const product: Product = ctx.body
   const { linkId, isActive, id } = product
@@ -48,28 +50,40 @@ export async function productInternals(
 
   const internals = await Promise.all(
     bindings.map(async binding => {
-      const { defaultLocale: bindingLocale, id: bindingId } = binding
-      const [translated] = await translate(
-        tenantLocale,
-        bindingLocale,
-        messages
-      )
-      const path = pathFromRoute(formatRoute, translated)
-      await deleteOldTranslation(id, 'product', bindingId, rewriter)
+      try {
+        const { defaultLocale: bindingLocale, id: bindingId } = binding
+        const [translated] = await translate(
+          tenantLocale,
+          bindingLocale,
+          messages
+        )
+        const path = pathFromRoute(formatRoute, translated)
+        await deleteOldTranslation(id, 'product', bindingId, rewriter)
 
-      return {
-        binding: bindingId,
-        declarer: STORE_LOCATOR,
-        from: path,
-        id,
-        origin: INDEXED_ORIGIN,
-        resolveAs: usesMultiLanguageSearch ? null : tenantPath,
-        type: isActive ? PAGE_TYPES.PRODUCT : PAGE_TYPES.PRODUCT_NOT_FOUND,
+        return {
+          binding: bindingId,
+          declarer: STORE_LOCATOR,
+          from: path,
+          id,
+          origin: INDEXED_ORIGIN,
+          resolveAs: usesMultiLanguageSearch ? null : tenantPath,
+          type: isActive ? PAGE_TYPES.PRODUCT : PAGE_TYPES.PRODUCT_NOT_FOUND,
+        } as InternalInput
+      } catch (error) {
+        logger.error({
+          binding: binding.id,
+          error,
+          message: 'Error creating category internals',
+          product,
+        })
+        return null
       }
     })
   )
 
-  ctx.state.internals = internals
+  ctx.state.internals = internals.filter(
+    internal => internal != null
+  ) as InternalInput[]
 
   await next()
 }

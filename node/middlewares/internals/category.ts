@@ -114,7 +114,12 @@ export async function categoryInternals(
           type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
         } as InternalInput
       } catch (error) {
-        logger.error({ message: 'Error creating internal', error })
+        logger.error({
+          binding: binding.id,
+          category,
+          error,
+          message: 'Error creating category internals',
+        })
         return null
       }
     })

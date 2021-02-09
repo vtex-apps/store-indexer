@@ -1,4 +1,5 @@
 import { Brand } from 'vtex.catalog-graphql'
+import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
 import { filterStoreBindings } from '../../utils/bindings'
@@ -25,6 +26,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
       tenantInfo,
       settings: { usesMultiLanguageSearch },
     },
+    vtex: { logger },
   } = ctx
   const brand: Brand = ctx.body
   const { name, active, id } = brand
@@ -41,29 +43,41 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
 
   const internals = await Promise.all(
     bindings.map(async binding => {
-      const { id: bindingId, defaultLocale: bindingLocale } = binding
-      const [translated] = await translate(
-        tenantLocale,
-        bindingLocale,
-        messages
-      )
-      const path = pathFromRoute(formatRoute, translated)
-      await deleteOldTranslation(id, 'brand', bindingId, rewriter)
+      try {
+        const { id: bindingId, defaultLocale: bindingLocale } = binding
+        const [translated] = await translate(
+          tenantLocale,
+          bindingLocale,
+          messages
+        )
+        const path = pathFromRoute(formatRoute, translated)
+        await deleteOldTranslation(id, 'brand', bindingId, rewriter)
 
-      return {
-        binding: bindingId,
-        declarer: STORE_LOCATOR,
-        from: path,
-        id,
-        origin: INDEXED_ORIGIN,
-        query: active ? { map: 'b' } : null,
-        resolveAs: usesMultiLanguageSearch ? null : tenantPath,
-        type: active ? PAGE_TYPES.BRAND : PAGE_TYPES.SEARCH_NOT_FOUND,
+        return {
+          binding: bindingId,
+          declarer: STORE_LOCATOR,
+          from: path,
+          id,
+          origin: INDEXED_ORIGIN,
+          query: active ? { map: 'b' } : null,
+          resolveAs: usesMultiLanguageSearch ? null : tenantPath,
+          type: active ? PAGE_TYPES.BRAND : PAGE_TYPES.SEARCH_NOT_FOUND,
+        } as InternalInput
+      } catch (error) {
+        logger.error({
+          binding: binding.id,
+          brand,
+          error,
+          message: 'Error creating category internals',
+        })
+        return null
       }
     })
   )
 
-  ctx.state.internals = internals
+  ctx.state.internals = internals.filter(
+    internal => internal != null
+  ) as InternalInput[]
 
   await next()
 }
