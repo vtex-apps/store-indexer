@@ -63,6 +63,7 @@ export async function productInternals(
           id,
           'product',
           bindingId,
+          path,
           rewriter
         )
 

@@ -108,6 +108,7 @@ export async function categoryInternals(
           id,
           pageType,
           bindingId,
+          path,
           rewriter
         )
         const internal: InternalInput = {

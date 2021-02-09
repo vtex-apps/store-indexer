@@ -56,6 +56,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
           id,
           'brand',
           bindingId,
+          path,
           rewriter
         )
 
