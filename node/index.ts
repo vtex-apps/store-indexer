@@ -9,6 +9,7 @@ import {
 import { Clients } from './clients'
 import { brandInternals } from './middlewares/internals/brand'
 import { categoryInternals } from './middlewares/internals/category'
+import { deleteOldRoutes } from './middlewares/internals/delete'
 import { productInternals } from './middlewares/internals/product'
 import { saveInternals } from './middlewares/internals/save'
 import { createCanonicals } from './middlewares/search/createCanonicals'
@@ -67,6 +68,7 @@ export default new Service<Clients, State, ParamsContext>({
       tenant,
       brandInternals,
       saveInternals,
+      deleteOldRoutes,
     ],
     broadcasterCategory: [
       throttle,
@@ -74,6 +76,7 @@ export default new Service<Clients, State, ParamsContext>({
       tenant,
       categoryInternals,
       saveInternals,
+      deleteOldRoutes,
     ],
     broadcasterProduct: [
       throttle,
@@ -81,6 +84,7 @@ export default new Service<Clients, State, ParamsContext>({
       tenant,
       productInternals,
       saveInternals,
+      deleteOldRoutes,
     ],
     searchUrlsCountIndex: [
       throttle,

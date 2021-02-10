@@ -1,16 +1,19 @@
 import { Category } from '@vtex/api/lib/clients/apps/catalogGraphQL/category'
+import { InternalInput } from 'vtex.rewriter'
 
 import { Context } from '../../typings/global'
 import { filterStoreBindings } from '../../utils/bindings'
+import { deleteOldTranslation } from '../../utils/delete'
 import {
   INDEXED_ORIGIN,
+  InternalAndOldRoute,
   PAGE_TYPES,
+  processInternalAndOldRoute,
   routeFormatter,
   STORE_LOCATOR,
 } from '../../utils/internals'
 import { createTranslator } from '../../utils/messages'
 import { slugify } from '../../utils/slugify'
-import { deleteOldTranslation } from './delete'
 
 type CategoryTypes = 'DEPARTMENT' | 'CATEGORY' | 'SUBCATEGORY'
 
@@ -66,6 +69,7 @@ export async function categoryInternals(
       tenantInfo,
       settings: { usesMultiLanguageSearch },
     },
+    vtex: { logger },
   } = ctx
   const category: IdentifiedCategory = ctx.body
   const bindings = filterStoreBindings(tenantInfo)
@@ -90,31 +94,55 @@ export async function categoryInternals(
     messages.map(x => x.content)
   )
 
-  const internals = await Promise.all(
+  const internalsAndOldRoutes = await Promise.all(
     bindings.map(async binding => {
-      const { id: bindingId, defaultLocale: bindingLocale } = binding
-      const translatedTree = await translate(
-        tenantLocale,
-        bindingLocale,
-        messages
-      )
-      const path = pathFromTree(formatRoute, translatedTree)
-      await deleteOldTranslation(id, pageType, bindingId, rewriter)
-
-      return {
-        binding: bindingId,
-        declarer: STORE_LOCATOR,
-        from: path,
-        id,
-        origin: INDEXED_ORIGIN,
-        query: isActive ? { map } : null,
-        resolveAs: usesMultiLanguageSearch ? null : tenantPath,
-        type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
+      try {
+        const { id: bindingId, defaultLocale: bindingLocale } = binding
+        const translatedTree = await translate(
+          tenantLocale,
+          bindingLocale,
+          messages
+        )
+        const path = pathFromTree(formatRoute, translatedTree)
+        const oldRoute = await deleteOldTranslation(
+          id,
+          pageType,
+          bindingId,
+          path,
+          rewriter
+        )
+        const internal: InternalInput = {
+          binding: bindingId,
+          declarer: STORE_LOCATOR,
+          from: path,
+          id,
+          origin: INDEXED_ORIGIN,
+          query: isActive ? { map } : null,
+          resolveAs: usesMultiLanguageSearch ? null : tenantPath,
+          type: isActive ? pageType : PAGE_TYPES.SEARCH_NOT_FOUND,
+        }
+        return {
+          internal,
+          oldRoute,
+        } as InternalAndOldRoute
+      } catch (error) {
+        logger.error({
+          binding: binding.id,
+          category,
+          error,
+          message: 'Error creating category internals',
+        })
+        return null
       }
     })
   )
 
+  const { internals, oldRoutes } = processInternalAndOldRoute(
+    internalsAndOldRoutes
+  )
+
   ctx.state.internals = internals
+  ctx.state.oldRoutes = oldRoutes
 
   await next()
 }
