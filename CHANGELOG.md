@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.16.4] - 2021-02-10
+
 ## [0.16.3] - 2020-12-29
 ### Added 
 - Setting to enable correct behavior for the multi-language search
