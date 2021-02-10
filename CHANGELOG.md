@@ -6,13 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
-## [0.16.4] - 2021-02-10
-### Fixed
 - Handles route translation errors
 - Deletes old routes after new routes are saved
 
 ## [0.16.4] - 2021-02-10
+### Fixes
+- Translate brands only using user translations
 
 ## [0.16.3] - 2020-12-29
 ### Added 
