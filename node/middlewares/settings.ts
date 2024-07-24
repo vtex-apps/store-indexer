@@ -5,10 +5,12 @@ import { Context } from '../typings/global'
 export interface Settings {
   numberOfIndexedSearches: number
   usesMultiLanguageSearch: boolean
+  resolveBrandMapQueryAs: string
 }
 
 export const DEFAULT_SETTINGS: Settings = {
   numberOfIndexedSearches: 0,
+  resolveBrandMapQueryAs: 'b',
   usesMultiLanguageSearch: false,
 }
 

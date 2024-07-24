@@ -32,6 +32,16 @@
         "type": "boolean",
         "default": false,
         "description": "Uses a Search that supports multi-language and can receive the search parameters in other languages"
+      },
+      "resolveBrandMapQueryAs": {
+        "title": "Brand Queries Map",
+        "type": "string",
+        "enumNames": [
+          "Full Text",
+          "Brand"
+        ],
+        "enum": ["ft", "b"],
+        "description": "Defines how you want to map brand pages"
       }
     }
   },

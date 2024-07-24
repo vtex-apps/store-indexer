@@ -25,7 +25,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
     state: {
       tenantInfo: { defaultLocale: tenantLocale },
       tenantInfo,
-      settings: { usesMultiLanguageSearch },
+      settings: { usesMultiLanguageSearch, resolveBrandMapQueryAs },
     },
     vtex: { logger },
   } = ctx
@@ -66,7 +66,7 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
           from: path,
           id,
           origin: INDEXED_ORIGIN,
-          query: active ? { map: 'b' } : null,
+          query: active ? { map: resolveBrandMapQueryAs } : null,
           resolveAs: usesMultiLanguageSearch ? null : tenantPath,
           type: active ? PAGE_TYPES.BRAND : PAGE_TYPES.SEARCH_NOT_FOUND,
         }
