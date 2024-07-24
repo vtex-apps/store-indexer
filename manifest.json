@@ -36,11 +36,15 @@
       "resolveBrandMapQueryAs": {
         "title": "Brand Queries Map",
         "type": "string",
+        "default": "b",
         "enumNames": [
           "Full Text",
           "Brand"
         ],
-        "enum": ["ft", "b"],
+        "enum": [
+          "ft",
+          "b"
+        ],
         "description": "Defines how you want to map brand pages"
       }
     }
