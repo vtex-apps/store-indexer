@@ -10,8 +10,7 @@ The app updates translations whenever translatable fields are modified.
 
 ### Routes
 
-The app updates internal routes by saving the correct page type and canonical route ID.
-Flags deactivated products as "not found."
+Store Indexer updates internal routes by saving the correct page type and canonical route ID, and flags deactivated products as "not found".
 
 ### Search URLs
 
