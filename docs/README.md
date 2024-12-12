@@ -1,27 +1,36 @@
 # Store Indexer
 
-An VTEXIO app that listens to IO's broadcasters and indexes data according to catalog changes.
+The Store Indexer is a VTEX IO app designed to listen to IO broadcasters and index data based on catalog changes.
 
-#### Messages
+## Key features
 
-It updates translations when translatable fields changes
+### Messages
 
-#### Routes
+The app updates translations whenever translatable fields are modified.
 
-It updates internal routes. Saves correct page type and id of the canonical routes, and it also saves 
-deactivated products as not found.
+### Routes
+
+The app updates internal routes by saving the correct page type and canonical route ID.
+Flags deactivated products as "not found."
 
 ### Search URLs
 
-Indexes the canoncial of the top searches 
+Store Indexer indexes the canonical URLs of top searches.
 
-### Testing & Developing
-Since store-indexer is not in the store's rendering pipeline, testing it can be a bit obscure. 
-This section teaches you how to handcraft an event from the broadcasting system so we can test it easily
+### Brand Search as Full Text
 
-I have documented here only how to test the product pipeline, but extending it to test the other pipelines should be simple
+Enhance **Intelligent Search** by resolving brand search queries as full text. This configuration enables search results to include products where the brand name appears in fields like the product title or description, rather than limiting results to a brand filter. For detailed instructions, refer to [Setting up brand search queries as full text](https://developers.vtex.com/docs/guides/setting-up-brand-search-queries-as-full-text).
 
-First of all, we need to retrieve the body of the event. For this, we will use the catalog-graphql. This curl should do the job
+## Testing & Developing
+
+Since the Store Indexer is not part of the store's rendering pipeline, testing can be complex. This section outlines how to manually generate an event from the broadcasting system to facilitate testing.
+
+> The example below focuses on testing the product pipeline. Extending it to test other pipelines follows a similar approach.
+
+### Step 1: Retrieve the Event Body
+
+Use **catalog-graphql** to fetch the body of the event. The following `curl` command retrieves the necessary data:
+
 ```sh
 curl --location --request POST 'https://app.io.vtex.com/vtex.catalog-graphql/v1/{account}/{workspace}/_v/graphql' \
 --header 'Authorization: {auth}' \
@@ -39,8 +48,10 @@ curl --location --request POST 'https://app.io.vtex.com/vtex.catalog-graphql/v1/
 }'
 ```
 
-Now, copy the value of the key `product` of the returned value. With this value we can create our event for store-indexer.
-The curl bellow is an example of this event for a product with a mocked product
+### Step 2: Create an Event for Store Indexer
+
+After retrieving the event body, copy the value of the `product` key from the response. Use this data to create an event for the **Store Indexer**. Here's an example `curl` command with a mocked product:
+
 ```sh
 curl --location --request POST 'https://app.io.vtex.com/vtex.store-indexer/v0/{account}/{workspace}/_events' \
 --header 'Authorization: {auth}' \
