@@ -1,32 +1,25 @@
 # Store Indexer
 
-The Store Indexer is a VTEX IO app designed to listen to IO broadcasters and index data based on catalog changes.
+The Store Indexer is a VTEX IO app designed to listen to IO broadcasters and index data based on catalog changes. It enhances your store’s catalog indexing and search functionality by responding to system events and automating key tasks:
 
-## Key features
 
-### Messages
 
-The app updates translations whenever translatable fields are modified.
+- **Translations:** Updates translations whenever translatable fields set as messages are modified.
 
-### Routes
+- **Route management:** Updates internal routes by saving the correct page type and canonical route ID, and flags deactivated products as "not found".
 
-Store Indexer updates internal routes by saving the correct page type and canonical route ID, and flags deactivated products as "not found".
 
-### Search URLs
+- **Search indexing:**Indexes the canonical URLs of top searches.
 
-Store Indexer indexes the canonical URLs of top searches.
+- **Brand search as full text:** Enhances [Intelligent Search](https://help.vtex.com/pt/tracks/vtex-intelligent-search--19wrbB7nEQcmwzDPl1l4Cb) by resolving brand search queries as full text. This configuration enables search results to include products where the brand name appears in fields like the product title or description, rather than limiting results to a brand filter. For detailed instructions, refer to [Setting up brand search queries as full text](https://developers.vtex.com/docs/guides/setting-up-brand-search-queries-as-full-text).
 
-### Brand Search as Full Text
-
-Enhance **Intelligent Search** by resolving brand search queries as full text. This configuration enables search results to include products where the brand name appears in fields like the product title or description, rather than limiting results to a brand filter. For detailed instructions, refer to [Setting up brand search queries as full text](https://developers.vtex.com/docs/guides/setting-up-brand-search-queries-as-full-text).
-
-## Testing & Developing
+## Manual event testing
 
 Since the Store Indexer is not part of the store's rendering pipeline, testing can be complex. This section outlines how to manually generate an event from the broadcasting system to facilitate testing.
 
 > The example below focuses on testing the product pipeline. Extending it to test other pipelines follows a similar approach.
 
-### Step 1: Retrieve the Event Body
+### Step 1: Retrieving the event body
 
 Use **catalog-graphql** to fetch the body of the event. The following `curl` command retrieves the necessary data:
 
@@ -47,7 +40,7 @@ curl --location --request POST 'https://app.io.vtex.com/vtex.catalog-graphql/v1/
 }'
 ```
 
-### Step 2: Create an Event for Store Indexer
+### Step 2: Triggering an event for Store Indexer
 
 After retrieving the event body, copy the value of the `product` key from the response. Use this data to create an event for the **Store Indexer**. Here's an example `curl` command with a mocked product:
 
