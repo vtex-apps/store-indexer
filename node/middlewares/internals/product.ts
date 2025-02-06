@@ -33,7 +33,7 @@ export async function productInternals(
     vtex: { logger },
   } = ctx
   const product: Product = ctx.body
-  const { linkId, id } = product
+  const { linkId, isActive, id } = product
   const bindings = filterBindingsBySalesChannel(
     tenantInfo,
     product.salesChannel
@@ -74,7 +74,7 @@ export async function productInternals(
           id,
           origin: INDEXED_ORIGIN,
           resolveAs: usesMultiLanguageSearch ? null : tenantPath,
-          type: PAGE_TYPES.PRODUCT,
+          type: isActive ? PAGE_TYPES.PRODUCT : PAGE_TYPES.PRODUCT_NOT_FOUND,
         }
 
         return {
