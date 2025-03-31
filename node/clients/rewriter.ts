@@ -179,7 +179,6 @@ export class Rewriter extends AppGraphQLClient {
           VtexIdclientAutCookie:
             this.context.adminUserAuthToken ?? this.context.authToken,
         },
-      {
         metric: 'rewriter-delete-internal',
       }
     )
