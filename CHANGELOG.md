@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - CMS settings permission is now required when running `rewriter` queries
 
+## [0.17.1] - 2024-12-23
+
 ## [0.17.0] - 2024-09-03
 ### Added
 - `resolveBrandMapQueryAs` in settings and `brandInternals`
