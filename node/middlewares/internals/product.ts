@@ -76,7 +76,6 @@ export async function productInternals(
           resolveAs: usesMultiLanguageSearch ? null : tenantPath,
           type: isActive ? PAGE_TYPES.PRODUCT : PAGE_TYPES.PRODUCT_NOT_FOUND,
         }
-
         return {
           internal,
           oldRoute,
