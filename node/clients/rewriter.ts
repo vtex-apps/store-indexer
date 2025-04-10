@@ -78,7 +78,7 @@ export class Rewriter extends AppGraphQLClient {
         headers: {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
-          VtexIdclientAutCookie: this.context.adminUserAuthToken ?? this.context.authToken,
+          VtexIdclientAutCookie: this.context.authToken,
           'x-vtex-tenant': tenant,
         },
         metric: 'rewriter-save-many-internal',
@@ -100,7 +100,7 @@ export class Rewriter extends AppGraphQLClient {
         headers: {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
-          VtexIdclientAutCookie: this.context.adminUserAuthToken ?? this.context.authToken,
+          VtexIdclientAutCookie: this.context.authToken,
           'x-vtex-tenant': tenant,
         },
         metric: 'rewriter-save-internal',
@@ -176,8 +176,7 @@ export class Rewriter extends AppGraphQLClient {
         headers: {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
-          VtexIdclientAutCookie:
-            this.context.adminUserAuthToken ?? this.context.authToken,
+          VtexIdclientAutCookie: this.context.authToken,
         },
         metric: 'rewriter-delete-internal',
       }
@@ -199,7 +198,7 @@ export class Rewriter extends AppGraphQLClient {
         headers: {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
-          VtexIdclientAutCookie: this.context.adminUserAuthToken ?? this.context.authToken,
+          VtexIdclientAutCookie: this.context.authToken,
           'x-vtex-tenant': tenant,
         },
         metric: 'rewriter-delete-many-internal',
