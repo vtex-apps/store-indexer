@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ### Added
-- CMS settings permission is now required when running `rewriter` queries
+- Authentication is now required when running `rewriter` queries
 
 ## [0.17.1] - 2024-12-23
 
