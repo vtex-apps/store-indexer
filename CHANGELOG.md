@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- `vtex.broadcaster-worker` as a dependency, so catalog change events reach this app (and the rewriter) on every account that has it installed.
+
 ## [0.18.0] - 2025-04-10
 
 ### Added
