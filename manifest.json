@@ -11,7 +11,8 @@
     "vtex.catalog-api-proxy": "0.x",
     "vtex.search-graphql": "0.x",
     "vtex.catalog-graphql": "1.x",
-    "vtex.rewriter": "1.x"
+    "vtex.rewriter": "1.x",
+    "vtex.broadcaster-worker": "0.x"
   },
   "builders": {
     "node": "6.x",
