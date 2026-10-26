@@ -2,9 +2,21 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: store-indexer
+  description: The Store Indexer is a VTEX IO app designed to listen to IO
+    broadcasters and index data based on catalog changes. It enhances your
+    store's catalog indexing and search functionality by responding to system
+    events and automating key tasks.
+  tags:
+    - typescript
   annotations:
+    vtex.com/janus-acronym: ""
+    vtex.com/o11y-os-index: ""
+    grafana/dashboard-selector: ""
     github.com/project-slug: vtex-apps/store-indexer
+    vtex.com/platform-flow-id: ""
+    backstage.io/techdocs-ref: dir:../
 spec:
-  type: other
-  lifecycle: unknown
+  lifecycle: stable
   owner: te-0013
+  type: backend-api
+  dependsOn: []
