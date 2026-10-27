@@ -1,10 +1,10 @@
-import { Tenant } from '@vtex/api'
+import { Binding } from '@vtex/api'
 import { Product } from 'vtex.catalog-graphql'
 
 export const filterBindingsBySalesChannel = (
-  tenantInfo: Tenant,
+  bindings: Binding[],
   salesChannels: Product['salesChannel']
-): Tenant['bindings'] => {
+): Binding[] => {
   const salesChannelsSet = salesChannels?.reduce((acc, sc) => {
     if (sc?.id) {
       acc.add(sc.id)
@@ -12,7 +12,7 @@ export const filterBindingsBySalesChannel = (
     return acc
   }, new Set<string>())
 
-  return tenantInfo.bindings.filter(binding => {
+  return bindings.filter(binding => {
     if (binding.targetProduct === 'vtex-storefront') {
       const bindingSC: number | undefined =
         binding.extraContext.portal?.salesChannel
@@ -26,7 +26,5 @@ export const filterBindingsBySalesChannel = (
   })
 }
 
-export const filterStoreBindings = (tenantInfo: Tenant): Tenant['bindings'] =>
-  tenantInfo.bindings.filter(
-    binding => binding.targetProduct === 'vtex-storefront'
-  )
+export const filterStoreBindings = (bindings: Binding[]): Binding[] =>
+  bindings.filter(binding => binding.targetProduct === 'vtex-storefront')

@@ -1,4 +1,10 @@
-import { AppClient, InstanceOptions, IOContext, RequestConfig } from '@vtex/api'
+import {
+  AppClient,
+  formatTenantHeaderValue,
+  InstanceOptions,
+  IOContext,
+  RequestConfig,
+} from '@vtex/api'
 
 export type PageType =
   | 'Category'
@@ -49,7 +55,9 @@ export class Catalog extends AppClient {
         ...(this.options && this.options.headers),
         'Proxy-Authorization': this.context.authToken,
         'x-vtex-locale': this.context.locale,
-        'x-vtex-tenant': this.context.tenant,
+        'x-vtex-tenant':
+          this.context.tenant &&
+          formatTenantHeaderValue(this.context.tenant),
       },
       metric: 'catalog-pagetype',
       params: query,
@@ -61,7 +69,9 @@ export class Catalog extends AppClient {
         ...(this.options && this.options.headers),
         'Proxy-Authorization': this.context.authToken,
         'x-vtex-locale': this.context.locale,
-        'x-vtex-tenant': this.context.tenant,
+        'x-vtex-tenant':
+          this.context.tenant &&
+          formatTenantHeaderValue(this.context.tenant),
       },
       metric: 'catalog-get-field-by-id',
     })

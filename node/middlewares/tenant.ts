@@ -1,18 +1,16 @@
 import { Context } from '../typings/global'
-
-const TEN_MINUTES_S = 10 * 60
+import { fetchStoreBindings } from '../utils/storeBindings'
 
 export async function tenant(ctx: Context, next: () => Promise<void>) {
-  const {
-    clients: { tenant: tenantClient },
-  } = ctx
-  const tenantInfo = await tenantClient.info({
-    forceMaxAge: TEN_MINUTES_S,
-  })
+  const { bindings, locale } = await fetchStoreBindings(ctx)
 
-  const locale = tenantInfo.defaultLocale
+  /* No storefront binding means there are no routes to index. */
+  if (!bindings.some(b => b.targetProduct === 'vtex-storefront')) {
+    return
+  }
 
-  ctx.state.tenantInfo = tenantInfo
+  ctx.state.bindings = bindings
+  ctx.state.tenantLocale = locale
   ctx.vtex.locale = locale
   ctx.vtex.tenant = { locale }
 

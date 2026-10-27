@@ -26,8 +26,8 @@ export async function productInternals(
   const {
     clients: { apps, messages: messagesClient, rewriter },
     state: {
-      tenantInfo: { defaultLocale: tenantLocale },
-      tenantInfo,
+      bindings: tenantBindings,
+      tenantLocale,
       settings: { usesMultiLanguageSearch },
     },
     vtex: { logger },
@@ -35,7 +35,7 @@ export async function productInternals(
   const product: Product = ctx.body
   const { linkId, isActive, id } = product
   const bindings = filterBindingsBySalesChannel(
-    tenantInfo,
+    tenantBindings,
     product.salesChannel
   )
 

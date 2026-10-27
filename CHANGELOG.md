@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Migrate `node` builder from `6.x` to `7.x`, updating `@vtex/api` to `^7.4.0`, `typescript` to `5.5.3` and `@types/node` to `^20.0.0`.
+- Replace the deprecated Tenant API with License Manager (bindings) and the default segment (locale).
+
+### Fixed
+- Accounts without a License Manager site (legacy CMS stores) no longer raise `TenantNotFound` errors; their events are skipped with a `warn` and a 30 min negative cache.
+
 ## [0.18.0] - 2025-04-10
 
 ### Added

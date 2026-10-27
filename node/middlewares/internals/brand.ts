@@ -23,15 +23,15 @@ export async function brandInternals(ctx: Context, next: () => Promise<void>) {
   const {
     clients: { apps, messages: messagesClient, rewriter },
     state: {
-      tenantInfo: { defaultLocale: tenantLocale },
-      tenantInfo,
+      bindings: tenantBindings,
+      tenantLocale,
       settings: { usesMultiLanguageSearch, resolveBrandMapQueryAs },
     },
     vtex: { logger },
   } = ctx
   const brand: Brand = ctx.body
   const { name, active, id } = brand
-  const bindings = filterStoreBindings(tenantInfo)
+  const bindings = filterStoreBindings(tenantBindings)
 
   if (bindings.length === 0) {
     return

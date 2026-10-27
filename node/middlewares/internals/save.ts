@@ -20,15 +20,15 @@ const mergeBindingsToInternals = (
 export async function saveInternals(ctx: Context, next: () => Promise<void>) {
   const {
     clients: { rewriter },
-    state: { internals, tenantInfo },
+    state: { internals, bindings, tenantLocale },
   } = ctx
   if (internals) {
     if (LINKED) {
-      const tenant = pick(['id', 'defaultLocale'], tenantInfo)
+      const tenant = { defaultLocale: tenantLocale }
       console.log(
         JSON.stringify(
           {
-            internals: mergeBindingsToInternals(tenantInfo.bindings, internals),
+            internals: mergeBindingsToInternals(bindings, internals),
             tenant,
           },
           null,

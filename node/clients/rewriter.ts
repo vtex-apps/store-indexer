@@ -1,4 +1,9 @@
-import { AppGraphQLClient, InstanceOptions, IOContext } from '@vtex/api'
+import {
+  AppGraphQLClient,
+  formatTenantHeaderValue,
+  InstanceOptions,
+  IOContext,
+} from '@vtex/api'
 import {
   EntityLocator,
   Internal,
@@ -79,7 +84,7 @@ export class Rewriter extends AppGraphQLClient {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
           VtexIdclientAutCookie: this.context.authToken,
-          'x-vtex-tenant': tenant,
+          'x-vtex-tenant': tenant && formatTenantHeaderValue(tenant),
         },
         metric: 'rewriter-save-many-internal',
       }
@@ -101,7 +106,7 @@ export class Rewriter extends AppGraphQLClient {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
           VtexIdclientAutCookie: this.context.authToken,
-          'x-vtex-tenant': tenant,
+          'x-vtex-tenant': tenant && formatTenantHeaderValue(tenant),
         },
         metric: 'rewriter-save-internal',
       }
@@ -119,7 +124,7 @@ export class Rewriter extends AppGraphQLClient {
         headers: {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
-          'x-vtex-tenant': tenant,
+          'x-vtex-tenant': tenant && formatTenantHeaderValue(tenant),
         },
         metric: 'rewriter-save-redirect',
       }
@@ -138,7 +143,7 @@ export class Rewriter extends AppGraphQLClient {
           headers: {
             ...(this.options && this.options.headers),
             'Proxy-Authorization': this.context.authToken,
-            'x-vtex-tenant': tenant,
+            'x-vtex-tenant': tenant && formatTenantHeaderValue(tenant),
           },
           metric: 'rewriter-get-internal',
         }
@@ -199,7 +204,7 @@ export class Rewriter extends AppGraphQLClient {
           ...(this.options && this.options.headers),
           'Proxy-Authorization': this.context.authToken,
           VtexIdclientAutCookie: this.context.authToken,
-          'x-vtex-tenant': tenant,
+          'x-vtex-tenant': tenant && formatTenantHeaderValue(tenant),
         },
         metric: 'rewriter-delete-many-internal',
       }

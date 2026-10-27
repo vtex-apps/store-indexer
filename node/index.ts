@@ -25,7 +25,7 @@ const TRANSLATION_CONCURRENCY = 10
 const TRANSLATION_RETRIES = 3
 const CONCURRENCY = 10
 
-const tenantCacheStorage = new LRUCache<string, Cached>({
+const licenseManagerCacheStorage = new LRUCache<string, Cached>({
   max: 3000,
 })
 
@@ -33,7 +33,7 @@ const appsCacheStorage = new LRUCache<string, Cached>({
   max: 3000,
 })
 
-metrics.trackCache('tenant', tenantCacheStorage)
+metrics.trackCache('licenseManager', licenseManagerCacheStorage)
 metrics.trackCache('apps', appsCacheStorage)
 
 const clients: ClientsConfig<Clients> = {
@@ -52,8 +52,8 @@ const clients: ClientsConfig<Clients> = {
       retries: TRANSLATION_RETRIES,
       timeout: TIMEOUT_MS,
     },
-    tenant: {
-      memoryCache: tenantCacheStorage,
+    licenseManager: {
+      memoryCache: licenseManagerCacheStorage,
       timeout: TIMEOUT_MS,
     },
   },

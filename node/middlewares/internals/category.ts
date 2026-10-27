@@ -65,14 +65,14 @@ export async function categoryInternals(
   const {
     clients: { apps, messages: messagesClient, rewriter },
     state: {
-      tenantInfo: { defaultLocale: tenantLocale },
-      tenantInfo,
+      bindings: tenantBindings,
+      tenantLocale,
       settings: { usesMultiLanguageSearch },
     },
     vtex: { logger },
   } = ctx
   const category: IdentifiedCategory = ctx.body
-  const bindings = filterStoreBindings(tenantInfo)
+  const bindings = filterStoreBindings(tenantBindings)
 
   if (bindings.length === 0) {
     return

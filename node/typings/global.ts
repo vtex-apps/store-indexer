@@ -1,4 +1,4 @@
-import { EventContext, RecorderState, Tenant } from '@vtex/api'
+import { Binding, EventContext, RecorderState } from '@vtex/api'
 import { InternalInput, RouteLocator } from 'vtex.rewriter'
 
 import { Clients } from '../clients'
@@ -9,7 +9,8 @@ export type Context = EventContext<Clients, State>
 export interface State extends RecorderState {
   searchURLs: Array<{ path: string; canonicalPath?: string }>
   settings: Settings
-  tenantInfo: Tenant
+  bindings: Binding[]
+  tenantLocale: string
   internals?: InternalInput[]
   oldRoutes?: RouteLocator[]
 }
